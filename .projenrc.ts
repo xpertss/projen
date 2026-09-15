@@ -8,6 +8,7 @@ const project = new cdk.JsiiProject({
   keywords: ['projen', 'cdk', 'java', 'aws', 'maven'],
   license: 'Apache-2.0',
   name: 'projen-types',
+  npmTrustedPublishing: true,
   packageManager: javascript.NodePackageManager.NPM,
   packageName: '@xpertss/projen-types',
   devDeps: ['yaml'],
@@ -18,4 +19,5 @@ const project = new cdk.JsiiProject({
   sampleCode: false,
   stability: 'experimental',
 });
+project.addFields({ publishConfig: { access: 'public' } });
 project.synth();
