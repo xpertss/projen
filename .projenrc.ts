@@ -1,4 +1,4 @@
-import { cdk, javascript } from 'projen';
+import { cdk, javascript, ReleasableCommits } from 'projen';
 const project = new cdk.JsiiProject({
   author: 'Chris Floersch',
   authorAddress: 'cfloersch@xpertss.org',
@@ -15,6 +15,7 @@ const project = new cdk.JsiiProject({
   gitignore: ['.idea', '/spec/'],
   peerDeps: ['projen', 'constructs'],
   projenrcTs: true,
+  releasableCommits: ReleasableCommits.featuresAndFixes(),
   repositoryUrl: 'git@github.com:xpertss/projen',
   sampleCode: false,
   stability: 'experimental',
