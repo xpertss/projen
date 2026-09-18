@@ -28,9 +28,6 @@ export interface CommonCdkOptions {
 
   /** @default "PROJEN_GITHUB_TOKEN" */
   readonly gheTokenSecret?: string;
-
-  /** GitHub secret holding a Slack webhook URL for deploy notifications. */
-  readonly slackWebhookSecret?: string;
 }
 
 export interface CdkInfraProjectOptions extends CommonCdkOptions {

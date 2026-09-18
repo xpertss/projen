@@ -32,9 +32,6 @@ export interface ManualDeployWorkflowOptions {
   readonly deploySteps?: (
     env: EnvironmentOptions,
   ) => github.workflows.JobStep[];
-
-  /** GitHub secret holding a Slack webhook URL used to notify on deploy. */
-  readonly slackWebhookSecret?: string;
 }
 
 /** @internal */
@@ -95,18 +92,6 @@ export class ManualDeployWorkflow extends Component {
         },
         ...deploySteps(env),
       ];
-
-      if (options.slackWebhookSecret) {
-        steps.push({
-          name: 'Notify Slack',
-          if: 'always()',
-          uses: 'slackapi/slack-github-action@v2',
-          with: { 'webhook-type': 'incoming-webhook' },
-          env: {
-            SLACK_WEBHOOK_URL: `\${{ secrets.${options.slackWebhookSecret} }}`,
-          },
-        });
-      }
 
       this.workflow.addJob(`deploy-${env.name}`, {
         name: `Deploy (${env.name})`,

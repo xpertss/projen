@@ -1,8 +1,12 @@
 import { awscdk, github } from 'projen';
 import { CommonCdkOptions } from './options';
+import { ActionsAllowlistGuard } from '../common/actions-allowlist-guard';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { EnvironmentOptions } from '../common/environment-options';
+import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ManualDeployWorkflow } from '../common/manual-deploy-workflow';
+import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
+import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
 
 export interface CdkTypescriptProjectOptions extends CommonCdkOptions {
   readonly environments?: (string | EnvironmentOptions)[];
@@ -31,10 +35,23 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
 
     this.addDevDeps('esbuild');
 
+    const gh = this.github;
+    if (!gh) {
+      throw new Error(
+        'CdkTypescriptProject requires GitHub integration to be enabled',
+      );
+    }
+    applyInternalActionOverrides(gh);
+
+    new ProjenDriftCheckWorkflow(this, {
+      gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
+    });
+    new WorkflowChangeNoticeWorkflow(this);
+    new ActionsAllowlistGuard(this);
+
     if (options.environments && options.environments.length > 0) {
       new ManualDeployWorkflow(this, {
         environments: options.environments,
-        slackWebhookSecret: options.slackWebhookSecret,
         deploySteps: (env) => [
           {
             name: 'Install',

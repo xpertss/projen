@@ -12,6 +12,9 @@ test('synthesizes cdk.json and a PR-check build workflow', () => {
   expect(snapshot['cdk.json']).toBeDefined();
   expect(snapshot['.github/workflows/build.yml']).toBeDefined();
   expect(snapshot['.github/workflows/deploy.yml']).toBeDefined();
+  expect(snapshot['.github/workflows/projen-drift-check.yml']).toBeDefined();
+  expect(snapshot['.github/workflows/workflow-change-notice.yml']).toBeDefined();
+  expect(snapshot['.github/workflows/actions-allowlist-guard.yml']).toBeDefined();
 });
 
 test('deploy workflow exposes one job per environment', () => {
@@ -69,4 +72,16 @@ test('edge networking constructs are generated per requested resource', () => {
   expect(source).toContain('aws-cloudfront');
   expect(source).toContain('aws-sqs');
   expect(source).not.toContain('aws-cognito');
+});
+
+test('deploy workflow no longer references Slack', () => {
+  const snapshot = synthSnapshot(
+    new CdkInfraProject({
+      name: 'infra-test',
+      environments: ['dev', 'prod'],
+    }),
+  );
+  const deploy = JSON.stringify(snapshot['.github/workflows/deploy.yml']);
+  expect(deploy).not.toContain('slackapi');
+  expect(deploy).not.toContain('SLACK_WEBHOOK');
 });

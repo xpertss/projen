@@ -1,8 +1,11 @@
 import { Task, github, java } from 'projen';
 import { CommonJavaOptions } from './options';
+import { ActionsAllowlistGuard } from '../common/actions-allowlist-guard';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
-import { driftCheckSteps } from '../common/drift-check';
+import { applyInternalActionOverrides } from '../common/internal-actions';
+import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
 import { UpgradeWorkflow } from '../common/upgrade-workflow';
+import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
 
 export interface JavaMavenProjectOptions extends CommonJavaOptions {}
 
@@ -32,7 +35,15 @@ export class JavaMavenProject extends java.JavaProject {
       throw new Error('JavaMavenProject requires GitHub integration');
     }
 
-    const postBuildSteps = [...driftCheckSteps()];
+    applyInternalActionOverrides(gh);
+
+    new ProjenDriftCheckWorkflow(this, {
+      gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
+    });
+    new WorkflowChangeNoticeWorkflow(this);
+    new ActionsAllowlistGuard(this);
+
+    const postBuildSteps: github.workflows.JobStep[] = [];
     if (options.sonarProjectKey) {
       postBuildSteps.push({
         name: 'SonarQube scan',

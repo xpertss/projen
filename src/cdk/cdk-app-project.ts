@@ -3,7 +3,6 @@ import { AppRuntimeScaffold } from './app-runtime-scaffold';
 import { CdkInfraProject } from './cdk-infra-project';
 import { DatabaseComponent } from './database-component';
 import { CdkAppProjectOptions } from './options';
-import { driftCheckSteps } from '../common/drift-check';
 
 /**
  * Full TypeScript service application running behind API Gateway (or
@@ -25,7 +24,6 @@ export class CdkAppProject extends CdkInfraProject {
         task: this.testTask,
         triggers: { pullRequest: {}, workflowDispatch: {} },
         permissions: { contents: github.workflows.JobPermission.READ },
-        postBuildSteps: driftCheckSteps(),
       });
     }
   }

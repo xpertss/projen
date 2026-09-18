@@ -1,5 +1,8 @@
 import { Component, Task, github } from 'projen';
-import { NIGHTLY_UPGRADE_SCHEDULE } from './constants';
+import {
+  DEFAULT_GHE_TOKEN_SECRET,
+  NIGHTLY_UPGRADE_SCHEDULE,
+} from './constants';
 
 /**
  * Nightly cron workflow that opens a PR with dependency upgrades. Used by
@@ -38,7 +41,10 @@ export class UpgradeWorkflow extends Component {
         schedule: [{ cron: options.schedule ?? NIGHTLY_UPGRADE_SCHEDULE }],
         workflowDispatch: {},
       },
-      permissions: { contents: github.workflows.JobPermission.READ },
+      permissions: {
+        contents: github.workflows.JobPermission.WRITE,
+        pullRequests: github.workflows.JobPermission.WRITE,
+      },
       postBuildSteps: [
         {
           name: 'Create Pull Request',
@@ -48,6 +54,7 @@ export class UpgradeWorkflow extends Component {
             'branch': 'auto/upgrade-dependencies',
             'title': 'chore: upgrade dependencies',
             'labels': 'auto-approve,auto-merge',
+            'token': `\${{ secrets.${DEFAULT_GHE_TOKEN_SECRET} }}`,
           },
         },
       ],

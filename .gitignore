@@ -52,4 +52,7 @@ junit.xml
 !/projenrc/tsconfig.json
 .jsii
 !/API.md
+!/.github/workflows/projen-drift-check.yml
+!/.github/workflows/workflow-change-notice.yml
+!/.github/workflows/actions-allowlist-guard.yml
 !/.projenrc.ts

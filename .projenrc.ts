@@ -1,4 +1,10 @@
 import { cdk, javascript, ReleasableCommits } from 'projen';
+import {
+  ActionsAllowlistGuard,
+  ProjenDriftCheckWorkflow,
+  WorkflowChangeNoticeWorkflow,
+  applyInternalActionOverrides,
+} from './src';
 const project = new cdk.JsiiProject({
   author: 'Chris Floersch',
   authorAddress: 'cfloersch@xpertss.org',
@@ -21,4 +27,10 @@ const project = new cdk.JsiiProject({
   stability: 'experimental',
 });
 project.addFields({ publishConfig: { access: 'public' } });
+if (project.github) {
+  applyInternalActionOverrides(project.github);
+}
+new ProjenDriftCheckWorkflow(project);
+new WorkflowChangeNoticeWorkflow(project);
+new ActionsAllowlistGuard(project);
 project.synth();

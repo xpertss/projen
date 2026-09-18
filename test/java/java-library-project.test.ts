@@ -14,6 +14,9 @@ test('synthesizes pom.xml, build workflow, publish workflow, and code index by d
   expect(snapshot['.github/workflows/build.yml']).toBeDefined();
   expect(snapshot['.github/workflows/publish-maven-central.yml']).toBeDefined();
   expect(snapshot['.github/workflows/codeindex.yml']).toBeDefined();
+  expect(snapshot['.github/workflows/projen-drift-check.yml']).toBeDefined();
+  expect(snapshot['.github/workflows/workflow-change-notice.yml']).toBeDefined();
+  expect(snapshot['.github/workflows/actions-allowlist-guard.yml']).toBeDefined();
 });
 
 test('code index can be opted out', () => {
@@ -51,4 +54,31 @@ test('sonar step is only added when sonarProjectKey is set', () => {
   expect(JSON.stringify(withoutSonar.jobs.build.steps)).not.toContain(
     'sonar:sonar',
   );
+});
+
+test('redirects out-of-policy actions and fixes the upgrade workflow', () => {
+  const snapshot = synthSnapshot(
+    new JavaLibraryProject({
+      name: 'lib-test',
+      groupId: 'com.example',
+      artifactId: 'lib-test',
+    }),
+  );
+
+  // F009 override: third-party actions are redirected to xpertss/*
+  const upgrade = snapshot['.github/workflows/upgrade.yml'];
+  const createPr = upgrade.jobs.upgrade.steps.find(
+    (s: { name: string }) => s.name === 'Create Pull Request',
+  );
+  expect(createPr.uses).toBe('xpertss/create-pull-request@PLACEHOLDER_SHA');
+  // F009 latent defect fix: write permissions + token input
+  expect(upgrade.jobs.upgrade.permissions.contents).toBe('write');
+  expect(upgrade.jobs.upgrade.permissions['pull-requests']).toBe('write');
+  expect(createPr.with.token).toBe('${{ secrets.PROJEN_GITHUB_TOKEN }}');
+
+  const codeindex = snapshot['.github/workflows/codeindex.yml'];
+  const commitStep = codeindex.jobs.codeindex.steps.find(
+    (s: { name: string }) => s.name === 'Commit code index',
+  );
+  expect(commitStep.uses).toBe('xpertss/auto-commit@PLACEHOLDER_SHA');
 });
