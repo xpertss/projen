@@ -2,6 +2,979 @@
 
 ## Constructs <a name="Constructs" id="Constructs"></a>
 
+### ActionBuildWorkflow <a name="ActionBuildWorkflow" id="@xpertss/projen-types.ActionBuildWorkflow"></a>
+
+The AD-001 Layer-1 lint gate for a composite-action repo: shellcheck, yamllint, and a pinned `actionlint` release binary (verified by SHA-256, never a marketplace action - org policy).
+
+Creates a dedicated `lint` task
+(named to avoid colliding with projen's own reserved `build` task, which
+spawns the unrelated default/pre-compile/compile/post-compile/test/package
+chain - including `default`, i.e. re-running `.projenrc.ts`, which is not
+what this gate is for) and wraps it in a `TaskWorkflow` (`build.yml`)
+triggered on push-to-`main` and `pull_request`. The same task is reused by
+the release build job, so the lint commands exist in exactly one place.
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionBuildWorkflow.Initializer"></a>
+
+```typescript
+import { ActionBuildWorkflow } from '@xpertss/projen-types'
+
+new ActionBuildWorkflow(scope: GitHubProject)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="@xpertss/projen-types.ActionBuildWorkflow.Initializer.parameter.scope"></a>
+
+- *Type:* projen.github.GitHubProject
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.ActionBuildWorkflow.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.ActionBuildWorkflow.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.ActionBuildWorkflow.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.ActionBuildWorkflow.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ActionBuildWorkflow.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.ActionBuildWorkflow.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.ActionBuildWorkflow.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.ActionBuildWorkflow.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ActionBuildWorkflow.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.ActionBuildWorkflow.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.ActionBuildWorkflow.isConstruct"></a>
+
+```typescript
+import { ActionBuildWorkflow } from '@xpertss/projen-types'
+
+ActionBuildWorkflow.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ActionBuildWorkflow.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.ActionBuildWorkflow.isComponent"></a>
+
+```typescript
+import { ActionBuildWorkflow } from '@xpertss/projen-types'
+
+ActionBuildWorkflow.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ActionBuildWorkflow.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.property.task">task</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.property.workflow">workflow</a></code> | <code>projen.github.TaskWorkflow</code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.ActionBuildWorkflow.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.ActionBuildWorkflow.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `task`<sup>Required</sup> <a name="task" id="@xpertss/projen-types.ActionBuildWorkflow.property.task"></a>
+
+```typescript
+public readonly task: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `workflow`<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.ActionBuildWorkflow.property.workflow"></a>
+
+```typescript
+public readonly workflow: TaskWorkflow;
+```
+
+- *Type:* projen.github.TaskWorkflow
+
+---
+
+
+### ActionDogfoodWorkflow <a name="ActionDogfoodWorkflow" id="@xpertss/projen-types.ActionDogfoodWorkflow"></a>
+
+Per AD-001's dogfood test: the composite action is run **against this repo**, end-to-end, via a local `uses: .` reference - no external harness. Builds `test-dogfood.yml` from an ordered `scenario` of invocation steps (see `ActionDogfoodStep`) followed by a shared cleanup step.
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionDogfoodWorkflow.Initializer"></a>
+
+```typescript
+import { ActionDogfoodWorkflow } from '@xpertss/projen-types'
+
+new ActionDogfoodWorkflow(scope: GitHubProject, options: ActionDogfoodOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="@xpertss/projen-types.ActionDogfoodWorkflow.Initializer.parameter.scope"></a>
+
+- *Type:* projen.github.GitHubProject
+
+---
+
+##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.ActionDogfoodWorkflow.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.ActionDogfoodWorkflow.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.ActionDogfoodWorkflow.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.ActionDogfoodWorkflow.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.ActionDogfoodWorkflow.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ActionDogfoodWorkflow.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.ActionDogfoodWorkflow.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.ActionDogfoodWorkflow.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.ActionDogfoodWorkflow.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ActionDogfoodWorkflow.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.ActionDogfoodWorkflow.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.ActionDogfoodWorkflow.isConstruct"></a>
+
+```typescript
+import { ActionDogfoodWorkflow } from '@xpertss/projen-types'
+
+ActionDogfoodWorkflow.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ActionDogfoodWorkflow.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.ActionDogfoodWorkflow.isComponent"></a>
+
+```typescript
+import { ActionDogfoodWorkflow } from '@xpertss/projen-types'
+
+ActionDogfoodWorkflow.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ActionDogfoodWorkflow.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow.property.workflow">workflow</a></code> | <code>projen.github.GithubWorkflow</code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.ActionDogfoodWorkflow.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.ActionDogfoodWorkflow.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `workflow`<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.ActionDogfoodWorkflow.property.workflow"></a>
+
+```typescript
+public readonly workflow: GithubWorkflow;
+```
+
+- *Type:* projen.github.GithubWorkflow
+
+---
+
+
+### ActionsAllowlistGuard <a name="ActionsAllowlistGuard" id="@xpertss/projen-types.ActionsAllowlistGuard"></a>
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionsAllowlistGuard.Initializer"></a>
+
+```typescript
+import { ActionsAllowlistGuard } from '@xpertss/projen-types'
+
+new ActionsAllowlistGuard(scope: GitHubProject, options?: ActionsAllowlistGuardOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.ActionsAllowlistGuardOptions">ActionsAllowlistGuardOptions</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="@xpertss/projen-types.ActionsAllowlistGuard.Initializer.parameter.scope"></a>
+
+- *Type:* projen.github.GitHubProject
+
+---
+
+##### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.ActionsAllowlistGuard.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.ActionsAllowlistGuardOptions">ActionsAllowlistGuardOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.ActionsAllowlistGuard.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.ActionsAllowlistGuard.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.ActionsAllowlistGuard.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.ActionsAllowlistGuard.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ActionsAllowlistGuard.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.ActionsAllowlistGuard.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.ActionsAllowlistGuard.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.ActionsAllowlistGuard.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ActionsAllowlistGuard.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.ActionsAllowlistGuard.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.ActionsAllowlistGuard.isConstruct"></a>
+
+```typescript
+import { ActionsAllowlistGuard } from '@xpertss/projen-types'
+
+ActionsAllowlistGuard.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ActionsAllowlistGuard.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.ActionsAllowlistGuard.isComponent"></a>
+
+```typescript
+import { ActionsAllowlistGuard } from '@xpertss/projen-types'
+
+ActionsAllowlistGuard.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ActionsAllowlistGuard.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuard.property.workflow">workflow</a></code> | <code>projen.github.GithubWorkflow</code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.ActionsAllowlistGuard.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.ActionsAllowlistGuard.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `workflow`<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.ActionsAllowlistGuard.property.workflow"></a>
+
+```typescript
+public readonly workflow: GithubWorkflow;
+```
+
+- *Type:* projen.github.GithubWorkflow
+
+---
+
+
+### ActionSonarWorkflow <a name="ActionSonarWorkflow" id="@xpertss/projen-types.ActionSonarWorkflow"></a>
+
+AD-001 Layer 2: self-hosted SonarQube Community Edition via the Scanner CLI only (never `SonarSource/sonarqube-scan-action` - third-party, and it carried a security advisory).
+
+`sonar.inclusions` is set explicitly since
+default inclusions may skip `action.yml` outside `.github/`.
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionSonarWorkflow.Initializer"></a>
+
+```typescript
+import { ActionSonarWorkflow } from '@xpertss/projen-types'
+
+new ActionSonarWorkflow(scope: GitHubProject, options: ActionSonarWorkflowOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions">ActionSonarWorkflowOptions</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="@xpertss/projen-types.ActionSonarWorkflow.Initializer.parameter.scope"></a>
+
+- *Type:* projen.github.GitHubProject
+
+---
+
+##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.ActionSonarWorkflow.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.ActionSonarWorkflowOptions">ActionSonarWorkflowOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.ActionSonarWorkflow.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.ActionSonarWorkflow.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.ActionSonarWorkflow.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.ActionSonarWorkflow.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ActionSonarWorkflow.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.ActionSonarWorkflow.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.ActionSonarWorkflow.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.ActionSonarWorkflow.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ActionSonarWorkflow.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.ActionSonarWorkflow.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.ActionSonarWorkflow.isConstruct"></a>
+
+```typescript
+import { ActionSonarWorkflow } from '@xpertss/projen-types'
+
+ActionSonarWorkflow.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ActionSonarWorkflow.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.ActionSonarWorkflow.isComponent"></a>
+
+```typescript
+import { ActionSonarWorkflow } from '@xpertss/projen-types'
+
+ActionSonarWorkflow.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ActionSonarWorkflow.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.property.workflow">workflow</a></code> | <code>projen.github.GithubWorkflow</code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.ActionSonarWorkflow.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.ActionSonarWorkflow.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `workflow`<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.ActionSonarWorkflow.property.workflow"></a>
+
+```typescript
+public readonly workflow: GithubWorkflow;
+```
+
+- *Type:* projen.github.GithubWorkflow
+
+---
+
+
 ### AppRuntimeScaffold <a name="AppRuntimeScaffold" id="@xpertss/projen-types.AppRuntimeScaffold"></a>
 
 Full TypeScript application source structure (handlers/business logic), layered on top of `CdkTypescriptProject`'s pure-infra scaffold.
@@ -6206,6 +7179,854 @@ public readonly project: Project;
 ---
 
 
+### GitHubActionProject <a name="GitHubActionProject" id="@xpertss/projen-types.GitHubActionProject"></a>
+
+Scaffolds the repo lifecycle (AD-001) around a hand-committed, composite (shell) GitHub Action: the `build`/`test-dogfood`/`sonar`/`release` workflows, versioning and release discipline, the F003 verify components, the F009 allowlist guard, and repo boilerplate (`tsconfig.json` for `.projenrc.ts`, a private version-source `package.json`, `.yamllint`, `LICENSE`, and a `README.md` template). The action's own content (`action.yml`, its shell scripts, `test/` fixtures) is authored by hand per the action's own F### spec - this type only lints it.
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.GitHubActionProject.Initializer"></a>
+
+```typescript
+import { GitHubActionProject } from '@xpertss/projen-types'
+
+new GitHubActionProject(options: GitHubActionProjectOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions">GitHubActionProjectOptions</a></code> | *No description.* |
+
+---
+
+##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.GitHubActionProject.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.GitHubActionProjectOptions">GitHubActionProjectOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.addExcludeFromCleanup">addExcludeFromCleanup</a></code> | Exclude the matching files from pre-synth cleanup. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.addGitIgnore">addGitIgnore</a></code> | Adds a .gitignore pattern. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.addPackageIgnore">addPackageIgnore</a></code> | Exclude these files from the bundled package. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.addTask">addTask</a></code> | Adds a new task to this project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.annotateGenerated">annotateGenerated</a></code> | Marks the provided file(s) as being generated. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.postSynthesize">postSynthesize</a></code> | Called after all components are synthesized. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.preSynthesize">preSynthesize</a></code> | Called before all components are synthesized. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.removeTask">removeTask</a></code> | Removes a task from a project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.runTaskCommand">runTaskCommand</a></code> | Returns the shell command to execute in order to run a task. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.synth">synth</a></code> | Synthesize all project files into `outdir`. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.tryFindFile">tryFindFile</a></code> | Finds a file at the specified relative path within this project and all its subprojects. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.tryFindObjectFile">tryFindObjectFile</a></code> | Finds an object file (like JsonFile, YamlFile, etc.) by name. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.tryRemoveFile">tryRemoveFile</a></code> | Finds a file at the specified relative path within this project and removes it. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.GitHubActionProject.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.GitHubActionProject.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.GitHubActionProject.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `addExcludeFromCleanup` <a name="addExcludeFromCleanup" id="@xpertss/projen-types.GitHubActionProject.addExcludeFromCleanup"></a>
+
+```typescript
+public addExcludeFromCleanup(globs: ...string[]): void
+```
+
+Exclude the matching files from pre-synth cleanup.
+
+Can be used when, for example, some
+source files include the projen marker and we don't want them to be erased during synth.
+
+###### `globs`<sup>Required</sup> <a name="globs" id="@xpertss/projen-types.GitHubActionProject.addExcludeFromCleanup.parameter.globs"></a>
+
+- *Type:* ...string[]
+
+The glob patterns to match.
+
+---
+
+##### `addGitIgnore` <a name="addGitIgnore" id="@xpertss/projen-types.GitHubActionProject.addGitIgnore"></a>
+
+```typescript
+public addGitIgnore(pattern: string): void
+```
+
+Adds a .gitignore pattern.
+
+###### `pattern`<sup>Required</sup> <a name="pattern" id="@xpertss/projen-types.GitHubActionProject.addGitIgnore.parameter.pattern"></a>
+
+- *Type:* string
+
+The glob pattern to ignore.
+
+---
+
+##### `addPackageIgnore` <a name="addPackageIgnore" id="@xpertss/projen-types.GitHubActionProject.addPackageIgnore"></a>
+
+```typescript
+public addPackageIgnore(_pattern: string): void
+```
+
+Exclude these files from the bundled package.
+
+Implemented by project types based on the
+packaging mechanism. For example, `NodeProject` delegates this to `.npmignore`.
+
+###### `_pattern`<sup>Required</sup> <a name="_pattern" id="@xpertss/projen-types.GitHubActionProject.addPackageIgnore.parameter._pattern"></a>
+
+- *Type:* string
+
+The glob pattern to exclude.
+
+---
+
+##### `addTask` <a name="addTask" id="@xpertss/projen-types.GitHubActionProject.addTask"></a>
+
+```typescript
+public addTask(name: string, props?: TaskOptions): Task
+```
+
+Adds a new task to this project.
+
+This will fail if the project already has
+a task with this name.
+
+###### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.GitHubActionProject.addTask.parameter.name"></a>
+
+- *Type:* string
+
+The task name to add.
+
+---
+
+###### `props`<sup>Optional</sup> <a name="props" id="@xpertss/projen-types.GitHubActionProject.addTask.parameter.props"></a>
+
+- *Type:* projen.TaskOptions
+
+Task properties.
+
+---
+
+##### `annotateGenerated` <a name="annotateGenerated" id="@xpertss/projen-types.GitHubActionProject.annotateGenerated"></a>
+
+```typescript
+public annotateGenerated(glob: string): void
+```
+
+Marks the provided file(s) as being generated.
+
+This is achieved using the
+github-linguist attributes. Generated files do not count against the
+repository statistics and language breakdown.
+
+> [https://github.com/github/linguist/blob/master/docs/overrides.md](https://github.com/github/linguist/blob/master/docs/overrides.md)
+
+###### `glob`<sup>Required</sup> <a name="glob" id="@xpertss/projen-types.GitHubActionProject.annotateGenerated.parameter.glob"></a>
+
+- *Type:* string
+
+the glob pattern to match (could be a file path).
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.GitHubActionProject.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after all components are synthesized.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.GitHubActionProject.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before all components are synthesized.
+
+##### `removeTask` <a name="removeTask" id="@xpertss/projen-types.GitHubActionProject.removeTask"></a>
+
+```typescript
+public removeTask(name: string): Task
+```
+
+Removes a task from a project.
+
+###### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.GitHubActionProject.removeTask.parameter.name"></a>
+
+- *Type:* string
+
+The name of the task to remove.
+
+---
+
+##### `runTaskCommand` <a name="runTaskCommand" id="@xpertss/projen-types.GitHubActionProject.runTaskCommand"></a>
+
+```typescript
+public runTaskCommand(task: Task): string
+```
+
+Returns the shell command to execute in order to run a task.
+
+By default, this is `npx projen@<version> <task>`
+
+###### `task`<sup>Required</sup> <a name="task" id="@xpertss/projen-types.GitHubActionProject.runTaskCommand.parameter.task"></a>
+
+- *Type:* projen.Task
+
+The task for which the command is required.
+
+---
+
+##### `synth` <a name="synth" id="@xpertss/projen-types.GitHubActionProject.synth"></a>
+
+```typescript
+public synth(): void
+```
+
+Synthesize all project files into `outdir`.
+
+1. Call "this.preSynthesize()"
+2. Delete all generated files
+3. Synthesize all subprojects
+4. Synthesize all components of this project
+5. Call "projectCreation()" for all components, only if the project is being created for the first time
+6. Call "postSynthesize()" for all components of this project
+7. Call "this.postSynthesize()"
+8. Call "postProjectCreation()" for all components, only if the project is being created for the first time
+
+##### `tryFindFile` <a name="tryFindFile" id="@xpertss/projen-types.GitHubActionProject.tryFindFile"></a>
+
+```typescript
+public tryFindFile(filePath: string): FileBase
+```
+
+Finds a file at the specified relative path within this project and all its subprojects.
+
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@xpertss/projen-types.GitHubActionProject.tryFindFile.parameter.filePath"></a>
+
+- *Type:* string
+
+The file path.
+
+If this path is relative, it will be resolved
+from the root of _this_ project.
+
+---
+
+##### `tryFindObjectFile` <a name="tryFindObjectFile" id="@xpertss/projen-types.GitHubActionProject.tryFindObjectFile"></a>
+
+```typescript
+public tryFindObjectFile(filePath: string): ObjectFile
+```
+
+Finds an object file (like JsonFile, YamlFile, etc.) by name.
+
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@xpertss/projen-types.GitHubActionProject.tryFindObjectFile.parameter.filePath"></a>
+
+- *Type:* string
+
+The file path.
+
+---
+
+##### `tryRemoveFile` <a name="tryRemoveFile" id="@xpertss/projen-types.GitHubActionProject.tryRemoveFile"></a>
+
+```typescript
+public tryRemoveFile(filePath: string): FileBase
+```
+
+Finds a file at the specified relative path within this project and removes it.
+
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@xpertss/projen-types.GitHubActionProject.tryRemoveFile.parameter.filePath"></a>
+
+- *Type:* string
+
+The file path.
+
+If this path is relative, it will be
+resolved from the root of _this_ project.
+
+---
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.isProject">isProject</a></code> | Test whether the given construct is a project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.of">of</a></code> | Find the closest ancestor project for given construct. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.GitHubActionProject.isConstruct"></a>
+
+```typescript
+import { GitHubActionProject } from '@xpertss/projen-types'
+
+GitHubActionProject.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.GitHubActionProject.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isProject` <a name="isProject" id="@xpertss/projen-types.GitHubActionProject.isProject"></a>
+
+```typescript
+import { GitHubActionProject } from '@xpertss/projen-types'
+
+GitHubActionProject.isProject(x: any)
+```
+
+Test whether the given construct is a project.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.GitHubActionProject.isProject.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+##### `of` <a name="of" id="@xpertss/projen-types.GitHubActionProject.of"></a>
+
+```typescript
+import { GitHubActionProject } from '@xpertss/projen-types'
+
+GitHubActionProject.of(construct: IConstruct)
+```
+
+Find the closest ancestor project for given construct.
+
+When given a project, this it the project itself.
+
+###### `construct`<sup>Required</sup> <a name="construct" id="@xpertss/projen-types.GitHubActionProject.of.parameter.construct"></a>
+
+- *Type:* constructs.IConstruct
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.buildTask">buildTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.commitGenerated">commitGenerated</a></code> | <code>boolean</code> | Whether to commit the managed files by default. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.compileTask">compileTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.components">components</a></code> | <code>projen.Component[]</code> | Returns all the components within this project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.deps">deps</a></code> | <code>projen.Dependencies</code> | Project dependencies. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.ejected">ejected</a></code> | <code>boolean</code> | Whether or not the project is being ejected. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.files">files</a></code> | <code>projen.FileBase[]</code> | All files in this project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.gitattributes">gitattributes</a></code> | <code>projen.GitAttributesFile</code> | The .gitattributes file for this repository. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.gitignore">gitignore</a></code> | <code>projen.IgnoreFile</code> | .gitignore. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.logger">logger</a></code> | <code>projen.Logger</code> | Logging utilities. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.name">name</a></code> | <code>string</code> | Project name. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.outdir">outdir</a></code> | <code>string</code> | Absolute output directory of this project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.packageTask">packageTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.postCompileTask">postCompileTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.preCompileTask">preCompileTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.projectBuild">projectBuild</a></code> | <code>projen.ProjectBuild</code> | Manages the build process of the project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.projenCommand">projenCommand</a></code> | <code>string</code> | The command to use in order to run the projen CLI. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.root">root</a></code> | <code>projen.Project</code> | The root project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.subprojects">subprojects</a></code> | <code>projen.Project[]</code> | Returns all the subprojects within this project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.tasks">tasks</a></code> | <code>projen.Tasks</code> | Project tasks. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.testTask">testTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.defaultTask">defaultTask</a></code> | <code>projen.Task</code> | This is the "default" task, the one that executes "projen". |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.initProject">initProject</a></code> | <code>projen.InitProject</code> | The options used when this project is bootstrapped via `projen new`. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.parent">parent</a></code> | <code>projen.Project</code> | A parent project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.autoApprove">autoApprove</a></code> | <code>projen.github.AutoApprove</code> | Auto approve set up for this project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.devContainer">devContainer</a></code> | <code>projen.vscode.DevContainer</code> | Access for .devcontainer.json (used for GitHub Codespaces). |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.github">github</a></code> | <code>projen.github.GitHub</code> | Access all github components. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.gitpod">gitpod</a></code> | <code>projen.Gitpod</code> | Access for Gitpod. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.buildWorkflow">buildWorkflow</a></code> | <code><a href="#@xpertss/projen-types.ActionBuildWorkflow">ActionBuildWorkflow</a></code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.dogfoodWorkflow">dogfoodWorkflow</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow">ActionDogfoodWorkflow</a></code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.release">release</a></code> | <code>projen.release.Release</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.ActionSonarWorkflow">ActionSonarWorkflow</a></code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.GitHubActionProject.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `buildTask`<sup>Required</sup> <a name="buildTask" id="@xpertss/projen-types.GitHubActionProject.property.buildTask"></a>
+
+```typescript
+public readonly buildTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `commitGenerated`<sup>Required</sup> <a name="commitGenerated" id="@xpertss/projen-types.GitHubActionProject.property.commitGenerated"></a>
+
+```typescript
+public readonly commitGenerated: boolean;
+```
+
+- *Type:* boolean
+
+Whether to commit the managed files by default.
+
+---
+
+##### `compileTask`<sup>Required</sup> <a name="compileTask" id="@xpertss/projen-types.GitHubActionProject.property.compileTask"></a>
+
+```typescript
+public readonly compileTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `components`<sup>Required</sup> <a name="components" id="@xpertss/projen-types.GitHubActionProject.property.components"></a>
+
+```typescript
+public readonly components: Component[];
+```
+
+- *Type:* projen.Component[]
+
+Returns all the components within this project.
+
+---
+
+##### `deps`<sup>Required</sup> <a name="deps" id="@xpertss/projen-types.GitHubActionProject.property.deps"></a>
+
+```typescript
+public readonly deps: Dependencies;
+```
+
+- *Type:* projen.Dependencies
+
+Project dependencies.
+
+---
+
+##### `ejected`<sup>Required</sup> <a name="ejected" id="@xpertss/projen-types.GitHubActionProject.property.ejected"></a>
+
+```typescript
+public readonly ejected: boolean;
+```
+
+- *Type:* boolean
+
+Whether or not the project is being ejected.
+
+---
+
+##### `files`<sup>Required</sup> <a name="files" id="@xpertss/projen-types.GitHubActionProject.property.files"></a>
+
+```typescript
+public readonly files: FileBase[];
+```
+
+- *Type:* projen.FileBase[]
+
+All files in this project.
+
+---
+
+##### `gitattributes`<sup>Required</sup> <a name="gitattributes" id="@xpertss/projen-types.GitHubActionProject.property.gitattributes"></a>
+
+```typescript
+public readonly gitattributes: GitAttributesFile;
+```
+
+- *Type:* projen.GitAttributesFile
+
+The .gitattributes file for this repository.
+
+---
+
+##### `gitignore`<sup>Required</sup> <a name="gitignore" id="@xpertss/projen-types.GitHubActionProject.property.gitignore"></a>
+
+```typescript
+public readonly gitignore: IgnoreFile;
+```
+
+- *Type:* projen.IgnoreFile
+
+.gitignore.
+
+---
+
+##### `logger`<sup>Required</sup> <a name="logger" id="@xpertss/projen-types.GitHubActionProject.property.logger"></a>
+
+```typescript
+public readonly logger: Logger;
+```
+
+- *Type:* projen.Logger
+
+Logging utilities.
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.GitHubActionProject.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+Project name.
+
+---
+
+##### `outdir`<sup>Required</sup> <a name="outdir" id="@xpertss/projen-types.GitHubActionProject.property.outdir"></a>
+
+```typescript
+public readonly outdir: string;
+```
+
+- *Type:* string
+
+Absolute output directory of this project.
+
+---
+
+##### `packageTask`<sup>Required</sup> <a name="packageTask" id="@xpertss/projen-types.GitHubActionProject.property.packageTask"></a>
+
+```typescript
+public readonly packageTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `postCompileTask`<sup>Required</sup> <a name="postCompileTask" id="@xpertss/projen-types.GitHubActionProject.property.postCompileTask"></a>
+
+```typescript
+public readonly postCompileTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `preCompileTask`<sup>Required</sup> <a name="preCompileTask" id="@xpertss/projen-types.GitHubActionProject.property.preCompileTask"></a>
+
+```typescript
+public readonly preCompileTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `projectBuild`<sup>Required</sup> <a name="projectBuild" id="@xpertss/projen-types.GitHubActionProject.property.projectBuild"></a>
+
+```typescript
+public readonly projectBuild: ProjectBuild;
+```
+
+- *Type:* projen.ProjectBuild
+
+Manages the build process of the project.
+
+---
+
+##### `projenCommand`<sup>Required</sup> <a name="projenCommand" id="@xpertss/projen-types.GitHubActionProject.property.projenCommand"></a>
+
+```typescript
+public readonly projenCommand: string;
+```
+
+- *Type:* string
+
+The command to use in order to run the projen CLI.
+
+---
+
+##### `root`<sup>Required</sup> <a name="root" id="@xpertss/projen-types.GitHubActionProject.property.root"></a>
+
+```typescript
+public readonly root: Project;
+```
+
+- *Type:* projen.Project
+
+The root project.
+
+---
+
+##### `subprojects`<sup>Required</sup> <a name="subprojects" id="@xpertss/projen-types.GitHubActionProject.property.subprojects"></a>
+
+```typescript
+public readonly subprojects: Project[];
+```
+
+- *Type:* projen.Project[]
+
+Returns all the subprojects within this project.
+
+---
+
+##### `tasks`<sup>Required</sup> <a name="tasks" id="@xpertss/projen-types.GitHubActionProject.property.tasks"></a>
+
+```typescript
+public readonly tasks: Tasks;
+```
+
+- *Type:* projen.Tasks
+
+Project tasks.
+
+---
+
+##### `testTask`<sup>Required</sup> <a name="testTask" id="@xpertss/projen-types.GitHubActionProject.property.testTask"></a>
+
+```typescript
+public readonly testTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `defaultTask`<sup>Optional</sup> <a name="defaultTask" id="@xpertss/projen-types.GitHubActionProject.property.defaultTask"></a>
+
+```typescript
+public readonly defaultTask: Task;
+```
+
+- *Type:* projen.Task
+
+This is the "default" task, the one that executes "projen".
+
+Undefined if
+the project is being ejected.
+
+---
+
+##### ~~`initProject`~~<sup>Optional</sup> <a name="initProject" id="@xpertss/projen-types.GitHubActionProject.property.initProject"></a>
+
+- *Deprecated:* use the `initProject` argument passed to `Component.projectCreation()` instead.
+
+```typescript
+public readonly initProject: InitProject;
+```
+
+- *Type:* projen.InitProject
+
+The options used when this project is bootstrapped via `projen new`.
+
+It
+includes the original set of options passed to the CLI and also the JSII
+FQN of the project type.
+
+---
+
+##### `parent`<sup>Optional</sup> <a name="parent" id="@xpertss/projen-types.GitHubActionProject.property.parent"></a>
+
+```typescript
+public readonly parent: Project;
+```
+
+- *Type:* projen.Project
+
+A parent project.
+
+If undefined, this is the root project.
+
+---
+
+##### `autoApprove`<sup>Optional</sup> <a name="autoApprove" id="@xpertss/projen-types.GitHubActionProject.property.autoApprove"></a>
+
+```typescript
+public readonly autoApprove: AutoApprove;
+```
+
+- *Type:* projen.github.AutoApprove
+
+Auto approve set up for this project.
+
+---
+
+##### `devContainer`<sup>Optional</sup> <a name="devContainer" id="@xpertss/projen-types.GitHubActionProject.property.devContainer"></a>
+
+```typescript
+public readonly devContainer: DevContainer;
+```
+
+- *Type:* projen.vscode.DevContainer
+
+Access for .devcontainer.json (used for GitHub Codespaces).
+
+This will be `undefined` if devContainer boolean is false
+
+---
+
+##### `github`<sup>Optional</sup> <a name="github" id="@xpertss/projen-types.GitHubActionProject.property.github"></a>
+
+```typescript
+public readonly github: GitHub;
+```
+
+- *Type:* projen.github.GitHub
+
+Access all github components.
+
+This will be `undefined` for subprojects.
+
+---
+
+##### `gitpod`<sup>Optional</sup> <a name="gitpod" id="@xpertss/projen-types.GitHubActionProject.property.gitpod"></a>
+
+```typescript
+public readonly gitpod: Gitpod;
+```
+
+- *Type:* projen.Gitpod
+
+Access for Gitpod.
+
+This will be `undefined` if gitpod boolean is false
+
+---
+
+##### `vscode`<sup>Optional</sup> <a name="vscode" id="@xpertss/projen-types.GitHubActionProject.property.vscode"></a>
+
+```typescript
+public readonly vscode: VsCode;
+```
+
+- *Type:* projen.vscode.VsCode
+
+Access all VSCode components.
+
+This will be `undefined` for subprojects.
+
+---
+
+##### `buildWorkflow`<sup>Required</sup> <a name="buildWorkflow" id="@xpertss/projen-types.GitHubActionProject.property.buildWorkflow"></a>
+
+```typescript
+public readonly buildWorkflow: ActionBuildWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.ActionBuildWorkflow">ActionBuildWorkflow</a>
+
+---
+
+##### `dogfoodWorkflow`<sup>Required</sup> <a name="dogfoodWorkflow" id="@xpertss/projen-types.GitHubActionProject.property.dogfoodWorkflow"></a>
+
+```typescript
+public readonly dogfoodWorkflow: ActionDogfoodWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.ActionDogfoodWorkflow">ActionDogfoodWorkflow</a>
+
+---
+
+##### `release`<sup>Required</sup> <a name="release" id="@xpertss/projen-types.GitHubActionProject.property.release"></a>
+
+```typescript
+public readonly release: Release;
+```
+
+- *Type:* projen.release.Release
+
+---
+
+##### `sonarWorkflow`<sup>Required</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.GitHubActionProject.property.sonarWorkflow"></a>
+
+```typescript
+public readonly sonarWorkflow: ActionSonarWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.ActionSonarWorkflow">ActionSonarWorkflow</a>
+
+---
+
+#### Constants <a name="Constants" id="Constants"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.DEFAULT_TASK">DEFAULT_TASK</a></code> | <code>string</code> | The name of the default task (the task executed when `projen` is run without arguments). |
+
+---
+
+##### `DEFAULT_TASK`<sup>Required</sup> <a name="DEFAULT_TASK" id="@xpertss/projen-types.GitHubActionProject.property.DEFAULT_TASK"></a>
+
+```typescript
+public readonly DEFAULT_TASK: string;
+```
+
+- *Type:* string
+
+The name of the default task (the task executed when `projen` is run without arguments).
+
+Normally
+this task should synthesize the project files.
+
+---
+
 ### GitHubPackagesPublish <a name="GitHubPackagesPublish" id="@xpertss/projen-types.GitHubPackagesPublish"></a>
 
 On-demand publish to GitHub Packages.
@@ -10530,7 +12351,736 @@ public readonly project: Project;
 ---
 
 
+### ProjenDriftCheckWorkflow <a name="ProjenDriftCheckWorkflow" id="@xpertss/projen-types.ProjenDriftCheckWorkflow"></a>
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.Initializer"></a>
+
+```typescript
+import { ProjenDriftCheckWorkflow } from '@xpertss/projen-types'
+
+new ProjenDriftCheckWorkflow(scope: GitHubProject, options?: ProjenDriftCheckWorkflowOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions">ProjenDriftCheckWorkflowOptions</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.Initializer.parameter.scope"></a>
+
+- *Type:* projen.github.GitHubProject
+
+---
+
+##### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions">ProjenDriftCheckWorkflowOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.isConstruct"></a>
+
+```typescript
+import { ProjenDriftCheckWorkflow } from '@xpertss/projen-types'
+
+ProjenDriftCheckWorkflow.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.isComponent"></a>
+
+```typescript
+import { ProjenDriftCheckWorkflow } from '@xpertss/projen-types'
+
+ProjenDriftCheckWorkflow.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflow.property.workflow">workflow</a></code> | <code>projen.github.GithubWorkflow</code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `workflow`<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.property.workflow"></a>
+
+```typescript
+public readonly workflow: GithubWorkflow;
+```
+
+- *Type:* projen.github.GithubWorkflow
+
+---
+
+
+### WorkflowChangeNoticeWorkflow <a name="WorkflowChangeNoticeWorkflow" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow"></a>
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.Initializer"></a>
+
+```typescript
+import { WorkflowChangeNoticeWorkflow } from '@xpertss/projen-types'
+
+new WorkflowChangeNoticeWorkflow(scope: GitHubProject, options?: WorkflowChangeNoticeWorkflowOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions">WorkflowChangeNoticeWorkflowOptions</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.Initializer.parameter.scope"></a>
+
+- *Type:* projen.github.GitHubProject
+
+---
+
+##### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions">WorkflowChangeNoticeWorkflowOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.isConstruct"></a>
+
+```typescript
+import { WorkflowChangeNoticeWorkflow } from '@xpertss/projen-types'
+
+WorkflowChangeNoticeWorkflow.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.isComponent"></a>
+
+```typescript
+import { WorkflowChangeNoticeWorkflow } from '@xpertss/projen-types'
+
+WorkflowChangeNoticeWorkflow.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflow.property.workflow">workflow</a></code> | <code>projen.github.GithubWorkflow</code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `workflow`<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.property.workflow"></a>
+
+```typescript
+public readonly workflow: GithubWorkflow;
+```
+
+- *Type:* projen.github.GithubWorkflow
+
+---
+
+
 ## Structs <a name="Structs" id="Structs"></a>
+
+### ActionDogfoodOptions <a name="ActionDogfoodOptions" id="@xpertss/projen-types.ActionDogfoodOptions"></a>
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.ActionDogfoodOptions.Initializer"></a>
+
+```typescript
+import { ActionDogfoodOptions } from '@xpertss/projen-types'
+
+const actionDogfoodOptions: ActionDogfoodOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodOptions.property.cleanup">cleanup</a></code> | <code>string[]</code> | Shell cleanup, run once at the end with `if: always()`, so repeated runs start clean. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodOptions.property.scenario">scenario</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodStep">ActionDogfoodStep</a>[]</code> | One or more scenario steps, run in order, in the dogfood job. |
+
+---
+
+##### `cleanup`<sup>Required</sup> <a name="cleanup" id="@xpertss/projen-types.ActionDogfoodOptions.property.cleanup"></a>
+
+```typescript
+public readonly cleanup: string[];
+```
+
+- *Type:* string[]
+
+Shell cleanup, run once at the end with `if: always()`, so repeated runs start clean.
+
+---
+
+##### `scenario`<sup>Required</sup> <a name="scenario" id="@xpertss/projen-types.ActionDogfoodOptions.property.scenario"></a>
+
+```typescript
+public readonly scenario: ActionDogfoodStep[];
+```
+
+- *Type:* <a href="#@xpertss/projen-types.ActionDogfoodStep">ActionDogfoodStep</a>[]
+
+One or more scenario steps, run in order, in the dogfood job.
+
+---
+
+### ActionDogfoodStep <a name="ActionDogfoodStep" id="@xpertss/projen-types.ActionDogfoodStep"></a>
+
+One invocation of the action within the dogfood scenario: optional fixture setup, the `uses: .` call with this step's inputs, then this step's assertions. Most actions need exactly one; actions with a re-run/no-op behavior to verify (e.g. F006's reuse-the-PR path, F007's no-op-commit path) declare two.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.ActionDogfoodStep.Initializer"></a>
+
+```typescript
+import { ActionDogfoodStep } from '@xpertss/projen-types'
+
+const actionDogfoodStep: ActionDogfoodStep = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.assertions">assertions</a></code> | <code>string[]</code> | Shell assertions after this invocation - the job fails unless every one exits 0. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.name">name</a></code> | <code>string</code> | Label used to name this step-group's generated workflow steps. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.fixtureSteps">fixtureSteps</a></code> | <code>string[]</code> | Shell steps executed before this invocation, to produce or alter fixture state. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.id">id</a></code> | <code>string</code> | Step id for the `uses: .` invocation, so a later assertion can reference this step's outputs via `${{ steps.<id>.outputs.<name> }}`. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.inputs">inputs</a></code> | <code>{[ key: string ]: string}</code> | `with:` inputs for this invocation's local `uses: .` call. |
+
+---
+
+##### `assertions`<sup>Required</sup> <a name="assertions" id="@xpertss/projen-types.ActionDogfoodStep.property.assertions"></a>
+
+```typescript
+public readonly assertions: string[];
+```
+
+- *Type:* string[]
+
+Shell assertions after this invocation - the job fails unless every one exits 0.
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.ActionDogfoodStep.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+Label used to name this step-group's generated workflow steps.
+
+---
+
+##### `fixtureSteps`<sup>Optional</sup> <a name="fixtureSteps" id="@xpertss/projen-types.ActionDogfoodStep.property.fixtureSteps"></a>
+
+```typescript
+public readonly fixtureSteps: string[];
+```
+
+- *Type:* string[]
+- *Default:* []
+
+Shell steps executed before this invocation, to produce or alter fixture state.
+
+---
+
+##### `id`<sup>Optional</sup> <a name="id" id="@xpertss/projen-types.ActionDogfoodStep.property.id"></a>
+
+```typescript
+public readonly id: string;
+```
+
+- *Type:* string
+- *Default:* a slug derived from `name`, disambiguated by position
+
+Step id for the `uses: .` invocation, so a later assertion can reference this step's outputs via `${{ steps.<id>.outputs.<name> }}`.
+
+---
+
+##### `inputs`<sup>Optional</sup> <a name="inputs" id="@xpertss/projen-types.ActionDogfoodStep.property.inputs"></a>
+
+```typescript
+public readonly inputs: {[ key: string ]: string};
+```
+
+- *Type:* {[ key: string ]: string}
+- *Default:* {}
+
+`with:` inputs for this invocation's local `uses: .` call.
+
+---
+
+### ActionsAllowlistGuardOptions <a name="ActionsAllowlistGuardOptions" id="@xpertss/projen-types.ActionsAllowlistGuardOptions"></a>
+
+Blocking, tamper-proof PR check that stops a disallowed GitHub Action reference from ever (re)appearing in a repo's workflow or composite-action files.
+
+Runs on `pull_request_target` so it always executes the copy of this
+workflow committed on the base branch - a PR cannot edit this file to
+disable or weaken the check. It checks out and executes nothing from the
+PR; it only reads the PR head's file content via the GitHub API. Because
+`pull_request_target` runs with the base repo's token even for
+fork-originated PRs, the failure comment posts reliably.
+
+ It performs a flat, unconditional scan of the PR's head ref (no
+ base-vs-head comparison): fetch the content of every GitHub workflow and
+ composite-action file, extract every `uses:` value, and fail if any does
+ not start with one of the three trusted namespaces from AD-001
+ (`actions/`, `docker/`, `xpertss/`). The single
+exemption is a local same-repo reference (`uses: .` or
+`uses: ./.github/actions/<name>`) - the repo's own hand-committed action,
+to which the org policy's "allow select actions" setting does not apply.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.ActionsAllowlistGuardOptions.Initializer"></a>
+
+```typescript
+import { ActionsAllowlistGuardOptions } from '@xpertss/projen-types'
+
+const actionsAllowlistGuardOptions: ActionsAllowlistGuardOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuardOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | GitHub secret holding a token with permission to comment on PRs, used for the failure comment. |
+| <code><a href="#@xpertss/projen-types.ActionsAllowlistGuardOptions.property.workflowName">workflowName</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.ActionsAllowlistGuardOptions.property.gheTokenSecret"></a>
+
+```typescript
+public readonly gheTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "PROJEN_GITHUB_TOKEN"
+
+GitHub secret holding a token with permission to comment on PRs, used for the failure comment.
+
+The check still fails without it, so fork PRs -
+which get no secrets - are only missing the extra comment.
+
+---
+
+##### `workflowName`<sup>Optional</sup> <a name="workflowName" id="@xpertss/projen-types.ActionsAllowlistGuardOptions.property.workflowName"></a>
+
+```typescript
+public readonly workflowName: string;
+```
+
+- *Type:* string
+- *Default:* "actions-allowlist-guard"
+
+---
+
+### ActionSonarWorkflowOptions <a name="ActionSonarWorkflowOptions" id="@xpertss/projen-types.ActionSonarWorkflowOptions"></a>
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.ActionSonarWorkflowOptions.Initializer"></a>
+
+```typescript
+import { ActionSonarWorkflowOptions } from '@xpertss/projen-types'
+
+const actionSonarWorkflowOptions: ActionSonarWorkflowOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's self-hosted SonarQube instance. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Required</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's self-hosted SonarQube instance.
+
+Required, no default -
+a guessed server is worse than a loud failure.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
+
+---
 
 ### CdkAppProjectOptions <a name="CdkAppProjectOptions" id="@xpertss/projen-types.CdkAppProjectOptions"></a>
 
@@ -10549,7 +13099,6 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.slackWebhookSecret">slackWebhookSecret</a></code> | <code>string</code> | GitHub secret holding a Slack webhook URL for deploy notifications. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
@@ -10587,18 +13136,6 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
-
----
-
-##### `slackWebhookSecret`<sup>Optional</sup> <a name="slackWebhookSecret" id="@xpertss/projen-types.CdkAppProjectOptions.property.slackWebhookSecret"></a>
-
-```typescript
-public readonly slackWebhookSecret: string;
-```
-
-- *Type:* string
-
-GitHub secret holding a Slack webhook URL for deploy notifications.
 
 ---
 
@@ -10714,7 +13251,6 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.slackWebhookSecret">slackWebhookSecret</a></code> | <code>string</code> | GitHub secret holding a Slack webhook URL for deploy notifications. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
@@ -10750,18 +13286,6 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
-
----
-
-##### `slackWebhookSecret`<sup>Optional</sup> <a name="slackWebhookSecret" id="@xpertss/projen-types.CdkInfraProjectOptions.property.slackWebhookSecret"></a>
-
-```typescript
-public readonly slackWebhookSecret: string;
-```
-
-- *Type:* string
-
-GitHub secret holding a Slack webhook URL for deploy notifications.
 
 ---
 
@@ -10814,7 +13338,6 @@ const cdkTypescriptProjectOptions: CdkTypescriptProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.slackWebhookSecret">slackWebhookSecret</a></code> | <code>string</code> | GitHub secret holding a Slack webhook URL for deploy notifications. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | *No description.* |
 
 ---
@@ -10851,18 +13374,6 @@ public readonly gheTokenSecret: string;
 
 ---
 
-##### `slackWebhookSecret`<sup>Optional</sup> <a name="slackWebhookSecret" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.slackWebhookSecret"></a>
-
-```typescript
-public readonly slackWebhookSecret: string;
-```
-
-- *Type:* string
-
-GitHub secret holding a Slack webhook URL for deploy notifications.
-
----
-
 ##### `environments`<sup>Optional</sup> <a name="environments" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.environments"></a>
 
 ```typescript
@@ -10890,7 +13401,6 @@ const commonCdkOptions: CommonCdkOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.slackWebhookSecret">slackWebhookSecret</a></code> | <code>string</code> | GitHub secret holding a Slack webhook URL for deploy notifications. |
 
 ---
 
@@ -10923,18 +13433,6 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
-
----
-
-##### `slackWebhookSecret`<sup>Optional</sup> <a name="slackWebhookSecret" id="@xpertss/projen-types.CommonCdkOptions.property.slackWebhookSecret"></a>
-
-```typescript
-public readonly slackWebhookSecret: string;
-```
-
-- *Type:* string
-
-GitHub secret holding a Slack webhook URL for deploy notifications.
 
 ---
 
@@ -11210,6 +13708,522 @@ public readonly requiresApproval: boolean;
 - *Default:* false
 
 Whether this environment requires a GitHub Environment approval gate before the deploy job is allowed to run.
+
+---
+
+### GitHubActionProjectOptions <a name="GitHubActionProjectOptions" id="@xpertss/projen-types.GitHubActionProjectOptions"></a>
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.GitHubActionProjectOptions.Initializer"></a>
+
+```typescript
+import { GitHubActionProjectOptions } from '@xpertss/projen-types'
+
+const gitHubActionProjectOptions: GitHubActionProjectOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.name">name</a></code> | <code>string</code> | This is the name of your project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.commitGenerated">commitGenerated</a></code> | <code>boolean</code> | Whether to commit the managed files by default. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gitIgnoreOptions">gitIgnoreOptions</a></code> | <code>projen.IgnoreFileOptions</code> | Configuration options for .gitignore file. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gitOptions">gitOptions</a></code> | <code>projen.GitOptions</code> | Configuration options for git. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.logging">logging</a></code> | <code>projen.LoggerOptions</code> | Configure logging options such as verbosity. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.outdir">outdir</a></code> | <code>string</code> | The root directory of the project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.parent">parent</a></code> | <code>projen.Project</code> | The parent project, if this project is part of a bigger project. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.projectTree">projectTree</a></code> | <code>boolean</code> | Generate a project tree file (`.projen/tree.json`) that shows all components and their relationships. Useful for understanding your project structure and debugging. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.projenCommand">projenCommand</a></code> | <code>string</code> | The shell command to use in order to run the projen CLI. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.projenrcJson">projenrcJson</a></code> | <code>boolean</code> | Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .projenrc.json generation. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.projenrcJsonOptions">projenrcJsonOptions</a></code> | <code>projen.ProjenrcJsonOptions</code> | Options for .projenrc.json. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.renovatebot">renovatebot</a></code> | <code>boolean</code> | Use renovatebot to handle dependency upgrades. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.renovatebotOptions">renovatebotOptions</a></code> | <code>projen.RenovatebotOptions</code> | Options for renovatebot. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.autoApproveOptions">autoApproveOptions</a></code> | <code>projen.github.AutoApproveOptions</code> | Enable and configure the 'auto approve' workflow. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.autoMerge">autoMerge</a></code> | <code>boolean</code> | Enable automatic merging on GitHub. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.autoMergeOptions">autoMergeOptions</a></code> | <code>projen.github.AutoMergeOptions</code> | Configure options for automatic merging on GitHub. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.clobber">clobber</a></code> | <code>boolean</code> | Add a `clobber` task which resets the repo to origin. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.devContainer">devContainer</a></code> | <code>boolean</code> | Add a VSCode development environment (used for GitHub Codespaces). |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.github">github</a></code> | <code>boolean</code> | Enable GitHub integration. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.githubOptions">githubOptions</a></code> | <code>projen.github.GitHubOptions</code> | Options for GitHub integration. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gitpod">gitpod</a></code> | <code>boolean</code> | Add a Gitpod development environment. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | Choose a method of providing GitHub API access for projen workflows. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.readme">readme</a></code> | <code>projen.SampleReadmeProps</code> | The README setup. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.stale">stale</a></code> | <code>boolean</code> | Auto-close of stale issues and pull request. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.staleOptions">staleOptions</a></code> | <code>projen.github.StaleOptions</code> | Auto-close stale issues and pull requests. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.vscode">vscode</a></code> | <code>boolean</code> | Enable VSCode integration. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood">dogfood</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a></code> | The dogfood scenario (AD-001). |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's self-hosted SonarQube instance. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.description">description</a></code> | <code>string</code> | One-line description of the action. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003/F009) and, when the action has a `token` input, the dogfood's invocation of it. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.GitHubActionProjectOptions.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+- *Default:* $BASEDIR
+
+This is the name of your project.
+
+---
+
+##### `commitGenerated`<sup>Optional</sup> <a name="commitGenerated" id="@xpertss/projen-types.GitHubActionProjectOptions.property.commitGenerated"></a>
+
+```typescript
+public readonly commitGenerated: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether to commit the managed files by default.
+
+---
+
+##### `gitIgnoreOptions`<sup>Optional</sup> <a name="gitIgnoreOptions" id="@xpertss/projen-types.GitHubActionProjectOptions.property.gitIgnoreOptions"></a>
+
+```typescript
+public readonly gitIgnoreOptions: IgnoreFileOptions;
+```
+
+- *Type:* projen.IgnoreFileOptions
+
+Configuration options for .gitignore file.
+
+---
+
+##### `gitOptions`<sup>Optional</sup> <a name="gitOptions" id="@xpertss/projen-types.GitHubActionProjectOptions.property.gitOptions"></a>
+
+```typescript
+public readonly gitOptions: GitOptions;
+```
+
+- *Type:* projen.GitOptions
+
+Configuration options for git.
+
+---
+
+##### `logging`<sup>Optional</sup> <a name="logging" id="@xpertss/projen-types.GitHubActionProjectOptions.property.logging"></a>
+
+```typescript
+public readonly logging: LoggerOptions;
+```
+
+- *Type:* projen.LoggerOptions
+- *Default:* {}
+
+Configure logging options such as verbosity.
+
+---
+
+##### `outdir`<sup>Optional</sup> <a name="outdir" id="@xpertss/projen-types.GitHubActionProjectOptions.property.outdir"></a>
+
+```typescript
+public readonly outdir: string;
+```
+
+- *Type:* string
+- *Default:* "."
+
+The root directory of the project.
+
+Relative to this directory, all files are synthesized.
+
+If this project has a parent, this directory is relative to the parent
+directory and it cannot be the same as the parent or any of it's other
+subprojects.
+
+---
+
+##### `parent`<sup>Optional</sup> <a name="parent" id="@xpertss/projen-types.GitHubActionProjectOptions.property.parent"></a>
+
+```typescript
+public readonly parent: Project;
+```
+
+- *Type:* projen.Project
+
+The parent project, if this project is part of a bigger project.
+
+---
+
+##### `projectTree`<sup>Optional</sup> <a name="projectTree" id="@xpertss/projen-types.GitHubActionProjectOptions.property.projectTree"></a>
+
+```typescript
+public readonly projectTree: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Generate a project tree file (`.projen/tree.json`) that shows all components and their relationships. Useful for understanding your project structure and debugging.
+
+---
+
+##### `projenCommand`<sup>Optional</sup> <a name="projenCommand" id="@xpertss/projen-types.GitHubActionProjectOptions.property.projenCommand"></a>
+
+```typescript
+public readonly projenCommand: string;
+```
+
+- *Type:* string
+- *Default:* "npx projen"
+
+The shell command to use in order to run the projen CLI.
+
+Inserted verbatim into task steps, workflows and IDE configuration, and run
+by each of their shells - locally, in CI and in dev containers. Keep it a
+plain unquoted command, since shell syntax in it executes in all of them.
+
+Can be used to customize in special environments.
+
+---
+
+##### `projenrcJson`<sup>Optional</sup> <a name="projenrcJson" id="@xpertss/projen-types.GitHubActionProjectOptions.property.projenrcJson"></a>
+
+```typescript
+public readonly projenrcJson: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .projenrc.json generation.
+
+---
+
+##### `projenrcJsonOptions`<sup>Optional</sup> <a name="projenrcJsonOptions" id="@xpertss/projen-types.GitHubActionProjectOptions.property.projenrcJsonOptions"></a>
+
+```typescript
+public readonly projenrcJsonOptions: ProjenrcJsonOptions;
+```
+
+- *Type:* projen.ProjenrcJsonOptions
+- *Default:* default options
+
+Options for .projenrc.json.
+
+---
+
+##### `renovatebot`<sup>Optional</sup> <a name="renovatebot" id="@xpertss/projen-types.GitHubActionProjectOptions.property.renovatebot"></a>
+
+```typescript
+public readonly renovatebot: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Use renovatebot to handle dependency upgrades.
+
+---
+
+##### `renovatebotOptions`<sup>Optional</sup> <a name="renovatebotOptions" id="@xpertss/projen-types.GitHubActionProjectOptions.property.renovatebotOptions"></a>
+
+```typescript
+public readonly renovatebotOptions: RenovatebotOptions;
+```
+
+- *Type:* projen.RenovatebotOptions
+- *Default:* default options
+
+Options for renovatebot.
+
+---
+
+##### `autoApproveOptions`<sup>Optional</sup> <a name="autoApproveOptions" id="@xpertss/projen-types.GitHubActionProjectOptions.property.autoApproveOptions"></a>
+
+```typescript
+public readonly autoApproveOptions: AutoApproveOptions;
+```
+
+- *Type:* projen.github.AutoApproveOptions
+- *Default:* auto approve is disabled
+
+Enable and configure the 'auto approve' workflow.
+
+---
+
+##### `autoMerge`<sup>Optional</sup> <a name="autoMerge" id="@xpertss/projen-types.GitHubActionProjectOptions.property.autoMerge"></a>
+
+```typescript
+public readonly autoMerge: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Enable automatic merging on GitHub.
+
+Has no effect if `github.mergify`
+is set to false.
+
+---
+
+##### `autoMergeOptions`<sup>Optional</sup> <a name="autoMergeOptions" id="@xpertss/projen-types.GitHubActionProjectOptions.property.autoMergeOptions"></a>
+
+```typescript
+public readonly autoMergeOptions: AutoMergeOptions;
+```
+
+- *Type:* projen.github.AutoMergeOptions
+- *Default:* see defaults in `AutoMergeOptions`
+
+Configure options for automatic merging on GitHub.
+
+Has no effect if
+`github.mergify` or `autoMerge` is set to false.
+
+---
+
+##### `clobber`<sup>Optional</sup> <a name="clobber" id="@xpertss/projen-types.GitHubActionProjectOptions.property.clobber"></a>
+
+```typescript
+public readonly clobber: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true, but false for subprojects
+
+Add a `clobber` task which resets the repo to origin.
+
+---
+
+##### `devContainer`<sup>Optional</sup> <a name="devContainer" id="@xpertss/projen-types.GitHubActionProjectOptions.property.devContainer"></a>
+
+```typescript
+public readonly devContainer: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Add a VSCode development environment (used for GitHub Codespaces).
+
+---
+
+##### `github`<sup>Optional</sup> <a name="github" id="@xpertss/projen-types.GitHubActionProjectOptions.property.github"></a>
+
+```typescript
+public readonly github: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Enable GitHub integration.
+
+Enabled by default for root projects. Disabled for non-root projects.
+
+---
+
+##### `githubOptions`<sup>Optional</sup> <a name="githubOptions" id="@xpertss/projen-types.GitHubActionProjectOptions.property.githubOptions"></a>
+
+```typescript
+public readonly githubOptions: GitHubOptions;
+```
+
+- *Type:* projen.github.GitHubOptions
+- *Default:* see GitHubOptions
+
+Options for GitHub integration.
+
+---
+
+##### `gitpod`<sup>Optional</sup> <a name="gitpod" id="@xpertss/projen-types.GitHubActionProjectOptions.property.gitpod"></a>
+
+```typescript
+public readonly gitpod: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Add a Gitpod development environment.
+
+---
+
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.GitHubActionProjectOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* use a personal access token named PROJEN_GITHUB_TOKEN
+
+Choose a method of providing GitHub API access for projen workflows.
+
+---
+
+##### `readme`<sup>Optional</sup> <a name="readme" id="@xpertss/projen-types.GitHubActionProjectOptions.property.readme"></a>
+
+```typescript
+public readonly readme: SampleReadmeProps;
+```
+
+- *Type:* projen.SampleReadmeProps
+- *Default:* { filename: 'README.md', contents: '# replace this' }
+
+The README setup.
+
+---
+
+*Example*
+
+```typescript
+"{ filename: 'readme.md', contents: '# title' }"
+```
+
+
+##### `stale`<sup>Optional</sup> <a name="stale" id="@xpertss/projen-types.GitHubActionProjectOptions.property.stale"></a>
+
+```typescript
+public readonly stale: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Auto-close of stale issues and pull request.
+
+See `staleOptions` for options.
+
+---
+
+##### `staleOptions`<sup>Optional</sup> <a name="staleOptions" id="@xpertss/projen-types.GitHubActionProjectOptions.property.staleOptions"></a>
+
+```typescript
+public readonly staleOptions: StaleOptions;
+```
+
+- *Type:* projen.github.StaleOptions
+- *Default:* see defaults in `StaleOptions`
+
+Auto-close stale issues and pull requests.
+
+To disable set `stale` to `false`.
+
+---
+
+##### `vscode`<sup>Optional</sup> <a name="vscode" id="@xpertss/projen-types.GitHubActionProjectOptions.property.vscode"></a>
+
+```typescript
+public readonly vscode: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Enable VSCode integration.
+
+Enabled by default for root projects. Disabled for non-root projects.
+
+---
+
+##### `dogfood`<sup>Required</sup> <a name="dogfood" id="@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood"></a>
+
+```typescript
+public readonly dogfood: ActionDogfoodOptions;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a>
+
+The dogfood scenario (AD-001).
+
+What fixture state, what to assert, and
+how to clean up are specified by the action's own F### spec - the
+highest-risk behavior of that action. Required: a default no-op
+dogfood would silently hollow out a load-bearing AD-001 workflow.
+
+---
+
+##### `sonarHostUrl`<sup>Required</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's self-hosted SonarQube instance.
+
+MUST be reachable from
+github.com-hosted (public) runners (AD-001). Required, no default: a
+guessed server is worse than a loud failure.
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.GitHubActionProjectOptions.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+
+One-line description of the action.
+
+Used in the default README
+template and recorded in the private `package.json`.
+
+---
+
+##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret"></a>
+
+```typescript
+public readonly gheTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "PROJEN_GITHUB_TOKEN"
+
+Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003/F009) and, when the action has a `token` input, the dogfood's invocation of it.
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.GitHubActionProjectOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -11711,6 +14725,138 @@ public readonly mavenCentralOidc: boolean;
 
 - *Type:* boolean
 - *Default:* false
+
+---
+
+### ProjenDriftCheckWorkflowOptions <a name="ProjenDriftCheckWorkflowOptions" id="@xpertss/projen-types.ProjenDriftCheckWorkflowOptions"></a>
+
+PR-triggered check that rejects direct edits to projen-managed files.
+
+Re-runs the project's synth command on the PR head and fails if the
+regenerated output no longer matches what's committed - i.e. someone
+hand-edited a generated file (package.json / pom.xml /
+.github/workflows/*.yml / ...) instead of going through `.projenrc.ts`.
+
+Runs on `pull_request` so it genuinely executes the PR's own code (the
+only way to detect drift) - and therefore, by necessity, a PR author can
+disable it within their own PR. That residual exposure is bounded by
+`WorkflowChangeNoticeWorkflow` (Check 2), which is tamper-proof and flags
+any touch to `.github/workflows/**`. See the F003 spec's Security section.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.Initializer"></a>
+
+```typescript
+import { ProjenDriftCheckWorkflowOptions } from '@xpertss/projen-types'
+
+const projenDriftCheckWorkflowOptions: ProjenDriftCheckWorkflowOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | GitHub secret holding a token with permission to comment on PRs, used for the best-effort drift report comment. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.projenCommand">projenCommand</a></code> | <code>string</code> | The command that regenerates the project from `.projenrc.ts`. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.workflowName">workflowName</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.gheTokenSecret"></a>
+
+```typescript
+public readonly gheTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "PROJEN_GITHUB_TOKEN"
+
+GitHub secret holding a token with permission to comment on PRs, used for the best-effort drift report comment.
+
+The check still fails (and
+emits `::error::` annotations) without it, so fork PRs - which get no
+secrets - are only missing the extra comment.
+
+---
+
+##### `projenCommand`<sup>Optional</sup> <a name="projenCommand" id="@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.projenCommand"></a>
+
+```typescript
+public readonly projenCommand: string;
+```
+
+- *Type:* string
+- *Default:* "npx projen"
+
+The command that regenerates the project from `.projenrc.ts`.
+
+---
+
+##### `workflowName`<sup>Optional</sup> <a name="workflowName" id="@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.workflowName"></a>
+
+```typescript
+public readonly workflowName: string;
+```
+
+- *Type:* string
+- *Default:* "projen-drift-check"
+
+---
+
+### WorkflowChangeNoticeWorkflowOptions <a name="WorkflowChangeNoticeWorkflowOptions" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions"></a>
+
+PR-triggered, tamper-proof notice that a PR touches GitHub Actions workflow or action files.
+
+Runs on `pull_request_target` (NOT `pull_request`) so it always executes
+the copy of this workflow committed on the base branch - a PR cannot edit
+this file to disable or weaken the notice. It checks out and executes
+nothing from the PR; it only lists the changed filenames via the GitHub
+API and posts a non-blocking NOTE. Because `pull_request_target` runs with
+the base repo's normal token even for fork-originated PRs, the comment
+posts reliably with no degraded fallback.
+
+This check NEVER fails the build - it is purely informational (reviewer
+attention). It is the tamper-proof backstop that bounds Check 1's
+(`ProjenDriftCheckWorkflow`) residual exposure. See the F003 spec's
+Security section.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions.Initializer"></a>
+
+```typescript
+import { WorkflowChangeNoticeWorkflowOptions } from '@xpertss/projen-types'
+
+const workflowChangeNoticeWorkflowOptions: WorkflowChangeNoticeWorkflowOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions.property.watchPaths">watchPaths</a></code> | <code>string[]</code> | Glob patterns (bash `[[ string == pattern ]]` semantics, where `*` also matches `/`) that trigger the notice when a changed PR file matches any of them. |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions.property.workflowName">workflowName</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `watchPaths`<sup>Optional</sup> <a name="watchPaths" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions.property.watchPaths"></a>
+
+```typescript
+public readonly watchPaths: string[];
+```
+
+- *Type:* string[]
+- *Default:* [".github/workflows/**", ".github/actions/**"]
+
+Glob patterns (bash `[[ string == pattern ]]` semantics, where `*` also matches `/`) that trigger the notice when a changed PR file matches any of them.
+
+---
+
+##### `workflowName`<sup>Optional</sup> <a name="workflowName" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions.property.workflowName"></a>
+
+```typescript
+public readonly workflowName: string;
+```
+
+- *Type:* string
+- *Default:* "workflow-change-notice"
 
 ---
 
