@@ -23,7 +23,7 @@ describe('applyInternalActionOverrides', () => {
     const steps = snapshot['.github/workflows/override-test.yml'].jobs.job.steps;
     expect(steps[0].uses).toBe('xpertss/create-pull-request@PLACEHOLDER_SHA');
     expect(steps[1].uses).toBe('xpertss/auto-commit@PLACEHOLDER_SHA');
-    expect(steps[2].uses).toBe('xpertss/semantic-pull-request@PLACEHOLDER_SHA');
+    expect(steps[2].uses).toBe('xpertss/semantic-pull-request@v0.1.0');
     // in-policy actions are left untouched
     expect(steps[3].uses).toBe('actions/checkout@v4');
   });

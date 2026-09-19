@@ -1,12 +1,13 @@
 import { github } from 'projen';
 
-// Placeholder until the internal action repos are built and released (AD-002
-// Phase 1, step 8) - a real 40-char SHA replaces this in each entry at that
-// point. Landed with placeholders so the override mechanism is in place while
-// the untrusted workflows it retargets are non-gating (AD-002 Phase 0).
+// Placeholder ref for internal action repos that are not yet built and
+// released (AD-002 Phase 1, step 8). Entries resolve independently - a real
+// ref (a version tag) replaces the placeholder in each entry once that repo
+// is released. Landed with placeholders so the override mechanism is in place
+// while the untrusted workflows it retargets are non-gating (AD-002 Phase 0).
 const PLACEHOLDER_SHA = 'PLACEHOLDER_SHA';
 
-// Name (without ref) -> SHA-pinned internal-action override. Per projen's
+// Name (without ref) -> ref-pinned internal-action override. Per projen's
 // GitHubActionsProvider.get() a name-keyed override redirects every ref
 // variant at once, so a single entry covers both this package's literals
 // (@v7/@v5) and projen's built-in workflows (@v8.1.1/SHA) for the same
@@ -15,7 +16,7 @@ const PLACEHOLDER_SHA = 'PLACEHOLDER_SHA';
 const ACTION_OVERRIDES: Record<string, string> = {
   'peter-evans/create-pull-request': `xpertss/create-pull-request@${PLACEHOLDER_SHA}`,
   'stefanzweifel/git-auto-commit-action': `xpertss/auto-commit@${PLACEHOLDER_SHA}`,
-  'amannn/action-semantic-pull-request': `xpertss/semantic-pull-request@${PLACEHOLDER_SHA}`,
+  'amannn/action-semantic-pull-request': 'xpertss/semantic-pull-request@v0.1.0',
 };
 
 /**
