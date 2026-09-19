@@ -21,7 +21,7 @@ const project = new cdk.JsiiProject({
   gitignore: ['.idea', '/spec/'],
   peerDeps: ['projen', 'constructs'],
   projenrcTs: true,
-  projenVersion: '0.103.22',
+  projenVersion: '0.103.25',
   releasableCommits: ReleasableCommits.featuresAndFixes(),
   repositoryUrl: 'git@github.com:xpertss/projen',
   sampleCode: false,
