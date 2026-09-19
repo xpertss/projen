@@ -1,3 +1,6 @@
+import * as fs from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 import { GitHubActionProject } from '../../src';
 import { synthSnapshot } from '../util';
 
@@ -256,6 +259,19 @@ test('package.json: private version source with exact-pinned devDeps', () => {
     expect(version).not.toMatch(/[\^~]/);
     expect(version).not.toBe('latest');
   }
+});
+
+test('package.json is owner-writable on disk - npm must be able to bump the pinned versions', () => {
+  // projen marks generated files read-only (0444) on disk by default; the
+  // documented update flow (`npm i -D @xpertss/projen-types@latest`) needs
+  // npm to rewrite this file in an existing repo.
+  const outdir = fs.mkdtempSync(join(tmpdir(), 'projen-types-'));
+  const project = new GitHubActionProject({ ...baseOptions(), outdir });
+  project.synth();
+
+  expect(() =>
+    fs.accessSync(join(outdir, 'package.json'), fs.constants.W_OK),
+  ).not.toThrow();
 });
 
 test('F003 components are present', () => {

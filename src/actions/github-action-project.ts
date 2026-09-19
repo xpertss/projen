@@ -171,6 +171,11 @@ export class GitHubActionProject extends github.GitHubProject {
     // this is what makes `npx projen` work in the generated repo at all.
     attachTypeScriptProjenrc(this);
 
+    // projen marks generated files read-only (0444) on disk by default, but
+    // this one must stay owner-writable: the documented update flow
+    // (`npm i -D @xpertss/projen-types@latest`) needs npm to rewrite the
+    // pinned versions in an existing repo. Hand-edits are still caught by
+    // the drift check.
     new JsonFile(this, 'package.json', {
       obj: {
         name: options.name,
@@ -183,6 +188,7 @@ export class GitHubActionProject extends github.GitHubProject {
           'commit-and-tag-version': COMMIT_AND_TAG_VERSION,
         },
       },
+      readonly: false,
     });
 
     new YamlFile(this, '.yamllint', {
