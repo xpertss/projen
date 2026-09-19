@@ -45,10 +45,9 @@ const GENERATED_WORKFLOW_FILES = [
   '.github/workflows/release.yml',
 ];
 
-// Scoped to this type's own generated workflows - F003/F009 are pre-existing
-// shared components with their own test coverage (e.g. ProjenDriftCheckWorkflow
-// intentionally checks out the PR head via a floating `actions/checkout@v4`,
-// unrelated to this type's trust-surface guarantees).
+// Scoped to this type's own generated workflows - the shared components
+// (manual-deploy, drift-check) are pre-existing and have their own test
+// coverage.
 function allWorkflowUses(snapshot: Record<string, any>): string[] {
   const uses: string[] = [];
   for (const path of GENERATED_WORKFLOW_FILES) {
@@ -81,7 +80,7 @@ test('synthesizes the full AD-001 file tree', () => {
   }
 });
 
-test('every uses: is actions/* pinned (SHA or immutable exact version), or the local dogfood reference', () => {
+test('every uses: is actions/* (floating major, exact version, or SHA), or the local dogfood reference', () => {
   const snapshot = synthSnapshot(new GitHubActionProject(baseOptions()));
   const uses = allWorkflowUses(snapshot);
 
@@ -90,11 +89,12 @@ test('every uses: is actions/* pinned (SHA or immutable exact version), or the l
     if (ref === '.') continue;
     expect(ref).toMatch(/^actions\//);
     expect(ref).not.toMatch(/@latest/);
-    // Pinned means either a 40-char commit SHA, or an immutable exact
-    // three-part version tag (GitHub's immutable-release tags, e.g.
-    // projen's own `actions/setup-node@v7.0.0`) - never a floating major
-    // tag like `@v4`.
-    expect(ref).toMatch(/@([0-9a-f]{40}|v\d+\.\d+\.\d+)$/);
+    // Refs are either a 40-char commit SHA, an immutable exact three-part
+    // version tag (e.g. `actions/setup-node@v7.0.0`), or a floating major
+    // tag of the current major line (org convention for trusted actions/*,
+    // e.g. `actions/checkout@v7`) - never `@latest` or a bare major line
+    // of a stale action.
+    expect(ref).toMatch(/@(v\d+\.\d+\.\d+|v\d+|[0-9a-f]{40})$/);
   }
 });
 
@@ -228,7 +228,16 @@ test('release.yml: continuous trigger, write permissions, npm ci, no npm publish
   expect(full).toContain('npm ci');
   expect(full).not.toContain('npm publish');
   expect(full).not.toContain('NPM_REGISTRY');
-  expect(full).not.toMatch(/actions\/checkout@v\d/);
+  // checkout is the floating major ref of the current major line (the
+  // shared override map re-pins projen's built-in SHA ref to it) - never a
+  // bare SHA or an exact patch tag
+  const checkoutRefs = [...full.matchAll(/actions\/checkout@([^"]+)/g)].map(
+    (m) => m[1],
+  );
+  expect(checkoutRefs.length).toBeGreaterThan(0);
+  for (const ref of checkoutRefs) {
+    expect(ref).toMatch(/^v\d+$/);
+  }
 });
 
 test('package.json: private version source with exact-pinned devDeps', () => {

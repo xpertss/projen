@@ -90,7 +90,7 @@ export class ManualDeployWorkflow extends Component {
       const steps: github.workflows.JobStep[] = [
         {
           name: 'Checkout',
-          uses: 'actions/checkout@v4',
+          uses: 'actions/checkout@v7',
           with: {
             ref: '${{ github.event.inputs.git_sha || github.sha }}',
           },

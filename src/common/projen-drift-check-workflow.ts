@@ -70,7 +70,7 @@ export class ProjenDriftCheckWorkflow extends Component {
       steps: [
         {
           name: 'Checkout',
-          uses: 'actions/checkout@v4',
+          uses: 'actions/checkout@v7',
           with: {
             ref: '${{ github.event.pull_request.head.ref }}',
             repository: '${{ github.event.pull_request.head.repo.full_name }}',
@@ -78,7 +78,7 @@ export class ProjenDriftCheckWorkflow extends Component {
         },
         {
           name: 'Setup Node',
-          uses: 'actions/setup-node@v4',
+          uses: 'actions/setup-node@v7',
           // Pinned, not `lts/*` - a floating version can resolve a
           // different npm than whatever generated the committed
           // package-lock.json, and `npm ci` then fails on optional-
