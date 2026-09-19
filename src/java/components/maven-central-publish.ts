@@ -1,5 +1,6 @@
 import { Component, Task, github } from 'projen';
 import type { java } from 'projen';
+import { noteWorkflowPurpose } from '../../common/workflow-purpose';
 
 export interface MavenCentralPublishOptions {
   /** @default false */
@@ -23,7 +24,7 @@ export class MavenCentralPublish extends Component {
       exec: 'mvn -B deploy -P release',
     });
 
-    new github.TaskWorkflow(gh, {
+    const publishWorkflow = new github.TaskWorkflow(gh, {
       name: 'publish-maven-central',
       jobId: 'publish',
       task: publishTask,
@@ -43,5 +44,9 @@ export class MavenCentralPublish extends Component {
           MAVEN_CENTRAL_PASSWORD: '${{ secrets.MAVEN_CENTRAL_PASSWORD }}',
         },
     });
+    noteWorkflowPurpose(
+      publishWorkflow.file,
+      'Publish the artifact to Maven Central on demand.',
+    );
   }
 }

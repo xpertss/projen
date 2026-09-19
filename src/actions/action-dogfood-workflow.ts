@@ -1,4 +1,5 @@
 import { Component, github } from 'projen';
+import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
 // Nightly environment-regression canary (AD-001/F006): re-runs the same
 // scenario against settled `main` in today's runner image, independent of
@@ -146,6 +147,10 @@ export class ActionDogfoodWorkflow extends Component {
     }
 
     this.workflow = new github.GithubWorkflow(gh, 'test-dogfood');
+    noteWorkflowPurpose(
+      this.workflow.file,
+      'End-to-end dogfood test running the action against this repo.',
+    );
     this.workflow.on({
       workflowDispatch: {},
       pullRequest: { branches: ['main'] },

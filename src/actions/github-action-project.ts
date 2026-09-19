@@ -15,6 +15,7 @@ import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
 import { attachTypeScriptProjenrc } from '../common/projenrc-ts';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
+import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
 // `require('projen/package.json')`/`require('../../package.json')` resolve
 // via Node's normal module resolution, so in a *published* package these
@@ -49,9 +50,9 @@ export interface GitHubActionProjectOptions
   readonly gheTokenSecret?: string;
 
   /**
-   * URL of the org's self-hosted SonarQube instance. MUST be reachable from
-   * github.com-hosted (public) runners (AD-001). Required, no default: a
-   * guessed server is worse than a loud failure.
+   * URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`).
+   * MUST be reachable from github.com-hosted (public) runners (AD-001).
+   * Required, no default: a guessed server is worse than a loud failure.
    */
   readonly sonarHostUrl: string;
 
@@ -217,5 +218,19 @@ export class GitHubActionProject extends github.GitHubProject {
         { name: 'Install dependencies', run: 'npm ci' },
       ],
     });
+
+    // The release workflow is created inside `release.Release` (projen
+    // internal), not by this type - reach its file by path to annotate it
+    // like every other generated workflow. This type is always a root
+    // project, so projen names it `release.yml`.
+    noteWorkflowPurpose(
+      this.tryFindFile('.github/workflows/release.yml'),
+      'Continuous release on push to main: bump version, tag, and create a GitHub Release.',
+    );
+    // `pull-request-lint` is projen's built-in PR-title validation workflow.
+    noteWorkflowPurpose(
+      this.tryFindFile('.github/workflows/pull-request-lint.yml'),
+      'Reject pull requests whose titles do not follow the conventional-commit (semantic-release) format.',
+    );
   }
 }

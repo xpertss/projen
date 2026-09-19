@@ -1,5 +1,6 @@
 import { Component, github } from 'projen';
 import type { java } from 'projen';
+import { noteWorkflowPurpose } from '../../common/workflow-purpose';
 
 export interface GitHubPackagesPublishOptions {
   /** @default derived from the repository URL */
@@ -27,7 +28,7 @@ export class GitHubPackagesPublish extends Component {
       exec: `mvn -B deploy -DaltDeploymentRepository=github::${registry}`,
     });
 
-    new github.TaskWorkflow(gh, {
+    const publishWorkflow = new github.TaskWorkflow(gh, {
       name: 'publish-ghpackages',
       jobId: 'publish',
       task: publishTask,
@@ -38,5 +39,9 @@ export class GitHubPackagesPublish extends Component {
       },
       env: { GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' },
     });
+    noteWorkflowPurpose(
+      publishWorkflow.file,
+      'Publish the artifact to GitHub Packages on demand.',
+    );
   }
 }

@@ -1,5 +1,6 @@
 import { Component, github } from 'projen';
 import type { java } from 'projen';
+import { noteWorkflowPurpose } from '../../common/workflow-purpose';
 
 /** Generates a code index and publishes it to `.cai/` on checkin. */
 export class CodeIndexWorkflow extends Component {
@@ -15,7 +16,7 @@ export class CodeIndexWorkflow extends Component {
       exec: "mkdir -p .cai && find src -name '*.java' > .cai/index.txt",
     });
 
-    new github.TaskWorkflow(gh, {
+    const codeIndexWorkflow = new github.TaskWorkflow(gh, {
       name: 'codeindex',
       jobId: 'codeindex',
       task: indexTask,
@@ -29,5 +30,9 @@ export class CodeIndexWorkflow extends Component {
         },
       ],
     });
+    noteWorkflowPurpose(
+      codeIndexWorkflow.file,
+      'Regenerate and commit the code index on push to main.',
+    );
   }
 }

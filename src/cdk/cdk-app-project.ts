@@ -3,6 +3,7 @@ import { AppRuntimeScaffold } from './app-runtime-scaffold';
 import { CdkInfraProject } from './cdk-infra-project';
 import { DatabaseComponent } from './database-component';
 import { CdkAppProjectOptions } from './options';
+import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
 /**
  * Full TypeScript service application running behind API Gateway (or
@@ -18,13 +19,17 @@ export class CdkAppProject extends CdkInfraProject {
 
     const gh = this.github;
     if (gh) {
-      new github.TaskWorkflow(gh, {
+      const appBuildWorkflow = new github.TaskWorkflow(gh, {
         name: 'app-build',
         jobId: 'app-build',
         task: this.testTask,
         triggers: { pullRequest: {}, workflowDispatch: {} },
         permissions: { contents: github.workflows.JobPermission.READ },
       });
+      noteWorkflowPurpose(
+        appBuildWorkflow.file,
+        'Run the application unit tests on pull requests.',
+      );
     }
   }
 }

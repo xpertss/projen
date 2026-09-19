@@ -1,4 +1,5 @@
 import { Component, github } from 'projen';
+import { noteWorkflowPurpose } from './workflow-purpose';
 
 /**
  * PR-triggered check that rejects direct edits to projen-managed files.
@@ -56,6 +57,10 @@ export class ProjenDriftCheckWorkflow extends Component {
     this.workflow = new github.GithubWorkflow(
       gh,
       options.workflowName ?? 'projen-drift-check',
+    );
+    noteWorkflowPurpose(
+      this.workflow.file,
+      'Fail a PR when a projen-generated file has been edited by hand instead of through the projenrc.',
     );
     this.workflow.on({ pullRequest: {} });
     this.workflow.addJob('check', {

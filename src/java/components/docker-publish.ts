@@ -1,5 +1,6 @@
 import { Component, github } from 'projen';
 import type { java } from 'projen';
+import { noteWorkflowPurpose } from '../../common/workflow-purpose';
 
 export interface DockerPublishOptions {
   /** @default "docker.io" */
@@ -21,7 +22,7 @@ export class DockerPublish extends Component {
       exec: `mvn -B package && docker build -t ${registry}/\${IMAGE_NAME}:\${IMAGE_TAG} .`,
     });
 
-    new github.TaskWorkflow(gh, {
+    const publishWorkflow = new github.TaskWorkflow(gh, {
       name: 'publish-docker',
       jobId: 'publish',
       task: publishTask,
@@ -40,5 +41,9 @@ export class DockerPublish extends Component {
       ],
       env: { IMAGE_NAME: project.name, IMAGE_TAG: '${{ github.sha }}' },
     });
+    noteWorkflowPurpose(
+      publishWorkflow.file,
+      'Build and push the container image on demand.',
+    );
   }
 }

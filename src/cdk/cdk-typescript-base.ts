@@ -7,6 +7,7 @@ import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ManualDeployWorkflow } from '../common/manual-deploy-workflow';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
+import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
 // Resolved through Node's normal module resolution, so in a *published*
 // package this is the version of this package that scaffolded the repo (same
@@ -85,6 +86,32 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
     });
     new WorkflowChangeNoticeWorkflow(this);
     new ActionsAllowlistGuard(this);
+
+    // `build` is projen's built-in NodeProject workflow (enabled via
+    // `buildWorkflowOptions` above), not one this package constructs -
+    // annotate it the same way as the others.
+    if (this.buildWorkflow) {
+      noteWorkflowPurpose(
+        this.buildWorkflow.workflow.file,
+        'Pull-request build gate: install dependencies, synthesize the CDK app, and run unit tests.',
+      );
+    }
+    // `depsUpgrade` is projen's built-in nightly upgrade workflow - annotate
+    // it the same way (one workflow per release branch).
+    if (this.upgradeWorkflow) {
+      for (const workflow of this.upgradeWorkflow.workflows) {
+        noteWorkflowPurpose(
+          workflow.file,
+          'Open a nightly dependency-upgrade pull request.',
+        );
+      }
+    }
+    // `pull-request-lint` is projen's built-in PR-title validation workflow -
+    // reach its file by path like the release workflow.
+    noteWorkflowPurpose(
+      this.tryFindFile('.github/workflows/pull-request-lint.yml'),
+      'Reject pull requests whose titles do not follow the conventional-commit (semantic-release) format.',
+    );
 
     if (options.environments && options.environments.length > 0) {
       new ManualDeployWorkflow(this, {

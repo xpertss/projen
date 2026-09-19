@@ -3,6 +3,7 @@ import {
   DEFAULT_GHE_TOKEN_SECRET,
   NIGHTLY_UPGRADE_SCHEDULE,
 } from './constants';
+import { noteWorkflowPurpose } from './workflow-purpose';
 
 /**
  * Nightly cron workflow that opens a PR with dependency upgrades. Used by
@@ -59,5 +60,9 @@ export class UpgradeWorkflow extends Component {
         },
       ],
     });
+    noteWorkflowPurpose(
+      this.workflow.file,
+      'Open a nightly dependency-upgrade pull request.',
+    );
   }
 }

@@ -7,6 +7,7 @@ import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow'
 import { attachTypeScriptProjenrc } from '../common/projenrc-ts';
 import { UpgradeWorkflow } from '../common/upgrade-workflow';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
+import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
 export interface JavaMavenProjectOptions extends CommonJavaOptions {}
 
@@ -80,6 +81,16 @@ export class JavaMavenProject extends java.JavaProject {
       permissions: { contents: github.workflows.JobPermission.READ },
       postBuildSteps,
     });
+    noteWorkflowPurpose(
+      this.buildVerifyWorkflow.file,
+      'Build and test the Maven project on pull requests, with an optional SonarQube scan.',
+    );
+    // `pull-request-lint` is projen's built-in PR-title validation workflow -
+    // reach its file by path like the other projen-created workflows.
+    noteWorkflowPurpose(
+      this.tryFindFile('.github/workflows/pull-request-lint.yml'),
+      'Reject pull requests whose titles do not follow the conventional-commit (semantic-release) format.',
+    );
 
     this.upgradeTask = this.addTask('upgrade', {
       exec: 'mvn -B versions:use-latest-releases versions:update-properties',

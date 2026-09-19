@@ -1,4 +1,5 @@
 import { Component, github } from 'projen';
+import { noteWorkflowPurpose } from './workflow-purpose';
 
 /**
  * PR-triggered, tamper-proof notice that a PR touches GitHub Actions
@@ -54,6 +55,10 @@ export class WorkflowChangeNoticeWorkflow extends Component {
     this.workflow = new github.GithubWorkflow(
       gh,
       options.workflowName ?? 'workflow-change-notice',
+    );
+    noteWorkflowPurpose(
+      this.workflow.file,
+      'Ask PR authors to review when a GitHub Actions workflow or a shared internal action changes.',
     );
     this.workflow.on({ pullRequestTarget: {} });
     this.workflow.addJob('check', {

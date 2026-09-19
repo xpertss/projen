@@ -1,5 +1,6 @@
 import { Component, github } from 'projen';
 import { DEFAULT_GHE_TOKEN_SECRET } from './constants';
+import { noteWorkflowPurpose } from './workflow-purpose';
 
 /**
  * Blocking, tamper-proof PR check that stops a disallowed GitHub Action
@@ -57,6 +58,10 @@ export class ActionsAllowlistGuard extends Component {
     this.workflow = new github.GithubWorkflow(
       gh,
       options.workflowName ?? 'actions-allowlist-guard',
+    );
+    noteWorkflowPurpose(
+      this.workflow.file,
+      'Block PRs that reference a GitHub Action outside the org allow-list.',
     );
     this.workflow.on({ pullRequestTarget: {} });
     this.workflow.addJob('check', {

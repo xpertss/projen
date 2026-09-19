@@ -1,4 +1,5 @@
 import { Component, github } from 'projen';
+import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
 // Pinned release + verified SHA-256 (linux-x64) - upgrade is a reviewed diff
 // of this constant, never a floating version (AD-001).
@@ -8,8 +9,8 @@ const SONAR_SCANNER_SHA256 =
 
 export interface ActionSonarWorkflowOptions {
   /**
-   * URL of the org's self-hosted SonarQube instance. Required, no default -
-   * a guessed server is worse than a loud failure.
+   * URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`).
+   * Required, no default - a guessed server is worse than a loud failure.
    */
   readonly sonarHostUrl: string;
 
@@ -24,10 +25,10 @@ export interface ActionSonarWorkflowOptions {
 }
 
 /**
- * AD-001 Layer 2: self-hosted SonarQube Community Edition via the Scanner
- * CLI only (never `SonarSource/sonarqube-scan-action` - third-party, and it
- * carried a security advisory). `sonar.inclusions` is set explicitly since
- * default inclusions may skip `action.yml` outside `.github/`.
+ * AD-001 Layer 2: SonarCloud via the Scanner CLI only (never
+ * `SonarSource/sonarqube-scan-action` - third-party, and it carried a
+ * security advisory). `sonar.inclusions` is set explicitly since default
+ * inclusions may skip `action.yml` outside `.github/`.
  */
 export class ActionSonarWorkflow extends Component {
   public readonly workflow: github.GithubWorkflow;
@@ -53,6 +54,10 @@ export class ActionSonarWorkflow extends Component {
     const pullRequestGate = options.sonarPullRequestGate ?? true;
 
     this.workflow = new github.GithubWorkflow(gh, 'sonar');
+    noteWorkflowPurpose(
+      this.workflow.file,
+      'Static-analysis scan of the action on the org SonarCloud.',
+    );
     this.workflow.on({
       push: { branches: ['main'] },
       ...(pullRequestGate ? { pullRequest: {} } : {}),

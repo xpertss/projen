@@ -738,10 +738,10 @@ public readonly workflow: GithubWorkflow;
 
 ### ActionSonarWorkflow <a name="ActionSonarWorkflow" id="@xpertss/projen-types.ActionSonarWorkflow"></a>
 
-AD-001 Layer 2: self-hosted SonarQube Community Edition via the Scanner CLI only (never `SonarSource/sonarqube-scan-action` - third-party, and it carried a security advisory).
+AD-001 Layer 2: SonarCloud via the Scanner CLI only (never `SonarSource/sonarqube-scan-action` - third-party, and it carried a security advisory).
 
-`sonar.inclusions` is set explicitly since
-default inclusions may skip `action.yml` outside `.github/`.
+`sonar.inclusions` is set explicitly since default
+inclusions may skip `action.yml` outside `.github/`.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionSonarWorkflow.Initializer"></a>
 
@@ -13048,7 +13048,7 @@ const actionSonarWorkflowOptions: ActionSonarWorkflowOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's self-hosted SonarQube instance. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure. |
 | <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 
@@ -13062,10 +13062,7 @@ public readonly sonarHostUrl: string;
 
 - *Type:* string
 
-URL of the org's self-hosted SonarQube instance.
-
-Required, no default -
-a guessed server is worse than a loud failure.
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure.
 
 ---
 
@@ -13468,7 +13465,7 @@ const commonJavaOptions: CommonJavaOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarQube project key. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 
 ---
@@ -13522,7 +13519,7 @@ public readonly sonarProjectKey: string;
 
 - *Type:* string
 
-SonarQube project key.
+SonarCloud project key.
 
 If unset, the sonar scan step is skipped.
 
@@ -13765,7 +13762,7 @@ const gitHubActionProjectOptions: GitHubActionProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.stale">stale</a></code> | <code>boolean</code> | Auto-close of stale issues and pull request. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.staleOptions">staleOptions</a></code> | <code>projen.github.StaleOptions</code> | Auto-close stale issues and pull requests. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.vscode">vscode</a></code> | <code>boolean</code> | Enable VSCode integration. |
-| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's self-hosted SonarQube instance. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). MUST be reachable from github.com-hosted (public) runners (AD-001). Required, no default: a guessed server is worse than a loud failure. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.description">description</a></code> | <code>string</code> | One-line description of the action. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood">dogfood</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a></code> | The dogfood scenario (AD-001). |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003/F009) and, when the action has a `token` input, the dogfood's invocation of it. |
@@ -14151,11 +14148,7 @@ public readonly sonarHostUrl: string;
 
 - *Type:* string
 
-URL of the org's self-hosted SonarQube instance.
-
-MUST be reachable from
-github.com-hosted (public) runners (AD-001). Required, no default: a
-guessed server is worse than a loud failure.
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). MUST be reachable from github.com-hosted (public) runners (AD-001). Required, no default: a guessed server is worse than a loud failure.
 
 ---
 
@@ -14295,7 +14288,7 @@ const javaAppProjectOptions: JavaAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarQube project key. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.ghPackagesRegistry">ghPackagesRegistry</a></code> | <code>string</code> | *No description.* |
 
@@ -14350,7 +14343,7 @@ public readonly sonarProjectKey: string;
 
 - *Type:* string
 
-SonarQube project key.
+SonarCloud project key.
 
 If unset, the sonar scan step is skipped.
 
@@ -14396,7 +14389,7 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarQube project key. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.mavenCentralOidc">mavenCentralOidc</a></code> | <code>boolean</code> | Use Maven Central's OIDC trusted-publishing flow instead of secret-based GPG signing. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | *No description.* |
@@ -14452,7 +14445,7 @@ public readonly sonarProjectKey: string;
 
 - *Type:* string
 
-SonarQube project key.
+SonarCloud project key.
 
 If unset, the sonar scan step is skipped.
 
@@ -14510,7 +14503,7 @@ const javaMavenProjectOptions: JavaMavenProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarQube project key. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 
 ---
@@ -14564,7 +14557,7 @@ public readonly sonarProjectKey: string;
 
 - *Type:* string
 
-SonarQube project key.
+SonarCloud project key.
 
 If unset, the sonar scan step is skipped.
 
@@ -14599,7 +14592,7 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarQube project key. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.cdkDeployHook">cdkDeployHook</a></code> | <code>boolean</code> | Whether to generate the `deploy-cdk` workflow at all. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.cdkDeployTargetRepo">cdkDeployTargetRepo</a></code> | <code>string</code> | The companion CDK infra/app repo (`owner/repo`) whose `deploy.yml` the `deploy-cdk` workflow dispatches. |
@@ -14658,7 +14651,7 @@ public readonly sonarProjectKey: string;
 
 - *Type:* string
 
-SonarQube project key.
+SonarCloud project key.
 
 If unset, the sonar scan step is skipped.
 

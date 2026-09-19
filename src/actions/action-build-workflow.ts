@@ -1,4 +1,5 @@
 import { Component, Task, github } from 'projen';
+import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
 // Pinned release + verified SHA-256 (linux_amd64) - upgrade is a reviewed
 // diff of this constant, never a floating version (AD-001).
@@ -58,5 +59,9 @@ export class ActionBuildWorkflow extends Component {
       permissions: { contents: github.workflows.JobPermission.READ },
       preBuildSteps: [{ name: 'Install dependencies', run: 'npm ci' }],
     });
+    noteWorkflowPurpose(
+      this.workflow.file,
+      'Lint gate for the action (shellcheck, yamllint, actionlint).',
+    );
   }
 }

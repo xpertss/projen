@@ -8,7 +8,7 @@ export interface CommonJavaOptions {
   /** @default "0.1.0" */
   readonly version?: string;
 
-  /** SonarQube project key. If unset, the sonar scan step is skipped. */
+  /** SonarCloud project key. If unset, the sonar scan step is skipped. */
   readonly sonarProjectKey?: string;
 
   /** @default "PROJEN_GITHUB_TOKEN" */

@@ -3,6 +3,7 @@ import {
   EnvironmentOptions,
   normalizeEnvironments,
 } from './environment-options';
+import { noteWorkflowPurpose } from './workflow-purpose';
 
 /**
  * Shared, environment-parameterized manual-dispatch deploy workflow.
@@ -63,6 +64,10 @@ export class ManualDeployWorkflow extends Component {
       ]);
 
     this.workflow = new github.GithubWorkflow(gh, workflowName);
+    noteWorkflowPurpose(
+      this.workflow.file,
+      'Manually deploy to a chosen environment via workflow_dispatch.',
+    );
     this.workflow.on({
       workflowDispatch: {
         inputs: {
