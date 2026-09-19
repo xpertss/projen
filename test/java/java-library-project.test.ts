@@ -19,6 +19,22 @@ test('synthesizes pom.xml, build workflow, publish workflow, and code index by d
   expect(snapshot['.github/workflows/actions-allowlist-guard.yml']).toBeDefined();
 });
 
+test('default task re-runs the Node-side .projenrc.js, not java.JavaProject\'s Maven-native projenrc', () => {
+  const snapshot = synthSnapshot(
+    new JavaLibraryProject({
+      name: 'lib-test',
+      groupId: 'com.example',
+      artifactId: 'lib-test',
+    }),
+  );
+
+  expect(snapshot['.projen/tasks.json'].tasks.default.steps).toEqual([
+    { execArgs: ['node', '.projenrc.js'] },
+  ]);
+  expect(snapshot['pom.xml']).not.toContain('exec-maven-plugin');
+  expect(snapshot['pom.xml']).not.toContain('io.github.cdklabs');
+});
+
 test('code index can be opted out', () => {
   const snapshot = synthSnapshot(
     new JavaLibraryProject({

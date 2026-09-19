@@ -2,7 +2,7 @@
 
 Projen project types for CDK/TypeScript and Java/Maven projects.
 
-Instead of hand-maintaining `pom.xml`, `cdk.json`, and GitHub workflows, you declare a project type in a `.projenrc.ts` file and let [projen](https://github.com/projen/projen) generate (and keep up to date) the whole scaffold: build files, source skeletons, CI workflows, and deploy pipelines.
+Instead of hand-maintaining `pom.xml`, `cdk.json`, and GitHub workflows, you declare a project type in a plain-JavaScript `.projenrc.js` file and let [projen](https://github.com/projen/projen) generate (and keep up to date) the whole scaffold: build files, source skeletons, CI workflows, and deploy pipelines.
 
 ## Project types at a glance
 
@@ -19,7 +19,7 @@ Two foundation classes are also exported for advanced use: `CdkTypescriptProject
 
 All project types:
 
-- run a **drift check** in PR builds - a job that re-runs projen and fails if generated files were hand-edited. Edit `.projenrc.ts`, then run `npx projen`; never edit generated files directly.
+- run a **drift check** in PR builds - a job that re-runs projen and fails if generated files were hand-edited. Edit `.projenrc.js`, then run `npx projen`; never edit generated files directly.
 - use the GitHub secret `PROJEN_GITHUB_TOKEN` (a fine-grained PAT) for projen's automation. Override with `gheTokenSecret`.
 - make all publishing/deploying **manual** (workflow_dispatch) rather than on every merge.
 
@@ -30,16 +30,16 @@ Create a new git repository and install the dependencies:
 ```bash
 mkdir my-project && cd my-project
 git init
-npm install -D projen constructs @xpertss/projen-types ts-node typescript
+npm install -D projen constructs @xpertss/projen-types
 ```
 
-Write a `.projenrc.ts` (see examples below), then bootstrap the project by running it directly - `npx projen` alone can't do this on a brand-new repo, since it only re-runs a `default` task that doesn't exist yet:
+Write a `.projenrc.js` (see examples below), then bootstrap the project by running it directly - `npx projen` alone can't do this on a brand-new repo, since it only re-runs a `default` task that doesn't exist yet:
 
 ```bash
-npx ts-node .projenrc.ts
+node .projenrc.js
 ```
 
-Commit the result. From then on, every change to the scaffold goes through `.projenrc.ts` followed by plain `npx projen`.
+Commit the result. From then on, every change to the scaffold goes through `.projenrc.js` followed by plain `npx projen`.
 
 The `name` option must match the `name` field in the project's `package.json` (for the CDK types) or the project name used by projen's `java.JavaProject` (for the Java types).
 
@@ -49,9 +49,9 @@ The `name` option must match the `name` field in the project's `package.json` (f
 
 Pure infrastructure stacks with optional ECR/ECS and edge-networking constructs.
 
-```typescript
-// .projenrc.ts
-import { CdkInfraProject } from '@xpertss/projen-types';
+```javascript
+// .projenrc.js
+const { CdkInfraProject } = require('@xpertss/projen-types');
 
 const project = new CdkInfraProject({
   name: 'media-edge-infra',
@@ -80,9 +80,9 @@ You get:
 
 `CdkInfraProject` plus application source, a database construct, and an app-level build workflow.
 
-```typescript
-// .projenrc.ts
-import { CdkAppProject } from '@xpertss/projen-types';
+```javascript
+// .projenrc.js
+const { CdkAppProject } = require('@xpertss/projen-types');
 
 const project = new CdkAppProject({
   name: 'video-api',
@@ -106,9 +106,9 @@ Everything from `CdkInfraProject`, plus:
 
 A reusable Java library published to Maven Central.
 
-```typescript
-// .projenrc.ts
-import { JavaLibraryProject } from '@xpertss/projen-types';
+```javascript
+// .projenrc.js
+const { JavaLibraryProject } = require('@xpertss/projen-types');
 
 const project = new JavaLibraryProject({
   name: 'common-utils',
@@ -134,9 +134,9 @@ You get:
 
 A Spring Boot service that publishes a Docker image and can trigger deploys in a companion CDK repo.
 
-```typescript
-// .projenrc.ts
-import { JavaServiceProject } from '@xpertss/projen-types';
+```javascript
+// .projenrc.js
+const { JavaServiceProject } = require('@xpertss/projen-types');
 
 const project = new JavaServiceProject({
   name: 'stream-processor',
@@ -161,9 +161,9 @@ You get (everything from `JavaMavenProject` - `pom.xml`, `build` + drift check, 
 
 A GUI/TUI/CLI Java application published to GitHub Packages only - no Maven Central, no Docker, no CDK deploy hook.
 
-```typescript
-// .projenrc.ts
-import { JavaAppProject } from '@xpertss/projen-types';
+```javascript
+// .projenrc.js
+const { JavaAppProject } = require('@xpertss/projen-types');
 
 const project = new JavaAppProject({
   name: 'studio-cli',
@@ -181,9 +181,9 @@ You get everything from `JavaMavenProject`, plus `.github/workflows/publish-ghpa
 
 A reusable GitHub Action or Workflow. This example scaffolds an action that stages a folder and, only if it changed, commits and pushes it.
 
-```typescript
-// .projenrc.ts
-import { GitHubActionProject } from '@xpertss/projen-types';
+```javascript
+// .projenrc.js
+const { GitHubActionProject } = require('@xpertss/projen-types');
 
 const project = new GitHubActionProject({
   name: 'auto-commit',
@@ -239,9 +239,9 @@ You get:
 - `.github/workflows/sonar.yml` - self-hosted SonarQube via the Scanner CLI, scanning `action.yml`/`.github/workflows/**`/`**/*.sh` explicitly.
 - `.github/workflows/release.yml` - `feat:`/`fix:` commits on `main` bump the version, tag `vX.Y.Z`, and create a GitHub Release.
 - `.github/workflows/projen-drift-check.yml`, `workflow-change-notice.yml`, `actions-allowlist-guard.yml` - drift detection, a change notice, and an action allow-list guard, always included.
-- `package.json` (**private**, version source only), `tsconfig.json`, `.yamllint`, `LICENSE` (MIT by default), and a `README.md` template - all regenerated by `npx projen`.
+- `package.json` (**private**, version source only), `.yamllint`, `LICENSE` (MIT by default), and a `README.md` template - all regenerated by `npx projen`.
 
-Needs the same two secrets as everything else in this package: `PROJEN_GITHUB_TOKEN` (used for automated PR comments) and `SONAR_TOKEN` (the Sonar scan). Onboarding a brand-new action repo from scratch: `npm init -y && npm install -D projen constructs @xpertss/projen-types ts-node typescript`, write the `.projenrc.ts` above, bootstrap with `npx ts-node .projenrc.ts && npm install` (plain `npx projen` doesn't work yet - see [Getting started](#getting-started)), then hand-write `action.yml`/`auto-commit.sh`/`test/fixtures/`.
+Needs the same two secrets as everything else in this package: `PROJEN_GITHUB_TOKEN` (used for automated PR comments) and `SONAR_TOKEN` (the Sonar scan). Onboard a brand-new action repo following [Getting started](#getting-started), write the `.projenrc.js` above, then hand-write `action.yml`/`auto-commit.sh`/`test/fixtures/`.
 
 ## Common options
 
@@ -272,7 +272,7 @@ Java project types (`JavaLibraryProjectOptions` / `JavaServiceProjectOptions` / 
 
 `EnvironmentOptions` for deploy targets:
 
-```typescript
+```text
 interface EnvironmentOptions {
   readonly name: string;              // e.g. "dev", "stage", "prod"
   readonly accountId?: string;        // AWS account id (CDK deploys)
@@ -298,7 +298,7 @@ Plain strings (`'dev'`) are shorthand for `{ name: 'dev' }`.
 
 `ActionDogfoodOptions`/`ActionDogfoodStep` - the dogfood scenario (`test-dogfood.yml`):
 
-```typescript
+```text
 interface ActionDogfoodOptions {
   readonly scenario: ActionDogfoodStep[]; // one or more, run in order - required
   readonly cleanup: string[];             // shared, run once at the end with `if: always()` - required
@@ -347,9 +347,9 @@ The project types are composed from smaller components you can also attach to yo
 
 Example - adding a Docker publish to a plain projen `JavaProject`:
 
-```typescript
-import { java } from 'projen';
-import { DockerPublish } from '@xpertss/projen-types';
+```javascript
+const { java } = require('projen');
+const { DockerPublish } = require('@xpertss/projen-types');
 
 const project = new java.JavaProject({
   name: 'my-service',

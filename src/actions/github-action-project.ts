@@ -4,8 +4,8 @@ import {
   ReleasableCommits,
   YamlFile,
   github,
+  javascript,
   release,
-  typescript,
 } from 'projen';
 import { ActionBuildWorkflow } from './action-build-workflow';
 import { ActionDogfoodOptions, ActionDogfoodWorkflow } from './action-dogfood-workflow';
@@ -27,12 +27,10 @@ const PROJEN_VERSION: string = require('projen/package.json').version;
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const PROJEN_TYPES_VERSION: string = require('../../package.json').version;
 
-// Exact pins, recorded as component constants (AD-001: no latest/moving
-// tag/semver range in anything a generated repo depends on). Upgrading any
-// of these is a reviewed diff of this file.
+// Exact pin, recorded as a component constant (AD-001: no latest/moving
+// tag/semver range in anything a generated repo depends on). Upgrading this
+// is a reviewed diff of this file.
 const COMMIT_AND_TAG_VERSION = '13.2.1';
-const TS_NODE_VERSION = '10.9.2';
-const TYPESCRIPT_VERSION = '6.0.3';
 
 export interface GitHubActionProjectOptions
   extends github.GitHubProjectOptions {
@@ -111,9 +109,9 @@ hand-committed.
  * Scaffolds the repo lifecycle (AD-001) around a hand-committed, composite
  * (shell) GitHub Action: the `build`/`test-dogfood`/`sonar`/`release`
  * workflows, versioning and release discipline, the F003 verify components,
- * the F009 allowlist guard, and repo boilerplate (`tsconfig.json` for
- * `.projenrc.ts`, a private version-source `package.json`, `.yamllint`,
- * `LICENSE`, and a `README.md` template). The action's own content
+ * the F009 allowlist guard, and repo boilerplate (a private version-source
+ * `package.json`, `.yamllint`, `LICENSE`, and a `README.md` template). The
+ * action's own content
  * (`action.yml`, its shell scripts, `test/` fixtures) is authored by hand
  * per the action's own F### spec - this type only lints it.
  */
@@ -160,12 +158,18 @@ export class GitHubActionProject extends github.GitHubProject {
       copyrightOwner: 'xpertss',
     });
 
-    // Wires the default task to run `.projenrc.ts` via ts-node - a bare
-    // GitHubProject has no default task that does this on its own. Runs
-    // `npx -y -p ts-node -c ...` under the hood; pinning `ts-node`/
-    // `typescript` below as exact devDeps means that, after `npm ci`, this
-    // resolves from the committed local install instead of the registry.
-    new typescript.ProjenrcTs(this, { tsconfigFileName: 'tsconfig.json' });
+    // Wires the default task to run `.projenrc.js` via plain `node` - a
+    // bare GitHubProject has no default task that does this on its own.
+    // Deliberately plain JS, not TS: a `.projenrc.ts` here would need
+    // `ts-node`/`typescript` pinned to a mutually-compatible version before
+    // the *first* synth can ever run (chicken-and-egg - `npx projen` can't
+    // bootstrap a `default` task that doesn't exist yet), and this package
+    // can't ship that pin for consumers (jsii's package-info check rejects
+    // non-jsii `dependencies` unless bundled, and `typescript` must stay a
+    // devDependency of *this* repo to build it, so it can never be bundled).
+    // This action has no real TypeScript source anyway (action.yml/
+    // auto-commit.sh are hand-written shell/YAML), so there's nothing lost.
+    new javascript.Projenrc(this);
 
     new JsonFile(this, 'package.json', {
       obj: {
@@ -177,8 +181,6 @@ export class GitHubActionProject extends github.GitHubProject {
           'projen': PROJEN_VERSION,
           '@xpertss/projen-types': PROJEN_TYPES_VERSION,
           'commit-and-tag-version': COMMIT_AND_TAG_VERSION,
-          'ts-node': TS_NODE_VERSION,
-          'typescript': TYPESCRIPT_VERSION,
         },
       },
     });

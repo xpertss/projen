@@ -74,7 +74,6 @@ test('synthesizes the full AD-001 file tree', () => {
     '.github/workflows/workflow-change-notice.yml',
     '.github/workflows/actions-allowlist-guard.yml',
     'package.json',
-    'tsconfig.json',
     '.yamllint',
     'LICENSE',
     'README.md',
@@ -244,8 +243,6 @@ test('package.json: private version source with exact-pinned devDeps', () => {
     '@xpertss/projen-types',
     'commit-and-tag-version',
     'projen',
-    'ts-node',
-    'typescript',
   ]);
   for (const version of Object.values<string>(devDeps)) {
     expect(version).not.toMatch(/[\^~]/);

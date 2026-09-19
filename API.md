@@ -7181,7 +7181,7 @@ public readonly project: Project;
 
 ### GitHubActionProject <a name="GitHubActionProject" id="@xpertss/projen-types.GitHubActionProject"></a>
 
-Scaffolds the repo lifecycle (AD-001) around a hand-committed, composite (shell) GitHub Action: the `build`/`test-dogfood`/`sonar`/`release` workflows, versioning and release discipline, the F003 verify components, the F009 allowlist guard, and repo boilerplate (`tsconfig.json` for `.projenrc.ts`, a private version-source `package.json`, `.yamllint`, `LICENSE`, and a `README.md` template). The action's own content (`action.yml`, its shell scripts, `test/` fixtures) is authored by hand per the action's own F### spec - this type only lints it.
+Scaffolds the repo lifecycle (AD-001) around a hand-committed, composite (shell) GitHub Action: the `build`/`test-dogfood`/`sonar`/`release` workflows, versioning and release discipline, the F003 verify components, the F009 allowlist guard, and repo boilerplate (a private version-source `package.json`, `.yamllint`, `LICENSE`, and a `README.md` template). The action's own content (`action.yml`, its shell scripts, `test/` fixtures) is authored by hand per the action's own F### spec - this type only lints it.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.GitHubActionProject.Initializer"></a>
 

@@ -1,4 +1,4 @@
-import { Task, github, java } from 'projen';
+import { Task, github, java, javascript } from 'projen';
 import { CommonJavaOptions } from './options';
 import { ActionsAllowlistGuard } from '../common/actions-allowlist-guard';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
@@ -25,10 +25,19 @@ export class JavaMavenProject extends java.JavaProject {
       groupId: options.groupId,
       artifactId: options.artifactId,
       version: options.version ?? '0.1.0',
+      // Consumers author their config as a Node-side `.projenrc.js` (this
+      // package only publishes an npm jsii target, no java target), not a
+      // hand-written `src/test/java/projenrc.java` - so java.JavaProject's
+      // own Java-native projenrc (which wires the default task to `mvn
+      // compiler:testCompile && mvn exec:java ...`) would be wrong here.
+      // Disable it and attach the standard JS one instead.
+      projenrcJava: false,
       projenCredentials: github.GithubCredentials.fromPersonalAccessToken({
         secret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
       }),
     });
+
+    new javascript.Projenrc(this);
 
     const gh = this.github;
     if (!gh) {
