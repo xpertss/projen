@@ -1,6 +1,5 @@
 import { cdk, javascript, ReleasableCommits } from 'projen';
 import {
-  ActionsAllowlistGuard,
   ProjenDriftCheckWorkflow,
   WorkflowChangeNoticeWorkflow,
   applyInternalActionOverrides,
@@ -38,5 +37,4 @@ if (project.github) {
 }
 new ProjenDriftCheckWorkflow(project);
 new WorkflowChangeNoticeWorkflow(project);
-new ActionsAllowlistGuard(project);
 project.synth();

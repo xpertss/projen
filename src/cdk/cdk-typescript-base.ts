@@ -1,6 +1,5 @@
 import { awscdk, github, javascript } from 'projen';
 import { CommonCdkOptions } from './options';
-import { ActionsAllowlistGuard } from '../common/actions-allowlist-guard';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { EnvironmentOptions } from '../common/environment-options';
 import { applyInternalActionOverrides } from '../common/internal-actions';
@@ -85,7 +84,6 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
       gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
     });
     new WorkflowChangeNoticeWorkflow(this);
-    new ActionsAllowlistGuard(this);
 
     // `build` is projen's built-in NodeProject workflow (enabled via
     // `buildWorkflowOptions` above), not one this package constructs -

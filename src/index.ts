@@ -2,7 +2,6 @@ export * from './common/environment-options';
 export * from './common/projen-drift-check-workflow';
 export * from './common/workflow-change-notice-workflow';
 export * from './common/internal-actions';
-export * from './common/actions-allowlist-guard';
 
 export * from './cdk/options';
 export * from './cdk/cdk-typescript-base';

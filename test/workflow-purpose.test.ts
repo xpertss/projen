@@ -50,7 +50,6 @@ test('every generated workflow carries a purpose note (GitHubActionProject)', ()
       '.github/workflows/release.yml',
       '.github/workflows/projen-drift-check.yml',
       '.github/workflows/workflow-change-notice.yml',
-      '.github/workflows/actions-allowlist-guard.yml',
     ]),
   );
 });

@@ -9,7 +9,6 @@ import {
 import { ActionBuildWorkflow } from './action-build-workflow';
 import { ActionDogfoodOptions, ActionDogfoodWorkflow } from './action-dogfood-workflow';
 import { ActionSonarWorkflow } from './action-sonar-workflow';
-import { ActionsAllowlistGuard } from '../common/actions-allowlist-guard';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
@@ -43,7 +42,7 @@ export interface GitHubActionProjectOptions
 
   /**
    * Name of the GitHub Actions secret holding the PAT used for
-   * projen-automation PR comments (F003/F009) and, when the action has a
+   * projen-automation PR comments (F003) and, when the action has a
    * `token` input, the dogfood's invocation of it.
    * @default "PROJEN_GITHUB_TOKEN"
    */
@@ -118,9 +117,9 @@ hand-committed.
 /**
  * Scaffolds the repo lifecycle (AD-001) around a hand-committed, composite
  * (shell) GitHub Action: the `build`/`test-dogfood`/`sonar`/`release`
- * workflows, versioning and release discipline, the F003 verify components,
- * the F009 allowlist guard, and repo boilerplate (a private version-source
- * `package.json`, `.yamllint`, `LICENSE`, and a `README.md` template). The
+  * workflows, versioning and release discipline, the F003 verify components,
+  * and repo boilerplate (a private version-source `package.json`, `.yamllint`,
+  * `LICENSE`, and a `README.md` template). The
  * action's own content
  * (`action.yml`, its shell scripts, `test/` fixtures) is authored by hand
  * per the action's own F### spec - this type only lints it.
@@ -156,7 +155,6 @@ export class GitHubActionProject extends github.GitHubProject {
       gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
     });
     new WorkflowChangeNoticeWorkflow(this);
-    new ActionsAllowlistGuard(this);
 
     new License(this, {
       spdx: options.license ?? 'MIT',

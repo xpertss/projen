@@ -1,6 +1,5 @@
 import { Task, github, java } from 'projen';
 import { CommonJavaOptions } from './options';
-import { ActionsAllowlistGuard } from '../common/actions-allowlist-guard';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
@@ -62,7 +61,6 @@ export class JavaMavenProject extends java.JavaProject {
       gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
     });
     new WorkflowChangeNoticeWorkflow(this);
-    new ActionsAllowlistGuard(this);
 
     const postBuildSteps: github.workflows.JobStep[] = [];
     if (options.sonarProjectKey) {

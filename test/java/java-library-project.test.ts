@@ -16,7 +16,6 @@ test('synthesizes pom.xml, build workflow, publish workflow, and code index by d
   expect(snapshot['.github/workflows/codeindex.yml']).toBeDefined();
   expect(snapshot['.github/workflows/projen-drift-check.yml']).toBeDefined();
   expect(snapshot['.github/workflows/workflow-change-notice.yml']).toBeDefined();
-  expect(snapshot['.github/workflows/actions-allowlist-guard.yml']).toBeDefined();
 });
 
 test('default task re-runs the Node-side .projenrc.ts, not java.JavaProject\'s Maven-native projenrc', () => {

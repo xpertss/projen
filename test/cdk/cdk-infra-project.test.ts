@@ -14,7 +14,6 @@ test('synthesizes cdk.json and a PR-check build workflow', () => {
   expect(snapshot['.github/workflows/deploy.yml']).toBeDefined();
   expect(snapshot['.github/workflows/projen-drift-check.yml']).toBeDefined();
   expect(snapshot['.github/workflows/workflow-change-notice.yml']).toBeDefined();
-  expect(snapshot['.github/workflows/actions-allowlist-guard.yml']).toBeDefined();
 });
 
 test('deploy workflow exposes one job per environment', () => {

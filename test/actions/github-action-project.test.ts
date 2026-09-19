@@ -72,7 +72,6 @@ test('synthesizes the full AD-001 file tree', () => {
     '.github/workflows/release.yml',
     '.github/workflows/projen-drift-check.yml',
     '.github/workflows/workflow-change-notice.yml',
-    '.github/workflows/actions-allowlist-guard.yml',
     'package.json',
     '.yamllint',
     'LICENSE',
@@ -250,12 +249,11 @@ test('package.json: private version source with exact-pinned devDeps', () => {
   }
 });
 
-test('F003/F009 components are present', () => {
+test('F003 components are present', () => {
   const snapshot = synthSnapshot(new GitHubActionProject(baseOptions()));
 
   expect(snapshot['.github/workflows/projen-drift-check.yml']).toBeDefined();
   expect(snapshot['.github/workflows/workflow-change-notice.yml']).toBeDefined();
-  expect(snapshot['.github/workflows/actions-allowlist-guard.yml']).toBeDefined();
 });
 
 test('license defaults to MIT and honors override', () => {
