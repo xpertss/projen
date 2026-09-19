@@ -140,6 +140,11 @@ export class GitHubActionProject extends github.GitHubProject {
 
     super({
       ...options,
+      // PR titles are not gated: `feat:`/`fix:` matter only because they drive
+      // the release workflow (via `releasableCommits`), not PR checks. The
+      // conventional-commit PR-title lint is added by the `GitHub` component
+      // unless `githubOptions.pullRequestLint` is `false` (it defaults true).
+      githubOptions: { ...options.githubOptions, pullRequestLint: false },
       readme: options.readme ?? { contents: defaultReadmeContents(options) },
     });
 
@@ -224,11 +229,6 @@ export class GitHubActionProject extends github.GitHubProject {
     noteWorkflowPurpose(
       this.tryFindFile('.github/workflows/release.yml'),
       'Continuous release on push to main: bump version, tag, and create a GitHub Release.',
-    );
-    // `pull-request-lint` is projen's built-in PR-title validation workflow.
-    noteWorkflowPurpose(
-      this.tryFindFile('.github/workflows/pull-request-lint.yml'),
-      'Reject pull requests whose titles do not follow the conventional-commit (semantic-release) format.',
     );
   }
 }

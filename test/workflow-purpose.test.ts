@@ -83,3 +83,23 @@ test('every generated workflow carries a purpose note (JavaServiceProject)', () 
     }),
   );
 });
+
+test('no PR-title lint workflow is generated (all base types)', () => {
+  const projects = [
+    new GitHubActionProject({
+      name: 'lint-absent-action',
+      sonarHostUrl: 'https://sonar.example.org',
+    }),
+    new JavaServiceProject({
+      name: 'lint-absent-svc',
+      groupId: 'com.example',
+      artifactId: 'lint-absent-svc',
+      cdkDeployTargetRepo: 'example-org/infra-repo',
+    }),
+    new CdkInfraProject({ name: 'lint-absent-infra' }),
+  ];
+  for (const project of projects) {
+    const files = Object.keys(rawWorkflows(project));
+    expect(files).not.toContain('.github/workflows/pull-request-lint.yml');
+  }
+});

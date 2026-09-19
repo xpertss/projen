@@ -39,6 +39,11 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
       cdkVersion: options.cdkVersion ?? '2.189.1',
       defaultReleaseBranch: 'main',
       sampleCode: true,
+      // PR titles are not gated: `feat:`/`fix:` matter only because they drive
+      // the release workflow (via `releasableCommits`), not PR checks. The
+      // conventional-commit PR-title lint is added by the `GitHub` component
+      // unless `githubOptions.pullRequestLint` is `false` (it defaults true).
+      githubOptions: { pullRequestLint: false },
       // Generated repos are configured through `.projenrc.ts`; without this
       // `TypeScriptProject` defaults to `projenrcTs: false` and wires the
       // default task to `node .projenrc.js`.
@@ -104,13 +109,6 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
         );
       }
     }
-    // `pull-request-lint` is projen's built-in PR-title validation workflow -
-    // reach its file by path like the release workflow.
-    noteWorkflowPurpose(
-      this.tryFindFile('.github/workflows/pull-request-lint.yml'),
-      'Reject pull requests whose titles do not follow the conventional-commit (semantic-release) format.',
-    );
-
     if (options.environments && options.environments.length > 0) {
       new ManualDeployWorkflow(this, {
         environments: options.environments,

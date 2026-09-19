@@ -33,6 +33,11 @@ export class JavaMavenProject extends java.JavaProject {
       groupId: options.groupId,
       artifactId: options.artifactId,
       version: options.version ?? '0.1.0',
+      // PR titles are not gated: `feat:`/`fix:` matter only because they drive
+      // the release workflow (via `releasableCommits`), not PR checks. The
+      // conventional-commit PR-title lint is added by the `GitHub` component
+      // unless `githubOptions.pullRequestLint` is `false` (it defaults true).
+      githubOptions: { pullRequestLint: false },
       // Consumers author their config as a Node-side `.projenrc.ts` (this
       // package only publishes an npm jsii target, no java target), not a
       // hand-written `src/test/java/projenrc.java` - so java.JavaProject's
@@ -82,12 +87,6 @@ export class JavaMavenProject extends java.JavaProject {
     noteWorkflowPurpose(
       this.buildVerifyWorkflow.file,
       'Build and test the Maven project on pull requests, with an optional SonarQube scan.',
-    );
-    // `pull-request-lint` is projen's built-in PR-title validation workflow -
-    // reach its file by path like the other projen-created workflows.
-    noteWorkflowPurpose(
-      this.tryFindFile('.github/workflows/pull-request-lint.yml'),
-      'Reject pull requests whose titles do not follow the conventional-commit (semantic-release) format.',
     );
 
     this.upgradeTask = this.addTask('upgrade', {
