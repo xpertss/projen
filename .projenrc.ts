@@ -25,6 +25,11 @@ const project = new cdk.JsiiProject({
   repositoryUrl: 'git@github.com:xpertss/projen',
   sampleCode: false,
   stability: 'experimental',
+  // Pin CI's Node version instead of floating `lts/*` - a floating version
+  // can resolve a different npm than whatever generated the committed
+  // package-lock.json, and npm ci then fails on optional-dependency drift
+  // (e.g. @emnapi/core/@emnapi/runtime) that isn't a real dependency bug.
+  workflowNodeVersion: '24',
 });
 project.addFields({ publishConfig: { access: 'public' } });
 if (project.github) {
