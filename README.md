@@ -61,6 +61,21 @@ is allowed to be missing loudly, never silently.
 
 The `name` option must match the `name` field in the project's `package.json` (for the CDK types) or the project name used by projen's `java.JavaProject` (for the Java types).
 
+## Updating an existing project when this package changes
+
+Your generated scaffold reflects the *installed* version of `@xpertss/projen-types` - `npx projen` reads your project type from the package in `node_modules`, not from this repository. So when this package ships a change (a bug fix, a new generated file, or altered workflow behavior), an existing project picks it up by bumping the dependency and re-synthesizing. A stale `node_modules` silently regenerates with the old behavior, so the bump is the load-bearing step.
+
+Using the [`auto-commit` action](#githubactionproject) as a running example, say a new release adds the `# Purpose:` workflow header and SonarCloud wording. In the `auto-commit` repo:
+
+```bash
+npm view @xpertss/projen-types version        # what's the newest release?
+npm i -D @xpertss/projen-types@latest         # bump the installed project type
+npx projen                                    # re-synthesize every generated file
+git diff                                      # review before committing
+```
+
+The diff here is the workflows gaining a `# Purpose:` comment and `sonar.yml` reflecting the SonarCloud wording. Commit the result with a normal `chore:` or `fix:` message - you never hand-edit the generated files themselves.
+
 ## Examples
 
 ### CdkInfraProject
