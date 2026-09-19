@@ -2,7 +2,7 @@
 
 Projen project types for CDK/TypeScript and Java/Maven projects.
 
-Instead of hand-maintaining `pom.xml`, `cdk.json`, and GitHub workflows, you declare a project type in a plain-JavaScript `.projenrc.js` file and let [projen](https://github.com/projen/projen) generate (and keep up to date) the whole scaffold: build files, source skeletons, CI workflows, and deploy pipelines.
+Instead of hand-maintaining `pom.xml`, `cdk.json`, and GitHub workflows, you declare a project type in a `.projenrc.ts` file and let [projen](https://github.com/projen/projen) generate (and keep up to date) the whole scaffold: build files, source skeletons, CI workflows, and deploy pipelines.
 
 ## Project types at a glance
 
@@ -19,27 +19,45 @@ Two foundation classes are also exported for advanced use: `CdkTypescriptProject
 
 All project types:
 
-- run a **drift check** in PR builds - a job that re-runs projen and fails if generated files were hand-edited. Edit `.projenrc.js`, then run `npx projen`; never edit generated files directly.
+- run a **drift check** in PR builds - a job that re-runs projen and fails if generated files were hand-edited. Edit `.projenrc.ts`, then run `npx projen`; never edit generated files directly.
 - use the GitHub secret `PROJEN_GITHUB_TOKEN` (a fine-grained PAT) for projen's automation. Override with `gheTokenSecret`.
 - make all publishing/deploying **manual** (workflow_dispatch) rather than on every merge.
 
 ## Getting started
 
-Create a new git repository and install the dependencies:
+Scaffold the repo with projen's own bootstrap, pointed at this package:
 
 ```bash
 mkdir my-project && cd my-project
 git init
-npm install -D projen constructs @xpertss/projen-types
+npx projen new --from @xpertss/projen-types cdk_infra --name my-project
 ```
 
-Write a `.projenrc.js` (see examples below), then bootstrap the project by running it directly - `npx projen` alone can't do this on a brand-new repo, since it only re-runs a `default` task that doesn't exist yet:
+That writes a starter `.projenrc.ts`, synthesizes the whole scaffold and
+installs dependencies. The type names `projen new` accepts are `cdk_infra`,
+`cdk_app`, `java_library`, `java_service`, `java_app` and
+`git_hub_action`; pass a bogus one to have it list them. Required options
+become flags: `--name` for every type, plus `--group-id`/`--artifact-id`
+(Java) and `--sonar-host-url` (`git_hub_action`). Any other plainly-typed
+option can be passed the same way - `--cdk-deploy-target-repo owner/repo`,
+`--docker-registry ghcr.io`, `--no-use-flyway`, and so on.
+
+Commit the result. From then on, every change to the scaffold goes through
+`.projenrc.ts` followed by `npx projen`:
 
 ```bash
-node .projenrc.js
+npx projen
 ```
 
-Commit the result. From then on, every change to the scaffold goes through `.projenrc.js` followed by plain `npx projen`.
+Every type scaffolds from that one command; no option is *required* that
+`projen new` cannot pass. The structured options - `environments` and
+`GitHubActionProject`'s `dogfood` - are ones projen's CLI cannot render
+into a projenrc, so they are added afterwards by editing `.projenrc.ts` and
+re-running `npx projen`. Leaving `environments` out simply generates no
+deploy workflow; leaving `dogfood` out (or a service's
+`cdkDeployTargetRepo`) still generates the workflow, with one step that
+fails and tells you what to add - a gate this package considers load-bearing
+is allowed to be missing loudly, never silently.
 
 The `name` option must match the `name` field in the project's `package.json` (for the CDK types) or the project name used by projen's `java.JavaProject` (for the Java types).
 
@@ -49,9 +67,9 @@ The `name` option must match the `name` field in the project's `package.json` (f
 
 Pure infrastructure stacks with optional ECR/ECS and edge-networking constructs.
 
-```javascript
-// .projenrc.js
-const { CdkInfraProject } = require('@xpertss/projen-types');
+```typescript
+// .projenrc.ts
+import { CdkInfraProject } from '@xpertss/projen-types';
 
 const project = new CdkInfraProject({
   name: 'media-edge-infra',
@@ -80,9 +98,9 @@ You get:
 
 `CdkInfraProject` plus application source, a database construct, and an app-level build workflow.
 
-```javascript
-// .projenrc.js
-const { CdkAppProject } = require('@xpertss/projen-types');
+```typescript
+// .projenrc.ts
+import { CdkAppProject } from '@xpertss/projen-types';
 
 const project = new CdkAppProject({
   name: 'video-api',
@@ -106,9 +124,9 @@ Everything from `CdkInfraProject`, plus:
 
 A reusable Java library published to Maven Central.
 
-```javascript
-// .projenrc.js
-const { JavaLibraryProject } = require('@xpertss/projen-types');
+```typescript
+// .projenrc.ts
+import { JavaLibraryProject } from '@xpertss/projen-types';
 
 const project = new JavaLibraryProject({
   name: 'common-utils',
@@ -134,16 +152,16 @@ You get:
 
 A Spring Boot service that publishes a Docker image and can trigger deploys in a companion CDK repo.
 
-```javascript
-// .projenrc.js
-const { JavaServiceProject } = require('@xpertss/projen-types');
+```typescript
+// .projenrc.ts
+import { JavaServiceProject } from '@xpertss/projen-types';
 
 const project = new JavaServiceProject({
   name: 'stream-processor',
   groupId: 'org.xpertss',
   artifactId: 'stream-processor',
   dockerRegistry: 'docker.io/xpertss',
-  cdkDeployHook: { targetRepo: 'xpertss/stream-infra' },
+  cdkDeployTargetRepo: 'xpertss/stream-infra',
   environments: ['dev', { name: 'prod', requiresApproval: true }],
 });
 
@@ -155,15 +173,15 @@ You get (everything from `JavaMavenProject` - `pom.xml`, `build` + drift check, 
 - `spring-boot-starter-web` added to the pom.
 - `.github/workflows/publish-docker.yml` - manual dispatch: `mvn -B package && docker build -t <registry>/<name>:<sha>`, logged in with the `DOCKER_USERNAME` / `DOCKER_PASSWORD` secrets. `dockerRegistry` defaults to `docker.io`.
 - Flyway wiring when `useFlyway` (default `true`): `flyway-maven-plugin` ^10 + `flyway-core` ^10 in the pom, and `src/main/resources/db/migration/V1__init.sql`.
-- `.github/workflows/deploy-cdk.yml` (the `CdkDeployHook`, enabled by default) - manual dispatch with an environment selector; each job sends a `workflow_dispatch` to `deploy.yml` in the companion `targetRepo` (a `CdkInfraProject`/`CdkAppProject` repo). `targetRepo` is required when the hook is enabled; disable it with `cdkDeployHook: { enabled: false }`. `environments` defaults to `['prod']`.
+- `.github/workflows/deploy-cdk.yml` (the `CdkDeployHook`, generated by default) - manual dispatch with an environment selector; each job sends a `workflow_dispatch` to `deploy.yml` in the companion `cdkDeployTargetRepo` (a `CdkInfraProject`/`CdkAppProject` repo). With no `cdkDeployTargetRepo` set, the workflow is still generated but each job's only step fails with instructions - it is dispatch-only, so that lands on whoever tries to deploy rather than on every PR. Turn the workflow off entirely with `cdkDeployHook: false`. `environments` defaults to `['prod']`.
 
 ### JavaAppProject
 
 A GUI/TUI/CLI Java application published to GitHub Packages only - no Maven Central, no Docker, no CDK deploy hook.
 
-```javascript
-// .projenrc.js
-const { JavaAppProject } = require('@xpertss/projen-types');
+```typescript
+// .projenrc.ts
+import { JavaAppProject } from '@xpertss/projen-types';
 
 const project = new JavaAppProject({
   name: 'studio-cli',
@@ -181,9 +199,9 @@ You get everything from `JavaMavenProject`, plus `.github/workflows/publish-ghpa
 
 A reusable GitHub Action or Workflow. This example scaffolds an action that stages a folder and, only if it changed, commits and pushes it.
 
-```javascript
-// .projenrc.js
-const { GitHubActionProject } = require('@xpertss/projen-types');
+```typescript
+// .projenrc.ts
+import { GitHubActionProject } from '@xpertss/projen-types';
 
 const project = new GitHubActionProject({
   name: 'auto-commit',
@@ -235,13 +253,13 @@ You get:
 
 - `action.yml` and `auto-commit.sh` are hand-written - this type only lints their content via `build.yml`'s shellcheck/yamllint/actionlint checks.
 - `.github/workflows/build.yml` - lint gate: `apt`-installed shellcheck/yamllint plus a pinned, SHA-256-verified `actionlint` release binary. Gates `main` alongside `sonar.yml`.
-- `.github/workflows/test-dogfood.yml` - runs the `dogfood.scenario` steps above against this repo's own `action.yml` (via `uses: .`), then the shared `cleanup`, on `workflow_dispatch`, every `pull_request`, and nightly.
+- `.github/workflows/test-dogfood.yml` - runs the `dogfood.scenario` steps above against this repo's own `action.yml` (via `uses: .`), then the shared `cleanup`, on `workflow_dispatch`, every `pull_request`, and nightly. Omit `dogfood` and the workflow still exists, with one step that fails on every PR until you declare a scenario - AD-001 allows a dogfood to be missing loudly, never silently. A *partial* `dogfood` (a scenario with no cleanup) is a synth error.
 - `.github/workflows/sonar.yml` - self-hosted SonarQube via the Scanner CLI, scanning `action.yml`/`.github/workflows/**`/`**/*.sh` explicitly.
 - `.github/workflows/release.yml` - `feat:`/`fix:` commits on `main` bump the version, tag `vX.Y.Z`, and create a GitHub Release.
 - `.github/workflows/projen-drift-check.yml`, `workflow-change-notice.yml`, `actions-allowlist-guard.yml` - drift detection, a change notice, and an action allow-list guard, always included.
 - `package.json` (**private**, version source only), `.yamllint`, `LICENSE` (MIT by default), and a `README.md` template - all regenerated by `npx projen`.
 
-Needs the same two secrets as everything else in this package: `PROJEN_GITHUB_TOKEN` (used for automated PR comments) and `SONAR_TOKEN` (the Sonar scan). Onboard a brand-new action repo following [Getting started](#getting-started), write the `.projenrc.js` above, then hand-write `action.yml`/`auto-commit.sh`/`test/fixtures/`.
+Needs the same two secrets as everything else in this package: `PROJEN_GITHUB_TOKEN` (used for automated PR comments) and `SONAR_TOKEN` (the Sonar scan). Onboard a brand-new action repo following [Getting started](#getting-started), write the `.projenrc.ts` above, then hand-write `action.yml`/`auto-commit.sh`/`test/fixtures/`.
 
 ## Common options
 
@@ -253,7 +271,7 @@ CDK project types (`CdkInfraProjectOptions` / `CdkAppProjectOptions`):
 | `cdkVersion` | `2.189.1` | AWS CDK version |
 | `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
 | `slackWebhookSecret` | - | GitHub secret with a Slack webhook URL for deploy notifications |
-| `environments` | - (required) | Deploy targets for the `deploy` workflow; strings or `EnvironmentOptions` |
+| `environments` | - (no `deploy` workflow) | Deploy targets for the `deploy` workflow; strings or `EnvironmentOptions` |
 | `ecrEcs` | - | `EcrEcsOptions` - `enabled`, `externalImageSource` (default `true`) |
 | `edgeResources` | - | Subset of `cloudfront`, `route53`, `apigateway`, `cognito`, `sqs` |
 | `database` | - (app only) | `DatabaseOptions` - `engine` (`postgres`/`mysql`/`dynamodb`, default `postgres`), `migrationTool` |
@@ -269,6 +287,10 @@ Java project types (`JavaLibraryProjectOptions` / `JavaServiceProjectOptions` / 
 | `version` | `0.1.0` | Maven version |
 | `sonarProjectKey` | - | SonarQube project key; the sonar step is skipped when unset |
 | `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
+| `cdkDeployTargetRepo` | - (service only; `deploy-cdk.yml` fails until set) | Companion CDK repo (`owner/repo`) whose `deploy.yml` the deploy hook dispatches |
+| `cdkDeployHook` | `true` (service only) | Whether to generate `deploy-cdk.yml` at all |
+| `dockerRegistry` | `docker.io` (service only) | Registry the Docker image is pushed to |
+| `useFlyway` | `true` (service only) | Flyway plugin/dependency + `V1__init.sql` |
 
 `EnvironmentOptions` for deploy targets:
 
@@ -292,7 +314,7 @@ Plain strings (`'dev'`) are shorthand for `{ name: 'dev' }`.
 | `sonarHostUrl` | - (required) | URL of your self-hosted SonarQube instance; must be reachable from github.com-hosted runners |
 | `sonarTokenSecret` | `SONAR_TOKEN` | GitHub secret holding the Sonar token |
 | `sonarPullRequestGate` | `true` | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate |
-| `dogfood` | - (required) | `ActionDogfoodOptions` - the scenario that exercises the action end-to-end via `uses: .` |
+| `dogfood` | - (a `test-dogfood.yml` that fails until you declare one) | `ActionDogfoodOptions` - the scenario that exercises the action end-to-end via `uses: .` |
 | `license` | `MIT` | SPDX identifier for the generated `LICENSE` |
 | `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
 
@@ -347,9 +369,9 @@ The project types are composed from smaller components you can also attach to yo
 
 Example - adding a Docker publish to a plain projen `JavaProject`:
 
-```javascript
-const { java } = require('projen');
-const { DockerPublish } = require('@xpertss/projen-types');
+```typescript
+import { java } from 'projen';
+import { DockerPublish } from '@xpertss/projen-types';
 
 const project = new java.JavaProject({
   name: 'my-service',

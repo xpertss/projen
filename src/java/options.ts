@@ -24,10 +24,13 @@ export interface JavaLibraryProjectOptions extends CommonJavaOptions {
 }
 
 export interface CdkDeployHookOptions {
-  /** @default true */
-  readonly enabled?: boolean;
-
-  /** The companion CDK infra/app repo (owner/repo) that owns the actual infrastructure. */
+  /**
+   * The companion CDK infra/app repo (owner/repo) that owns the actual
+   * infrastructure.
+   *
+   * @default - the workflow is still generated, but its only step fails with
+   * instructions (see `CdkDeployHook`)
+   */
   readonly targetRepo?: string;
 }
 
@@ -38,8 +41,27 @@ export interface JavaServiceProjectOptions extends CommonJavaOptions {
   /** @default true */
   readonly useFlyway?: boolean;
 
-  /** @default { enabled: true } */
-  readonly cdkDeployHook?: CdkDeployHookOptions;
+  /**
+   * The companion CDK infra/app repo (`owner/repo`) whose `deploy.yml` the
+   * `deploy-cdk` workflow dispatches.
+   *
+   * A plain string rather than a nested struct so that
+   * `projen new --from @xpertss/projen-types java_service` can pass it
+   * (`--cdk-deploy-target-repo owner/repo`): projen's CLI can only render
+   * options whose type is a string/number/boolean/array/enum, so a
+   * struct-typed option is invisible to it.
+   *
+   * @default - `deploy-cdk.yml` is generated with a single failing step that
+   * tells you to set this
+   */
+  readonly cdkDeployTargetRepo?: string;
+
+  /**
+   * Whether to generate the `deploy-cdk` workflow at all.
+   *
+   * @default true
+   */
+  readonly cdkDeployHook?: boolean;
 
   /**
    * Deploy targets to offer on the `CdkDeployHook`'s manual-dispatch

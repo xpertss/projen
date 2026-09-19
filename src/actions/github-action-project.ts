@@ -4,7 +4,6 @@ import {
   ReleasableCommits,
   YamlFile,
   github,
-  javascript,
   release,
 } from 'projen';
 import { ActionBuildWorkflow } from './action-build-workflow';
@@ -14,6 +13,7 @@ import { ActionsAllowlistGuard } from '../common/actions-allowlist-guard';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
+import { attachTypeScriptProjenrc } from '../common/projenrc-ts';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
 
 // `require('projen/package.json')`/`require('../../package.json')` resolve
@@ -67,10 +67,19 @@ export interface GitHubActionProjectOptions
   /**
    * The dogfood scenario (AD-001). What fixture state, what to assert, and
    * how to clean up are specified by the action's own F### spec - the
-   * highest-risk behavior of that action. Required: a default no-op
-   * dogfood would silently hollow out a load-bearing AD-001 workflow.
+   * highest-risk behavior of that action.
+   *
+   * Its type is a struct, which projen's CLI cannot render into a projenrc,
+   * so it can only be written by hand - it is therefore optional, because a
+   * *required* option `projen new` cannot supply would make this project
+   * type impossible to scaffold. AD-001's "never a silent no-op dogfood"
+   * rule is enforced instead by the workflow it generates in that case: a
+   * single step that fails on every PR until a scenario is declared.
+   *
+   * @default - `test-dogfood.yml` runs one failing step that tells you to
+   * declare a scenario
    */
-  readonly dogfood: ActionDogfoodOptions;
+  readonly dogfood?: ActionDogfoodOptions;
 
   /**
    * SPDX identifier for the generated `LICENSE`.
@@ -125,14 +134,9 @@ export class GitHubActionProject extends github.GitHubProject {
     if (!options.sonarHostUrl) {
       throw new Error('GitHubActionProject requires sonarHostUrl');
     }
-    if (!options.dogfood?.scenario || options.dogfood.scenario.length === 0) {
-      throw new Error(
-        'GitHubActionProject requires dogfood.scenario with at least one step',
-      );
-    }
-    if (!options.dogfood.cleanup || options.dogfood.cleanup.length === 0) {
-      throw new Error('GitHubActionProject requires dogfood.cleanup');
-    }
+    // A declared-but-incomplete dogfood is still an error - see
+    // `ActionDogfoodWorkflow`, which owns that check (and the
+    // no-dogfood-declared case).
 
     super({
       ...options,
@@ -158,18 +162,10 @@ export class GitHubActionProject extends github.GitHubProject {
       copyrightOwner: 'xpertss',
     });
 
-    // Wires the default task to run `.projenrc.js` via plain `node` - a
-    // bare GitHubProject has no default task that does this on its own.
-    // Deliberately plain JS, not TS: a `.projenrc.ts` here would need
-    // `ts-node`/`typescript` pinned to a mutually-compatible version before
-    // the *first* synth can ever run (chicken-and-egg - `npx projen` can't
-    // bootstrap a `default` task that doesn't exist yet), and this package
-    // can't ship that pin for consumers (jsii's package-info check rejects
-    // non-jsii `dependencies` unless bundled, and `typescript` must stay a
-    // devDependency of *this* repo to build it, so it can never be bundled).
-    // This action has no real TypeScript source anyway (action.yml/
-    // auto-commit.sh are hand-written shell/YAML), so there's nothing lost.
-    new javascript.Projenrc(this);
+    // `.projenrc.ts` + `npx projen`, same as every other type here. A bare
+    // GitHubProject has no default task that runs a projenrc on its own, so
+    // this is what makes `npx projen` work in the generated repo at all.
+    attachTypeScriptProjenrc(this);
 
     new JsonFile(this, 'package.json', {
       obj: {

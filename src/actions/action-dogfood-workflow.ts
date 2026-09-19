@@ -60,25 +60,43 @@ export interface ActionDogfoodOptions {
   readonly cleanup: string[];
 }
 
+// The stand-in scenario used when a project declares no `dogfood` at all
+// (e.g. a repo `projen new` just scaffolded). The workflow is still
+// generated and still runs on every PR - it just fails, telling you what to
+// write. AD-001's rule is that a dogfood must never be *silently* absent;
+// throwing during synth instead would make the project type unscaffoldable,
+// since `projen new` has no way to supply a scenario.
+const UNCONFIGURED_STEPS: string[] = [
+  'echo "::error::this action has no dogfood scenario, so nothing exercises it end-to-end."',
+  'echo "Add dogfood: { scenario: [...], cleanup: [...] } to .projenrc.ts and run npx projen - see the @xpertss/projen-types README."',
+  'exit 1',
+];
+
 /**
  * Per AD-001's dogfood test: the composite action is run **against this
  * repo**, end-to-end, via a local `uses: .` reference - no external harness.
  * Builds `test-dogfood.yml` from an ordered `scenario` of invocation steps
  * (see `ActionDogfoodStep`) followed by a shared cleanup step.
+ *
+ * Omitting `options` generates the workflow with a single failing step (see
+ * `UNCONFIGURED_STEPS`). A *partially* declared dogfood is still a synth
+ * error: if you wrote a scenario by hand, you can write its cleanup too.
  */
 export class ActionDogfoodWorkflow extends Component {
   public readonly workflow: github.GithubWorkflow;
 
-  constructor(scope: github.GitHubProject, options: ActionDogfoodOptions) {
+  constructor(scope: github.GitHubProject, options?: ActionDogfoodOptions) {
     super(scope, 'ActionDogfoodWorkflow');
 
-    if (!options.scenario || options.scenario.length === 0) {
-      throw new Error(
-        'ActionDogfoodWorkflow requires at least one dogfood.scenario step',
-      );
-    }
-    if (!options.cleanup || options.cleanup.length === 0) {
-      throw new Error('ActionDogfoodWorkflow requires dogfood.cleanup');
+    if (options) {
+      if (!options.scenario || options.scenario.length === 0) {
+        throw new Error(
+          'ActionDogfoodWorkflow requires at least one dogfood.scenario step',
+        );
+      }
+      if (!options.cleanup || options.cleanup.length === 0) {
+        throw new Error('ActionDogfoodWorkflow requires dogfood.cleanup');
+      }
     }
 
     const gh = scope.github;
@@ -88,9 +106,16 @@ export class ActionDogfoodWorkflow extends Component {
       );
     }
 
-    const steps: github.workflows.JobStep[] = [github.WorkflowSteps.checkout()];
+    const steps: github.workflows.JobStep[] = options
+      ? [github.WorkflowSteps.checkout()]
+      : [
+        {
+          name: 'Dogfood scenario not configured',
+          run: UNCONFIGURED_STEPS.join('\n'),
+        },
+      ];
 
-    options.scenario.forEach((step, index) => {
+    (options?.scenario ?? []).forEach((step, index) => {
       if (step.fixtureSteps && step.fixtureSteps.length > 0) {
         steps.push({
           name: `${step.name}: fixture`,
@@ -112,24 +137,30 @@ export class ActionDogfoodWorkflow extends Component {
       });
     });
 
-    steps.push({
-      name: 'Cleanup',
-      if: 'always()',
-      run: options.cleanup.join('\n'),
-    });
+    if (options) {
+      steps.push({
+        name: 'Cleanup',
+        if: 'always()',
+        run: options.cleanup.join('\n'),
+      });
+    }
 
     this.workflow = new github.GithubWorkflow(gh, 'test-dogfood');
     this.workflow.on({
       workflowDispatch: {},
       pullRequest: { branches: ['main'] },
-      schedule: [{ cron: NIGHTLY_DOGFOOD_SCHEDULE }],
+      // No nightly canary while unconfigured: the PR run is the signal, and
+      // a cron that always fails is just a daily notification nobody reads.
+      ...(options ? { schedule: [{ cron: NIGHTLY_DOGFOOD_SCHEDULE }] } : {}),
     });
     this.workflow.addJob('dogfood', {
       runsOn: ['ubuntu-latest'],
-      permissions: {
-        contents: github.workflows.JobPermission.WRITE,
-        pullRequests: github.workflows.JobPermission.WRITE,
-      },
+      permissions: options
+        ? {
+          contents: github.workflows.JobPermission.WRITE,
+          pullRequests: github.workflows.JobPermission.WRITE,
+        }
+        : { contents: github.workflows.JobPermission.READ },
       steps,
     });
   }

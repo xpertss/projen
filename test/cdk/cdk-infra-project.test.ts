@@ -85,3 +85,14 @@ test('deploy workflow no longer references Slack', () => {
   expect(deploy).not.toContain('slackapi');
   expect(deploy).not.toContain('SLACK_WEBHOOK');
 });
+
+test('default task re-runs .projenrc.ts - the repo is configured in TypeScript', () => {
+  const snapshot = synthSnapshot(
+    new CdkInfraProject({ name: 'infra-test', environments: [] }),
+  );
+
+  expect(snapshot['.projen/tasks.json'].tasks.default.steps).toEqual([
+    { execArgs: ['ts-node', '--project', 'projenrc/tsconfig.json', '.projenrc.ts'] },
+  ]);
+  expect(snapshot['package.json'].devDependencies['ts-node']).toBeDefined();
+});

@@ -25,7 +25,7 @@
     },
     {
       "name": "commit-and-tag-version",
-      "version": "^13",
+      "version": "^12",
       "type": "build"
     },
     {

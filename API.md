@@ -258,12 +258,16 @@ public readonly workflow: TaskWorkflow;
 
 Per AD-001's dogfood test: the composite action is run **against this repo**, end-to-end, via a local `uses: .` reference - no external harness. Builds `test-dogfood.yml` from an ordered `scenario` of invocation steps (see `ActionDogfoodStep`) followed by a shared cleanup step.
 
+Omitting `options` generates the workflow with a single failing step (see
+`UNCONFIGURED_STEPS`). A *partially* declared dogfood is still a synth
+error: if you wrote a scenario by hand, you can write its cleanup too.
+
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionDogfoodWorkflow.Initializer"></a>
 
 ```typescript
 import { ActionDogfoodWorkflow } from '@xpertss/projen-types'
 
-new ActionDogfoodWorkflow(scope: GitHubProject, options: ActionDogfoodOptions)
+new ActionDogfoodWorkflow(scope: GitHubProject, options?: ActionDogfoodOptions)
 ```
 
 | **Name** | **Type** | **Description** |
@@ -279,7 +283,7 @@ new ActionDogfoodWorkflow(scope: GitHubProject, options: ActionDogfoodOptions)
 
 ---
 
-##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.ActionDogfoodWorkflow.Initializer.parameter.options"></a>
+##### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.ActionDogfoodWorkflow.Initializer.parameter.options"></a>
 
 - *Type:* <a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a>
 
@@ -2663,6 +2667,13 @@ public readonly DEFAULT_TS_JEST_TRANFORM_PATTERN: string;
 ### CdkDeployHook <a name="CdkDeployHook" id="@xpertss/projen-types.CdkDeployHook"></a>
 
 Manual-dispatch workflow that invokes a downstream CDK deploy in a companion `CdkInfraProject`/`CdkAppProject` repo, using the same `ManualDeployWorkflow` contract those project types use for their own deploys - see the CDK spec's open question about sharing this contract.
+
+With no `targetRepo` the workflow is still generated, but every job's
+only step fails with instructions. Synthesizing is not the place to
+enforce this: it would make the project type unscaffoldable by
+`projen new` (which cannot supply the value), and it is a dispatch-only
+workflow - nobody hits the failure until they actually try to deploy,
+which is exactly when "this repo has no deploy target" needs saying.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.CdkDeployHook.Initializer"></a>
 
@@ -13099,9 +13110,9 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.appEntryPoint">appEntryPoint</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.database">database</a></code> | <code><a href="#@xpertss/projen-types.DatabaseOptions">DatabaseOptions</a></code> | *No description.* |
 
@@ -13139,18 +13150,6 @@ public readonly gheTokenSecret: string;
 
 ---
 
-##### `environments`<sup>Required</sup> <a name="environments" id="@xpertss/projen-types.CdkAppProjectOptions.property.environments"></a>
-
-```typescript
-public readonly environments: (string | EnvironmentOptions)[];
-```
-
-- *Type:* string | <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]
-
-Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"].
-
----
-
 ##### `ecrEcs`<sup>Optional</sup> <a name="ecrEcs" id="@xpertss/projen-types.CdkAppProjectOptions.property.ecrEcs"></a>
 
 ```typescript
@@ -13168,6 +13167,25 @@ public readonly edgeResources: string[];
 ```
 
 - *Type:* string[]
+
+---
+
+##### `environments`<sup>Optional</sup> <a name="environments" id="@xpertss/projen-types.CdkAppProjectOptions.property.environments"></a>
+
+```typescript
+public readonly environments: (string | EnvironmentOptions)[];
+```
+
+- *Type:* string | <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]
+- *Default:* no deploy workflow
+
+Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted.
+
+Optional rather than required so that `projen new --from` can scaffold
+the repo: its union type (`string | EnvironmentOptions`) is not
+"JSON-like", so projen's CLI cannot render a value for it into the
+initial `.projenrc.ts` - and a *required* option it cannot render leaves
+behind a projenrc that does not type-check.
 
 ---
 
@@ -13206,19 +13224,7 @@ const cdkDeployHookOptions: CdkDeployHookOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.CdkDeployHookOptions.property.enabled">enabled</a></code> | <code>boolean</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkDeployHookOptions.property.targetRepo">targetRepo</a></code> | <code>string</code> | The companion CDK infra/app repo (owner/repo) that owns the actual infrastructure. |
-
----
-
-##### `enabled`<sup>Optional</sup> <a name="enabled" id="@xpertss/projen-types.CdkDeployHookOptions.property.enabled"></a>
-
-```typescript
-public readonly enabled: boolean;
-```
-
-- *Type:* boolean
-- *Default:* true
 
 ---
 
@@ -13229,6 +13235,7 @@ public readonly targetRepo: string;
 ```
 
 - *Type:* string
+- *Default:* the workflow is still generated, but its only step fails with instructions (see `CdkDeployHook`)
 
 The companion CDK infra/app repo (owner/repo) that owns the actual infrastructure.
 
@@ -13251,9 +13258,9 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
 
 ---
 
@@ -13289,18 +13296,6 @@ public readonly gheTokenSecret: string;
 
 ---
 
-##### `environments`<sup>Required</sup> <a name="environments" id="@xpertss/projen-types.CdkInfraProjectOptions.property.environments"></a>
-
-```typescript
-public readonly environments: (string | EnvironmentOptions)[];
-```
-
-- *Type:* string | <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]
-
-Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"].
-
----
-
 ##### `ecrEcs`<sup>Optional</sup> <a name="ecrEcs" id="@xpertss/projen-types.CdkInfraProjectOptions.property.ecrEcs"></a>
 
 ```typescript
@@ -13318,6 +13313,25 @@ public readonly edgeResources: string[];
 ```
 
 - *Type:* string[]
+
+---
+
+##### `environments`<sup>Optional</sup> <a name="environments" id="@xpertss/projen-types.CdkInfraProjectOptions.property.environments"></a>
+
+```typescript
+public readonly environments: (string | EnvironmentOptions)[];
+```
+
+- *Type:* string | <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]
+- *Default:* no deploy workflow
+
+Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted.
+
+Optional rather than required so that `projen new --from` can scaffold
+the repo: its union type (`string | EnvironmentOptions`) is not
+"JSON-like", so projen's CLI cannot render a value for it into the
+initial `.projenrc.ts` - and a *required* option it cannot render leaves
+behind a projenrc that does not type-check.
 
 ---
 
@@ -13751,9 +13765,9 @@ const gitHubActionProjectOptions: GitHubActionProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.stale">stale</a></code> | <code>boolean</code> | Auto-close of stale issues and pull request. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.staleOptions">staleOptions</a></code> | <code>projen.github.StaleOptions</code> | Auto-close stale issues and pull requests. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.vscode">vscode</a></code> | <code>boolean</code> | Enable VSCode integration. |
-| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood">dogfood</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a></code> | The dogfood scenario (AD-001). |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's self-hosted SonarQube instance. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.description">description</a></code> | <code>string</code> | One-line description of the action. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood">dogfood</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a></code> | The dogfood scenario (AD-001). |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003/F009) and, when the action has a `token` input, the dogfood's invocation of it. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
@@ -14129,23 +14143,6 @@ Enabled by default for root projects. Disabled for non-root projects.
 
 ---
 
-##### `dogfood`<sup>Required</sup> <a name="dogfood" id="@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood"></a>
-
-```typescript
-public readonly dogfood: ActionDogfoodOptions;
-```
-
-- *Type:* <a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a>
-
-The dogfood scenario (AD-001).
-
-What fixture state, what to assert, and
-how to clean up are specified by the action's own F### spec - the
-highest-risk behavior of that action. Required: a default no-op
-dogfood would silently hollow out a load-bearing AD-001 workflow.
-
----
-
 ##### `sonarHostUrl`<sup>Required</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl"></a>
 
 ```typescript
@@ -14174,6 +14171,30 @@ One-line description of the action.
 
 Used in the default README
 template and recorded in the private `package.json`.
+
+---
+
+##### `dogfood`<sup>Optional</sup> <a name="dogfood" id="@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood"></a>
+
+```typescript
+public readonly dogfood: ActionDogfoodOptions;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a>
+- *Default:* `test-dogfood.yml` runs one failing step that tells you to declare a scenario
+
+The dogfood scenario (AD-001).
+
+What fixture state, what to assert, and
+how to clean up are specified by the action's own F### spec - the
+highest-risk behavior of that action.
+
+Its type is a struct, which projen's CLI cannot render into a projenrc,
+so it can only be written by hand - it is therefore optional, because a
+*required* option `projen new` cannot supply would make this project
+type impossible to scaffold. AD-001's "never a silent no-op dogfood"
+rule is enforced instead by the workflow it generates in that case: a
+single step that fails on every PR until a scenario is declared.
 
 ---
 
@@ -14580,7 +14601,8 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarQube project key. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.cdkDeployHook">cdkDeployHook</a></code> | <code><a href="#@xpertss/projen-types.CdkDeployHookOptions">CdkDeployHookOptions</a></code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.cdkDeployHook">cdkDeployHook</a></code> | <code>boolean</code> | Whether to generate the `deploy-cdk` workflow at all. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.cdkDeployTargetRepo">cdkDeployTargetRepo</a></code> | <code>string</code> | The companion CDK infra/app repo (`owner/repo`) whose `deploy.yml` the `deploy-cdk` workflow dispatches. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.dockerRegistry">dockerRegistry</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets to offer on the `CdkDeployHook`'s manual-dispatch workflow, when the hook is enabled. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.useFlyway">useFlyway</a></code> | <code>boolean</code> | *No description.* |
@@ -14656,11 +14678,29 @@ public readonly version: string;
 ##### `cdkDeployHook`<sup>Optional</sup> <a name="cdkDeployHook" id="@xpertss/projen-types.JavaServiceProjectOptions.property.cdkDeployHook"></a>
 
 ```typescript
-public readonly cdkDeployHook: CdkDeployHookOptions;
+public readonly cdkDeployHook: boolean;
 ```
 
-- *Type:* <a href="#@xpertss/projen-types.CdkDeployHookOptions">CdkDeployHookOptions</a>
-- *Default:* { enabled: true }
+- *Type:* boolean
+- *Default:* true
+
+Whether to generate the `deploy-cdk` workflow at all.
+
+---
+
+##### `cdkDeployTargetRepo`<sup>Optional</sup> <a name="cdkDeployTargetRepo" id="@xpertss/projen-types.JavaServiceProjectOptions.property.cdkDeployTargetRepo"></a>
+
+```typescript
+public readonly cdkDeployTargetRepo: string;
+```
+
+- *Type:* string
+- *Default:* `deploy-cdk.yml` is generated with a single failing step that tells you to set this
+
+The companion CDK infra/app repo (`owner/repo`) whose `deploy.yml` the `deploy-cdk` workflow dispatches.
+
+A plain string rather than a nested struct so that
+`projen new --from
 
 ---
 

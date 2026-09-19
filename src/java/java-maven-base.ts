@@ -1,9 +1,10 @@
-import { Task, github, java, javascript } from 'projen';
+import { Task, github, java } from 'projen';
 import { CommonJavaOptions } from './options';
 import { ActionsAllowlistGuard } from '../common/actions-allowlist-guard';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
+import { attachTypeScriptProjenrc } from '../common/projenrc-ts';
 import { UpgradeWorkflow } from '../common/upgrade-workflow';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
 
@@ -21,23 +22,33 @@ export class JavaMavenProject extends java.JavaProject {
 
   constructor(options: JavaMavenProjectOptions) {
     super({
+      // Spread first, overrides after: forwarding the caller's options is
+      // what lets `projen new --from @xpertss/projen-types java_library`
+      // work - projen smuggles its bootstrap marker (`__new__`) through the
+      // options object, and it is that marker which makes the
+      // `ProjenrcFile` component write the initial `.projenrc.ts`. Drop it
+      // and `projen new` scaffolds a repo with no projenrc at all.
+      ...options,
       name: options.name,
       groupId: options.groupId,
       artifactId: options.artifactId,
       version: options.version ?? '0.1.0',
-      // Consumers author their config as a Node-side `.projenrc.js` (this
+      // Consumers author their config as a Node-side `.projenrc.ts` (this
       // package only publishes an npm jsii target, no java target), not a
       // hand-written `src/test/java/projenrc.java` - so java.JavaProject's
       // own Java-native projenrc (which wires the default task to `mvn
       // compiler:testCompile && mvn exec:java ...`) would be wrong here.
-      // Disable it and attach the standard JS one instead.
+      // Disable it and attach the TypeScript one instead.
       projenrcJava: false,
       projenCredentials: github.GithubCredentials.fromPersonalAccessToken({
         secret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
       }),
     });
 
-    new javascript.Projenrc(this);
+    // `.projenrc.ts` + `npx projen`, same as every other type here. The
+    // Maven repo needs no TypeScript toolchain of its own - the runner is
+    // fetched (pinned) by npx at synth time.
+    attachTypeScriptProjenrc(this);
 
     const gh = this.github;
     if (!gh) {

@@ -286,7 +286,7 @@ test('sonarHostUrl is required', () => {
   expect(() => new GitHubActionProject(options as any)).toThrow(/sonarHostUrl/);
 });
 
-test('dogfood.scenario and dogfood.cleanup are required', () => {
+test('a declared dogfood must be complete - scenario and cleanup both required', () => {
   const withoutScenario = baseOptions();
   (withoutScenario as any).dogfood.scenario = [];
   expect(() => new GitHubActionProject(withoutScenario as any)).toThrow(/scenario/);
@@ -294,6 +294,24 @@ test('dogfood.scenario and dogfood.cleanup are required', () => {
   const withoutCleanup = baseOptions();
   (withoutCleanup as any).dogfood.cleanup = [];
   expect(() => new GitHubActionProject(withoutCleanup as any)).toThrow(/cleanup/);
+});
+
+test('no dogfood declared still synthesizes - test-dogfood.yml fails on every PR', () => {
+  const options = baseOptions();
+  delete (options as any).dogfood;
+
+  const snapshot = synthSnapshot(new GitHubActionProject(options as any));
+  const dogfood = snapshot['.github/workflows/test-dogfood.yml'];
+
+  expect(dogfood.on.pull_request.branches).toEqual(['main']);
+  // No nightly canary while there is nothing to run.
+  expect(dogfood.on.schedule).toBeUndefined();
+  expect(dogfood.jobs.dogfood.permissions).toEqual({ contents: 'read' });
+
+  const steps = dogfood.jobs.dogfood.steps;
+  expect(steps).toHaveLength(1);
+  expect(steps[0].run).toContain('no dogfood scenario');
+  expect(steps[0].run).toContain('exit 1');
 });
 
 test('readme.contents override round-trips', () => {
@@ -305,4 +323,15 @@ test('readme.contents override round-trips', () => {
   );
 
   expect(snapshot['README.md']).toContain('# Custom Readme');
+});
+
+test('default task re-runs .projenrc.ts - the repo is configured in TypeScript', () => {
+  const snapshot = synthSnapshot(new GitHubActionProject(baseOptions()));
+
+  expect(snapshot['.projen/tasks.json'].tasks.default.steps).toEqual([
+    {
+      exec: 'npx -y -p ts-node@10.9.2 -p typescript@6.0.3 ts-node --project tsconfig.projen.json .projenrc.ts',
+    },
+  ]);
+  expect(snapshot['tsconfig.projen.json'].include).toContain('.projenrc.ts');
 });

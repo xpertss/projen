@@ -20,13 +20,10 @@ export class JavaServiceProject extends JavaMavenProject {
       new FlywayMigration(this);
     }
 
-    const cdkDeployHook = options.cdkDeployHook ?? { enabled: true };
-    if (cdkDeployHook.enabled ?? true) {
-      new CdkDeployHook(
-        this,
-        options.environments ?? ['prod'],
-        cdkDeployHook,
-      );
+    if (options.cdkDeployHook ?? true) {
+      new CdkDeployHook(this, options.environments ?? ['prod'], {
+        targetRepo: options.cdkDeployTargetRepo,
+      });
     }
   }
 }

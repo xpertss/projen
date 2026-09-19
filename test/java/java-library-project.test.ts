@@ -19,7 +19,7 @@ test('synthesizes pom.xml, build workflow, publish workflow, and code index by d
   expect(snapshot['.github/workflows/actions-allowlist-guard.yml']).toBeDefined();
 });
 
-test('default task re-runs the Node-side .projenrc.js, not java.JavaProject\'s Maven-native projenrc', () => {
+test('default task re-runs the Node-side .projenrc.ts, not java.JavaProject\'s Maven-native projenrc', () => {
   const snapshot = synthSnapshot(
     new JavaLibraryProject({
       name: 'lib-test',
@@ -29,7 +29,9 @@ test('default task re-runs the Node-side .projenrc.js, not java.JavaProject\'s M
   );
 
   expect(snapshot['.projen/tasks.json'].tasks.default.steps).toEqual([
-    { execArgs: ['node', '.projenrc.js'] },
+    {
+      exec: 'npx -y -p ts-node@10.9.2 -p typescript@6.0.3 ts-node --project tsconfig.projen.json .projenrc.ts',
+    },
   ]);
   expect(snapshot['pom.xml']).not.toContain('exec-maven-plugin');
   expect(snapshot['pom.xml']).not.toContain('io.github.cdklabs');
