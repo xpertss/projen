@@ -55,6 +55,9 @@ export class JavaMavenProject extends java.JavaProject {
     // fetched (pinned) by npx at synth time.
     attachTypeScriptProjenrc(this);
 
+    // JetBrains IDE state (.idea/) is never tracked in generated repos.
+    this.addGitIgnore('/.idea/*');
+
     const gh = this.github;
     if (!gh) {
       throw new Error('JavaMavenProject requires GitHub integration');

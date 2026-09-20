@@ -15,3 +15,14 @@ test('publishes to GitHub Packages only', () => {
   expect(snapshot['.github/workflows/publish-docker.yml']).toBeUndefined();
   expect(snapshot['.github/workflows/deploy-cdk.yml']).toBeUndefined();
 });
+
+test('gitignore excludes JetBrains IDE state', () => {
+  const snapshot = synthSnapshot(
+    new JavaAppProject({
+      name: 'app-test',
+      groupId: 'com.example',
+      artifactId: 'app-test',
+    }),
+  );
+  expect(snapshot['.gitignore']).toContain('/.idea/*');
+});

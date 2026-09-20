@@ -358,3 +358,8 @@ test('default task re-runs .projenrc.ts - the repo is configured in TypeScript',
   ]);
   expect(snapshot['tsconfig.projen.json'].include).toContain('.projenrc.ts');
 });
+
+test('gitignore excludes JetBrains IDE state', () => {
+  const snapshot = synthSnapshot(new GitHubActionProject(baseOptions()));
+  expect(snapshot['.gitignore']).toContain('/.idea/*');
+});

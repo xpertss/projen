@@ -30,3 +30,10 @@ test('dynamodb engine generates a dynamodb-flavored construct', () => {
     'some-migration-tool',
   );
 });
+
+test('gitignore excludes JetBrains IDE state', () => {
+  const snapshot = synthSnapshot(
+    new CdkAppProject({ name: 'app-test', environments: [] }),
+  );
+  expect(snapshot['.gitignore']).toContain('/.idea/*');
+});

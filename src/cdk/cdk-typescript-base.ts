@@ -77,6 +77,9 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
     this.addDevDeps(`@xpertss/projen-types@${PROJEN_TYPES_VERSION}`);
     this.addDevDeps('esbuild');
 
+    // JetBrains IDE state (.idea/) is never tracked in generated repos.
+    this.addGitIgnore('/.idea/*');
+
     const gh = this.github;
     if (!gh) {
       throw new Error(

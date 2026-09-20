@@ -95,3 +95,10 @@ test('default task re-runs .projenrc.ts - the repo is configured in TypeScript',
   ]);
   expect(snapshot['package.json'].devDependencies['ts-node']).toBeDefined();
 });
+
+test('gitignore excludes JetBrains IDE state', () => {
+  const snapshot = synthSnapshot(
+    new CdkInfraProject({ name: 'infra-test', environments: [] }),
+  );
+  expect(snapshot['.gitignore']).toContain('/.idea/*');
+});

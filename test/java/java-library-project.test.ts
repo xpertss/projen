@@ -99,3 +99,14 @@ test('redirects out-of-policy actions and fixes the upgrade workflow', () => {
   );
   expect(commitStep.uses).toBe('xpertss/auto-commit@PLACEHOLDER_SHA');
 });
+
+test('gitignore excludes JetBrains IDE state', () => {
+  const snapshot = synthSnapshot(
+    new JavaLibraryProject({
+      name: 'lib-test',
+      groupId: 'com.example',
+      artifactId: 'lib-test',
+    }),
+  );
+  expect(snapshot['.gitignore']).toContain('/.idea/*');
+});

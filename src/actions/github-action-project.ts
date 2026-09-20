@@ -156,6 +156,9 @@ export class GitHubActionProject extends github.GitHubProject {
     }
     applyInternalActionOverrides(gh);
 
+    // JetBrains IDE state (.idea/) is never tracked in generated repos.
+    this.addGitIgnore('/.idea/*');
+
     new ProjenDriftCheckWorkflow(this, {
       gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
     });
