@@ -256,7 +256,7 @@ public readonly workflow: TaskWorkflow;
 
 ### ActionDogfoodWorkflow <a name="ActionDogfoodWorkflow" id="@xpertss/projen-types.ActionDogfoodWorkflow"></a>
 
-Per AD-001's dogfood test: the composite action is run **against this repo**, end-to-end, via a local `uses: .` reference - no external harness. Builds `test-dogfood.yml` from an ordered `scenario` of invocation steps (see `ActionDogfoodStep`) followed by a shared cleanup step.
+Per AD-001's dogfood test: the composite action is run **against this repo**, end-to-end, via a local `uses: ./` reference - no external harness. Builds `test-dogfood.yml` from an ordered `scenario` of invocation steps (see `ActionDogfoodStep`) followed by a shared cleanup step.
 
 Omitting `options` generates the workflow with a single failing step (see
 `UNCONFIGURED_STEPS`). A *partially* declared dogfood is still a synth
@@ -12647,7 +12647,7 @@ One or more scenario steps, run in order, in the dogfood job.
 
 ### ActionDogfoodStep <a name="ActionDogfoodStep" id="@xpertss/projen-types.ActionDogfoodStep"></a>
 
-One invocation of the action within the dogfood scenario: optional fixture setup, the `uses: .` call with this step's inputs, then this step's assertions. Most actions need exactly one; actions with a re-run/no-op behavior to verify (e.g. F006's reuse-the-PR path, F007's no-op-commit path) declare two.
+One invocation of the action within the dogfood scenario: optional fixture setup, the `uses: ./` call with this step's inputs, then this step's assertions. Most actions need exactly one; actions with a re-run/no-op behavior to verify (e.g. F006's reuse-the-PR path, F007's no-op-commit path) declare two.
 
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.ActionDogfoodStep.Initializer"></a>
 
@@ -12664,8 +12664,8 @@ const actionDogfoodStep: ActionDogfoodStep = { ... }
 | <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.assertions">assertions</a></code> | <code>string[]</code> | Shell assertions after this invocation - the job fails unless every one exits 0. |
 | <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.name">name</a></code> | <code>string</code> | Label used to name this step-group's generated workflow steps. |
 | <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.fixtureSteps">fixtureSteps</a></code> | <code>string[]</code> | Shell steps executed before this invocation, to produce or alter fixture state. |
-| <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.id">id</a></code> | <code>string</code> | Step id for the `uses: .` invocation, so a later assertion can reference this step's outputs via `${{ steps.<id>.outputs.<name> }}`. |
-| <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.inputs">inputs</a></code> | <code>{[ key: string ]: string}</code> | `with:` inputs for this invocation's local `uses: .` call. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.id">id</a></code> | <code>string</code> | Step id for the `uses: ./` invocation, so a later assertion can reference this step's outputs via `${{ steps.<id>.outputs.<name> }}`. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodStep.property.inputs">inputs</a></code> | <code>{[ key: string ]: string}</code> | `with:` inputs for this invocation's local `uses: ./` call. |
 
 ---
 
@@ -12715,7 +12715,7 @@ public readonly id: string;
 - *Type:* string
 - *Default:* a slug derived from `name`, disambiguated by position
 
-Step id for the `uses: .` invocation, so a later assertion can reference this step's outputs via `${{ steps.<id>.outputs.<name> }}`.
+Step id for the `uses: ./` invocation, so a later assertion can reference this step's outputs via `${{ steps.<id>.outputs.<name> }}`.
 
 ---
 
@@ -12728,7 +12728,7 @@ public readonly inputs: {[ key: string ]: string};
 - *Type:* {[ key: string ]: string}
 - *Default:* {}
 
-`with:` inputs for this invocation's local `uses: .` call.
+`with:` inputs for this invocation's local `uses: ./` call.
 
 ---
 

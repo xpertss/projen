@@ -89,7 +89,7 @@ test('every uses: is actions/* (floating major, exact version, or SHA), or the l
 
   expect(uses.length).toBeGreaterThan(0);
   for (const ref of uses) {
-    if (ref === '.') continue;
+    if (ref === './') continue;
     expect(ref).toMatch(/^actions\//);
     expect(ref).not.toMatch(/@latest/);
     // Refs are either a 40-char commit SHA, an immutable exact three-part
@@ -156,7 +156,7 @@ test('test-dogfood.yml: scenario steps round-trip in order, cleanup always runs'
   ]);
 
   const first = steps.find((s: any) => s.name === 'Create PR (fresh): run the action');
-  expect(first.uses).toBe('.');
+  expect(first.uses).toBe('./');
   expect(first.with).toEqual({
     token: '${{ secrets.PROJEN_GITHUB_TOKEN }}',
     branch: 'test/dogfood',
@@ -166,7 +166,7 @@ test('test-dogfood.yml: scenario steps round-trip in order, cleanup always runs'
   const second = steps.find(
     (s: any) => s.name === 'Create PR (re-run, reuse): run the action',
   );
-  expect(second.uses).toBe('.');
+  expect(second.uses).toBe('./');
   expect(second.id).toBe('create-pr-re-run-reuse-1');
   expect(second.id).not.toBe(first.id);
 

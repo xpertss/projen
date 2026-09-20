@@ -304,7 +304,7 @@ You get:
 
 - `action.yml` and `auto-commit.sh` are hand-written - this type only lints their content via `build.yml`'s shellcheck/yamllint/actionlint checks.
 - `.github/workflows/build.yml` - lint gate: `apt`-installed shellcheck/yamllint plus a pinned, SHA-256-verified `actionlint` release binary. Gates `main` alongside `sonar.yml`.
-- `.github/workflows/test-dogfood.yml` - runs the `dogfood.scenario` steps above against this repo's own `action.yml` (via `uses: .`), then the shared `cleanup`, on `workflow_dispatch`, every `pull_request`, and nightly. Omit `dogfood` and the workflow still exists, with one step that fails on every PR until you declare a scenario - AD-001 allows a dogfood to be missing loudly, never silently. A *partial* `dogfood` (a scenario with no cleanup) is a synth error.
+- `.github/workflows/test-dogfood.yml` - runs the `dogfood.scenario` steps above against this repo's own `action.yml` (via `uses: ./`), then the shared `cleanup`, on `workflow_dispatch`, every `pull_request`, and nightly. Omit `dogfood` and the workflow still exists, with one step that fails on every PR until you declare a scenario - AD-001 allows a dogfood to be missing loudly, never silently. A *partial* `dogfood` (a scenario with no cleanup) is a synth error.
 - `.github/workflows/sonar.yml` - SonarCloud scan via the Scanner CLI (the quality gate blocks the PR), scanning `action.yml`/`.github/workflows/**`/`**/*.sh` explicitly.
 - `.github/workflows/release.yml` - `feat:`/`fix:` commits on `main` bump the version, tag `vX.Y.Z`, and create a GitHub Release.
 - `.github/workflows/projen-drift-check.yml` and `workflow-change-notice.yml` - drift detection and a change notice, always included.
@@ -365,7 +365,7 @@ Plain strings (`'dev'`) are shorthand for `{ name: 'dev' }`.
 | `sonarHostUrl` | - (required) | URL of your SonarCloud instance (e.g. `https://sonarcloud.io`); must be reachable from github.com-hosted runners |
 | `sonarTokenSecret` | `SONAR_TOKEN` | GitHub secret holding the Sonar token |
 | `sonarPullRequestGate` | `true` | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate |
-| `dogfood` | - (a `test-dogfood.yml` that fails until you declare one) | `ActionDogfoodOptions` - the scenario that exercises the action end-to-end via `uses: .` |
+| `dogfood` | - (a `test-dogfood.yml` that fails until you declare one) | `ActionDogfoodOptions` - the scenario that exercises the action end-to-end via `uses: ./` |
 | `license` | `MIT` | SPDX identifier for the generated `LICENSE` |
 | `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
 
@@ -379,7 +379,7 @@ interface ActionDogfoodOptions {
 
 interface ActionDogfoodStep {
   readonly name: string;                    // labels this step-group's generated workflow steps
-  readonly id?: string;                     // step id for the `uses: .` call; default: a slug of `name`
+  readonly id?: string;                     // step id for the `uses: ./` call; default: a slug of `name`
   readonly fixtureSteps?: string[];         // shell, before the invocation (default: none)
   readonly inputs?: Record<string, string>; // `with:` for this invocation (default: none)
   readonly assertions: string[];            // shell, after the invocation - required, job fails unless all exit 0

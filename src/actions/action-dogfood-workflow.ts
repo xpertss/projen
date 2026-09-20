@@ -9,7 +9,7 @@ const NIGHTLY_DOGFOOD_SCHEDULE = '17 3 * * *';
 
 /**
  * One invocation of the action within the dogfood scenario: optional fixture
- * setup, the `uses: .` call with this step's inputs, then this step's
+ * setup, the `uses: ./` call with this step's inputs, then this step's
  * assertions. Most actions need exactly one; actions with a re-run/no-op
  * behavior to verify (e.g. F006's reuse-the-PR path, F007's no-op-commit
  * path) declare two.
@@ -19,7 +19,7 @@ export interface ActionDogfoodStep {
   readonly name: string;
 
   /**
-   * Step id for the `uses: .` invocation, so a later assertion can
+   * Step id for the `uses: ./` invocation, so a later assertion can
    * reference this step's outputs via `${{ steps.<id>.outputs.<name> }}`.
    * @default - a slug derived from `name`, disambiguated by position
    */
@@ -33,7 +33,7 @@ export interface ActionDogfoodStep {
   readonly fixtureSteps?: string[];
 
   /**
-   * `with:` inputs for this invocation's local `uses: .` call.
+   * `with:` inputs for this invocation's local `uses: ./` call.
    * @default {}
    */
   readonly inputs?: Record<string, string>;
@@ -75,7 +75,7 @@ const UNCONFIGURED_STEPS: string[] = [
 
 /**
  * Per AD-001's dogfood test: the composite action is run **against this
- * repo**, end-to-end, via a local `uses: .` reference - no external harness.
+ * repo**, end-to-end, via a local `uses: ./` reference - no external harness.
  * Builds `test-dogfood.yml` from an ordered `scenario` of invocation steps
  * (see `ActionDogfoodStep`) followed by a shared cleanup step.
  *
@@ -128,7 +128,7 @@ export class ActionDogfoodWorkflow extends Component {
       steps.push({
         id: step.id ?? slug(step.name, index),
         name: `${step.name}: run the action`,
-        uses: '.',
+        uses: './',
         ...(hasInputs ? { with: step.inputs } : {}),
       });
 
