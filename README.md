@@ -362,6 +362,29 @@ Most actions need exactly one `scenario` step. Actions with a re-run/no-op/idemp
 | `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE`, `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD` | `JavaLibraryProject` without `mavenCentralOidc` | Not needed with OIDC trusted publishing |
 | (your Slack webhook secret) | CDK types with `slackWebhookSecret` | Deploy notifications |
 
+## Customizing `.gitignore`
+
+Every project type already ignores JetBrains IDE state (`/.idea/*`). To ignore more, call the inherited `addGitIgnore()` method after constructing the project in your `.projenrc.ts`:
+
+```typescript
+// .projenrc.ts
+import { CdkInfraProject } from '@xpertss/projen-types';
+
+const project = new CdkInfraProject({
+  name: 'my-infra',
+});
+
+project.addGitIgnore('*.log');
+project.addGitIgnore('.env.*');
+project.addGitIgnore('/build/');
+
+project.synth();
+```
+
+The same works for every type - just swap the class (e.g. `JavaServiceProject`, `GitHubActionProject`). Each call takes one standard gitignore glob pattern. There is no `gitignore` constructor option: the project types' option interfaces do not expose one, so patterns go through `addGitIgnore()` instead.
+
+Re-run `npx projen` after editing - `.gitignore` is a generated file, so hand-editing it is caught by the drift check.
+
 ## Going further
 
 The project types are composed from smaller components you can also attach to your own projects:
