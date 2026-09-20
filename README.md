@@ -82,6 +82,12 @@ The diff here is the workflows gaining a `# Purpose:` comment and `sonar.yml` re
 
 Pure infrastructure stacks with optional ECR/ECS and edge-networking constructs.
 
+Scaffold it with the `cdk_infra` type:
+
+```bash
+npx projen new --from @xpertss/projen-types cdk_infra --name media-edge-infra
+```
+
 ```typescript
 // .projenrc.ts
 import { CdkInfraProject } from '@xpertss/projen-types';
@@ -113,6 +119,12 @@ You get:
 
 `CdkInfraProject` plus application source, a database construct, and an app-level build workflow.
 
+Scaffold it with the `cdk_app` type:
+
+```bash
+npx projen new --from @xpertss/projen-types cdk_app --name video-api
+```
+
 ```typescript
 // .projenrc.ts
 import { CdkAppProject } from '@xpertss/projen-types';
@@ -138,6 +150,12 @@ Everything from `CdkInfraProject`, plus:
 ### JavaLibraryProject
 
 A reusable Java library published to Maven Central.
+
+Scaffold it with the `java_library` type:
+
+```bash
+npx projen new --from @xpertss/projen-types java_library --name common-utils --group-id org.xpertss --artifact-id common-utils
+```
 
 ```typescript
 // .projenrc.ts
@@ -167,6 +185,12 @@ You get:
 
 A Spring Boot service that publishes a Docker image and can trigger deploys in a companion CDK repo.
 
+Scaffold it with the `java_service` type:
+
+```bash
+npx projen new --from @xpertss/projen-types java_service --name stream-processor --group-id org.xpertss --artifact-id stream-processor
+```
+
 ```typescript
 // .projenrc.ts
 import { JavaServiceProject } from '@xpertss/projen-types';
@@ -194,6 +218,12 @@ You get (everything from `JavaMavenProject` - `pom.xml`, `build` + drift check, 
 
 A GUI/TUI/CLI Java application published to GitHub Packages only - no Maven Central, no Docker, no CDK deploy hook.
 
+Scaffold it with the `java_app` type:
+
+```bash
+npx projen new --from @xpertss/projen-types java_app --name studio-cli --group-id org.xpertss --artifact-id studio-cli
+```
+
 ```typescript
 // .projenrc.ts
 import { JavaAppProject } from '@xpertss/projen-types';
@@ -213,6 +243,12 @@ You get everything from `JavaMavenProject`, plus `.github/workflows/publish-ghpa
 ### GitHubActionProject
 
 A reusable GitHub Action or Workflow. This example scaffolds an action that stages a folder and, only if it changed, commits and pushes it.
+
+Scaffold it with the `git_hub_action` type:
+
+```bash
+npx projen new --from @xpertss/projen-types git_hub_action --name auto-commit --sonar-host-url https://sonarcloud.io
+```
 
 ```typescript
 // .projenrc.ts
