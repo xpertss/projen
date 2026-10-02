@@ -73,7 +73,7 @@ test('sonar step is only added when sonarProjectKey is set', () => {
   );
 });
 
-test('redirects out-of-policy actions and fixes the upgrade workflow', () => {
+test('upgrade workflow is report-only; code index commit is redirected', () => {
   const snapshot = synthSnapshot(
     new JavaLibraryProject({
       name: 'lib-test',
@@ -82,17 +82,13 @@ test('redirects out-of-policy actions and fixes the upgrade workflow', () => {
     }),
   );
 
-  // F009 override: third-party actions are redirected to xpertss/*
+  // F013: the upgrade workflow reports updates and opens no PR, so it
+  // references no (placeholder) PR action.
   const upgrade = snapshot['.github/workflows/upgrade.yml'];
-  const createPr = upgrade.jobs.upgrade.steps.find(
-    (s: { name: string }) => s.name === 'Create Pull Request',
-  );
-  expect(createPr.uses).toBe('xpertss/create-pull-request@PLACEHOLDER_SHA');
-  // F009 latent defect fix: write permissions + token input
-  expect(upgrade.jobs.upgrade.permissions.contents).toBe('write');
-  expect(upgrade.jobs.upgrade.permissions['pull-requests']).toBe('write');
-  expect(createPr.with.token).toBe('${{ secrets.PROJEN_GITHUB_TOKEN }}');
+  expect(upgrade.jobs.upgrade.permissions).toEqual({ contents: 'read' });
+  expect(JSON.stringify(upgrade)).not.toContain('create-pull-request');
 
+  // F009 override: third-party actions are redirected to xpertss/*
   const codeindex = snapshot['.github/workflows/codeindex.yml'];
   const commitStep = codeindex.jobs.codeindex.steps.find(
     (s: { name: string }) => s.name === 'Commit code index',
@@ -100,7 +96,27 @@ test('redirects out-of-policy actions and fixes the upgrade workflow', () => {
   expect(commitStep.uses).toBe('xpertss/auto-commit@PLACEHOLDER_SHA');
 });
 
-test('gitignore excludes JetBrains IDE state', () => {
+test('attaches source and javadoc jars, single- and multi-module', () => {
+  const single = new JavaLibraryProject({
+    name: 'lib-test',
+    groupId: 'com.example',
+    artifactId: 'lib-test',
+  });
+  const multi = new JavaLibraryProject({
+    name: 'lib-test',
+    groupId: 'com.example',
+    artifactId: 'lib-parent',
+  });
+  multi.addModule({ dir: 'core', artifactId: 'lib-core' });
+
+  for (const project of [single, multi]) {
+    const pom: string = synthSnapshot(project)['pom.xml'];
+    expect(pom).toMatch(/<id>attach-sources<\/id>\s*<goals>\s*<goal>jar-no-fork<\/goal>/);
+    expect(pom).toMatch(/<id>attach-javadocs<\/id>\s*<goals>\s*<goal>jar<\/goal>/);
+  }
+});
+
+test('gitignore excludes JetBrains IDE state and /spec/', () => {
   const snapshot = synthSnapshot(
     new JavaLibraryProject({
       name: 'lib-test',
@@ -109,4 +125,5 @@ test('gitignore excludes JetBrains IDE state', () => {
     }),
   );
   expect(snapshot['.gitignore']).toContain('/.idea/*');
+  expect(snapshot['.gitignore']).toContain('/spec/');
 });

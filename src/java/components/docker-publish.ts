@@ -1,6 +1,6 @@
 import { Component, github } from 'projen';
-import type { java } from 'projen';
 import { noteWorkflowPurpose } from '../../common/workflow-purpose';
+import type { JavaMavenProject } from '../java-maven-base';
 
 export interface DockerPublishOptions {
   /** @default "docker.io" */
@@ -9,7 +9,7 @@ export interface DockerPublishOptions {
 
 /** On-demand build+push of a Docker image, defaulting to Docker Hub. */
 export class DockerPublish extends Component {
-  constructor(project: java.JavaProject, options: DockerPublishOptions = {}) {
+  constructor(project: JavaMavenProject, options: DockerPublishOptions = {}) {
     super(project, 'DockerPublish');
 
     const gh = project.github;

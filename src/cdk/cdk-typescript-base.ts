@@ -1,6 +1,7 @@
 import { awscdk, github, javascript } from 'projen';
 import { CommonCdkOptions } from './options';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
+import { addEditorConfig } from '../common/editorconfig';
 import { EnvironmentOptions } from '../common/environment-options';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ManualDeployWorkflow } from '../common/manual-deploy-workflow';
@@ -77,8 +78,15 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
     this.addDevDeps(`@xpertss/projen-types@${PROJEN_TYPES_VERSION}`);
     this.addDevDeps('esbuild');
 
-    // JetBrains IDE state (.idea/) is never tracked in generated repos.
+    // JetBrains IDE state (.idea/) is never tracked in generated repos, and
+    // neither is /spec/ (local plans and specs; the pattern covers every
+    // subdirectory).
     this.addGitIgnore('/.idea/*');
+    this.addGitIgnore('/spec/');
+
+    if (options.editorconfig ?? true) {
+      addEditorConfig(this);
+    }
 
     const gh = this.github;
     if (!gh) {

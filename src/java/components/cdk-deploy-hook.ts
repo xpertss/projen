@@ -1,7 +1,7 @@
 import { Component } from 'projen';
-import type { java } from 'projen';
 import { EnvironmentOptions } from '../../common/environment-options';
 import { ManualDeployWorkflow } from '../../common/manual-deploy-workflow';
+import type { JavaMavenProject } from '../java-maven-base';
 import { CdkDeployHookOptions } from '../options';
 
 /**
@@ -19,7 +19,7 @@ import { CdkDeployHookOptions } from '../options';
  */
 export class CdkDeployHook extends Component {
   constructor(
-    project: java.JavaProject,
+    project: JavaMavenProject,
     environments: (string | EnvironmentOptions)[],
     options: CdkDeployHookOptions = {},
   ) {

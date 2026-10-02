@@ -54,7 +54,7 @@ test('no cdkDeployTargetRepo still synthesizes - deploy-cdk.yml fails loudly whe
   expect(run).not.toContain('createWorkflowDispatch');
 });
 
-test('gitignore excludes JetBrains IDE state', () => {
+test('gitignore excludes JetBrains IDE state and /spec/', () => {
   const snapshot = synthSnapshot(
     new JavaServiceProject({
       name: 'svc-test',
@@ -63,4 +63,5 @@ test('gitignore excludes JetBrains IDE state', () => {
     }),
   );
   expect(snapshot['.gitignore']).toContain('/.idea/*');
+  expect(snapshot['.gitignore']).toContain('/spec/');
 });

@@ -10,12 +10,26 @@ Instead of hand-maintaining `pom.xml`, `cdk.json`, and GitHub workflows, you dec
 | --- | --- | --- | --- |
 | `CdkInfraProject` | Pure-infrastructure CDK stacks (CloudFront, Route53, SQS, API Gateway, Cognito, ECR/ECS for externally-built images) | - | `build` (PR checks), `deploy` (manual dispatch) |
 | `CdkAppProject` | Full TypeScript service behind API Gateway: infra + app source + database | - | `build`, `deploy`, `app-build` (PR checks) |
-| `JavaLibraryProject` | Reusable Java library | Maven Central | `build`, `upgrade` (nightly), `publish-maven-central`, `codeindex` |
-| `JavaServiceProject` | Spring Boot service | Docker Hub | `build`, `upgrade` (nightly), `publish-docker`, `deploy-cdk` |
-| `JavaAppProject` | GUI/TUI/CLI Java application | GitHub Packages | `build`, `upgrade` (nightly), `publish-ghpackages` |
+| `JavaMavenProject` | Plain Maven project, single- or multi-module, no framework | - | `build`, `upgrade` (nightly report) |
+| `JavaLibraryProject` | Reusable Java library | Maven Central | `build`, `upgrade` (nightly report), `publish-maven-central`, `codeindex` |
+| `JavaAppProject` | GUI/TUI/CLI Java application | GitHub Packages | `build`, `upgrade` (nightly report), `publish-ghpackages` |
+| `JavaSpringBootProject` | Spring Boot on Maven, single- or multi-module, **no Docker** | - | `build`, `upgrade` (nightly report) |
+| `JavaServiceProject` | Spring Boot service deployed as a container | Docker Hub | `build`, `upgrade` (nightly report), `publish-docker`, `deploy-cdk` |
 | `GitHubActionProject` | Reusable GitHub Action or Workflow | GitHub Releases | `build`, `test-dogfood`, `sonar`, `release` |
 
-Two foundation classes are also exported for advanced use: `CdkTypescriptProject` (shared CDK + TypeScript base for the CDK types) and `JavaMavenProject` (shared Maven base for the Java types).
+The Java types are layered, so pick the lowest layer that does what you need:
+
+```text
+JavaMavenProject            java_maven         Maven only; single- or multi-module; any supported Java line
+├── JavaLibraryProject      java_library       + Maven Central publish, source/javadoc jars, code index
+├── JavaAppProject          java_app           + GitHub Packages publish
+└── JavaSpringBootProject   java_spring_boot   + Spring Boot BOM and executable-jar repackaging; no Docker/Flyway/CDK
+    └── JavaServiceProject  java_service       + Docker publish, Flyway, CDK deploy hook (single-module)
+```
+
+Every Java type targets a configurable Java line (`javaVersion`: `1.8`, `17`, `21` or `25`; see [Java version support](#java-version-support)), and every one except `JavaServiceProject` can be a multi-module Maven reactor (see [JavaMavenProject](#javamavenproject)).
+
+One foundation class is also exported for advanced use: `CdkTypescriptProject` (shared CDK + TypeScript base for the CDK types).
 
 All project types:
 
@@ -35,12 +49,34 @@ npx projen new --from @xpertss/projen-types cdk_infra --name my-project
 
 That writes a starter `.projenrc.ts`, synthesizes the whole scaffold and
 installs dependencies. The type names `projen new` accepts are `cdk_infra`,
-`cdk_app`, `java_library`, `java_service`, `java_app` and
-`git_hub_action`; pass a bogus one to have it list them. Required options
-become flags: `--name` for every type, plus `--group-id`/`--artifact-id`
-(Java) and `--sonar-host-url` (`git_hub_action`). Any other plainly-typed
-option can be passed the same way - `--cdk-deploy-target-repo owner/repo`,
-`--docker-registry ghcr.io`, `--no-use-flyway`, and so on.
+`cdk_app`, `java_maven`, `java_library`, `java_app`, `java_spring_boot`,
+`java_service` and `git_hub_action`; pass a bogus one to have it list them.
+Required options become flags: `--name` for every type, plus
+`--group-id`/`--artifact-id` (Java) and `--sonar-host-url`
+(`git_hub_action`). Any other plainly-typed option can be passed the same
+way - `--java-version 1.8`, `--cdk-deploy-target-repo owner/repo`,
+`--docker-registry ghcr.io`, `--no-use-flyway`, and so on. Modules can't be
+passed on the command line; add them to `.projenrc.ts` afterwards (see
+[JavaMavenProject](#javamavenproject)).
+
+**Adding projen to a repo that already has content.** `projen new` runs
+`git init` and commits the scaffold by default. In a repo with existing work,
+pass `--no-git` so it writes the files and leaves committing to you:
+
+```bash
+cd existing-repo
+npx projen new --from @xpertss/projen-types java_spring_boot --name obeya --group-id org.xpertss.obeya --artifact-id obeya-parent --no-git
+```
+
+**Commit a lockfile.** The generated `build.yml` and drift check install the
+toolchain with `npm ci`, which needs a committed `package-lock.json`, and
+`projen new` doesn't always leave one behind. Run `npm install` once and
+commit `package-lock.json` along with the scaffold. Without it those
+workflows fail with an `::error::` that says exactly this. For the Java
+types, `package.json` is generated, and it pins `projen` and
+`@xpertss/projen-types` to **exact** versions (no `^`), so every machine and
+CI run uses the same generator. A floating range would make the drift check
+report the differences between generator versions as drift.
 
 Commit the result. From then on, every change to the scaffold goes through
 `.projenrc.ts` followed by `npx projen`:
@@ -59,7 +95,9 @@ deploy workflow; leaving `dogfood` out (or a service's
 fails and tells you what to add - a gate this package considers load-bearing
 is allowed to be missing loudly, never silently.
 
-The `name` option must match the `name` field in the project's `package.json` (for the CDK types) or the project name used by projen's `java.JavaProject` (for the Java types).
+The `name` option must match the `name` field in the project's `package.json` (for the CDK types). For the Java types it becomes the root pom's `<name>` and the generated `package.json` name.
+
+> **Never write projen's generated-file marker text literally in `.projenrc.ts`.** projen deletes, as an orphaned generated file, any file containing the marker line (`~~ Generated by projen. To modify, ...`), and that includes `.projenrc.ts` itself. When you generate a file yourself (for example with `TextFile`), insert the marker through the file's `marker` property: ``file.addLine(`# ${file.marker}`)``.
 
 ## Updating an existing project when this package changes
 
@@ -147,6 +185,90 @@ Everything from `CdkInfraProject`, plus:
 - `src/constructs/database.ts` - a `Database` construct stub for the chosen engine (`postgres`/`mysql` -> RDS, `dynamodb` -> DynamoDB). `migrationTool` (no default, intentionally) is added as a dev dependency and referenced in the stub - wiring it up is left to you.
 - `.github/workflows/app-build.yml` - runs the project's test task on every PR, then checks for projen drift.
 
+### JavaMavenProject
+
+A plain Maven build with no framework and no publish target. It's the base of every other Java type, and it's usable on its own. It's single-module until you add a module, then it's a multi-module reactor.
+
+Scaffold it with the `java_maven` type:
+
+```bash
+npx projen new --from @xpertss/projen-types java_maven --name legacy-tools --group-id org.xpertss --artifact-id legacy-tools --java-version 1.8
+```
+
+**Single module:**
+
+```typescript
+// .projenrc.ts
+import { JavaMavenProject } from '@xpertss/projen-types';
+
+const project = new JavaMavenProject({
+  name: 'legacy-tools',
+  groupId: 'org.xpertss',
+  artifactId: 'legacy-tools',
+  javaVersion: '1.8',
+});
+
+project.addDependency('commons-io/commons-io@2.20.0');    // exact version
+project.addTestDependency('org.assertj/assertj-core@3.27.3');
+
+project.synth();
+```
+
+**Multi-module:** each `addModule()` call adds a module directory with its own generated `pom.xml`. The root pom becomes the `pom`-packaged reactor parent. Everything stays one projen project, with one `.projen/`, one `.gitignore` and one `tasks.json`.
+
+```typescript
+// .projenrc.ts
+import { JavaMavenProject } from '@xpertss/projen-types';
+
+const project = new JavaMavenProject({
+  name: 'toolkit',
+  groupId: 'org.xpertss.toolkit',
+  artifactId: 'toolkit-parent',
+  version: '0.1.0-SNAPSHOT',
+  javaVersion: '17',
+});
+
+const model = project.addModule({ dir: 'toolkit-model', artifactId: 'toolkit-model', description: 'Domain model' });
+const stub = project.addModule({ dir: 'tools/stub-model', artifactId: 'toolkit-stub-model' }); // nested dirs are fine
+const cli = project.addModule({ dir: 'toolkit-cli', artifactId: 'toolkit-cli' });
+
+stub.addModuleDependency(model);                     // sibling module: versionless
+cli.addModuleDependency(model);
+cli.addDependency('info.picocli/picocli@4.7.7');     // pinned: the version moves to the parent
+cli.addDependency('org.yaml/snakeyaml');             // versionless: managed below
+project.addManagedDependency('org.yaml/snakeyaml@2.4');
+project.addBom('org.testcontainers/testcontainers-bom@1.21.3');
+
+project.synth();
+```
+
+What the reactor looks like:
+
+- **Root `pom.xml`:**
+  - `<packaging>pom</packaging>`, with `<modules>` in `addModule` order.
+  - `<dependencyManagement>` holds the BOM imports first (`type=pom`, `scope=import`), then every module at `${project.version}`, then every pinned version.
+  - `<pluginManagement>` holds the plugin versions, and versionless `<plugins>` are inherited by every module: compiler, surefire, failsafe, jar, and enforcer.
+  - `junit-jupiter` is a test dependency every module inherits. Its version comes from `junit-bom`, or from the Spring Boot BOM in the Spring Boot types.
+- **Module `pom.xml`:** `<parent>` with the right `relativePath` (`tools/stub-model` → `../../pom.xml`), then `artifactId`, `name`, `description`, and versionless `<dependencies>`. Nothing else, unless the module adds plugins.
+- A version given to `module.addDependency`/`addTestDependency`/`addPlugin` is moved into the parent's `<dependencyManagement>`/`<pluginManagement>`, so every module that uses an artifact gets the same version. Pinning one artifact at two different versions fails the synth.
+- The synth fails with a clear message on:
+  - two modules with the same `artifactId`
+  - two modules with the same `dir`, or one `dir` nested inside another
+  - a `dir` outside the repo
+  - a module depending on itself
+  - `packaging` set to anything but `pom` on a project with modules
+
+You get:
+
+- the root `pom.xml` (and one per module), written by this package:
+  - **exact versions only**: a range such as `^1`, `~1.2` or `[1,2)` fails the synth
+  - the compiler level, enforcer rule and JUnit line all follow `javaVersion`
+- one Maven run per build. `npx projen build` synthesizes, then runs `mvn -B verify`: compile, unit tests (surefire), package, and `*IT` integration tests (failsafe). There is no `mvn deploy` and no `dist/`.
+- `.github/workflows/build.yml`: a PR build that installs the pinned Node toolchain (`npm ci`) and the project's JDK (`actions/setup-java`, Maven cache), then runs `npx projen build`, plus a SonarQube step when `sonarProjectKey` is set. See [Adding CI jobs](#adding-ci-jobs-to-a-java-project).
+- `.github/workflows/upgrade.yml`: a nightly (03:00 UTC) **report** of available dependency and plugin updates in the job summary. It changes nothing, because every version comes from `.projenrc.ts`; apply an update there. Turn it off with `upgradeWorkflow: false`. The same report runs locally with `npx projen upgrade`.
+- the projen drift check, `LICENSE` (MIT by default), `.editorconfig`, and a generated `package.json` that pins the projen toolchain exactly.
+- no sample code, unless `sample: true` on a single-module project.
+
 ### JavaLibraryProject
 
 A reusable Java library published to Maven Central.
@@ -173,17 +295,64 @@ const project = new JavaLibraryProject({
 project.synth();
 ```
 
-You get:
+You get everything from [`JavaMavenProject`](#javamavenproject), so modules work here too, plus:
 
-- `pom.xml` (via projen's `java.JavaProject`) with the given GAV coordinates.
-- `.github/workflows/build.yml` - PR build + projen drift check, plus a SonarQube scan step when `sonarProjectKey` is set (needs a `SONAR_TOKEN` secret).
-- `.github/workflows/upgrade.yml` - nightly (03:00 UTC) PR running `mvn versions:use-latest-releases versions:update-properties`.
+- `maven-source-plugin` and `maven-javadoc-plugin`, attaching the `-sources`/`-javadoc` jars Maven Central requires. In a multi-module library every module attaches them.
 - `.github/workflows/publish-maven-central.yml` - manual dispatch running `mvn -B deploy -P release`. With `mavenCentralOidc: true` it uses Maven Central's OIDC trusted publishing (no GPG secrets needed); otherwise it expects the secrets `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE`, `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`.
-- `.github/workflows/codeindex.yml` - on push to `main`, generates a Java source index under `.cai/` (disable with `publishCodeIndex: false`).
+- `.github/workflows/codeindex.yml` - on push to `main`, generates a Java source index under `.cai/` covering every module (disable with `publishCodeIndex: false`).
+
+### JavaSpringBootProject
+
+Spring Boot on Maven, single- or multi-module, **without** Docker, Flyway or a deploy hook. It's [`JavaMavenProject`](#javamavenproject) plus Spring Boot dependency management. Use it for a Spring Boot repo that ships something other than this package's container image, such as a multi-module control plane, or for a Boot app you deploy your own way.
+
+Scaffold it with the `java_spring_boot` type:
+
+```bash
+npx projen new --from @xpertss/projen-types java_spring_boot --name obeya --group-id org.xpertss.obeya --artifact-id obeya-parent
+```
+
+```typescript
+// .projenrc.ts
+import { JavaSpringBootProject } from '@xpertss/projen-types';
+
+const project = new JavaSpringBootProject({
+  name: 'obeya',
+  groupId: 'org.xpertss.obeya',
+  artifactId: 'obeya-parent',
+  version: '0.1.0-SNAPSHOT',
+  javaVersion: '21',
+  copyrightOwner: 'Xpert Software',
+});
+
+// plain jar modules: shared libraries, clients, tools
+const model = project.addModule({ dir: 'obeya-model', artifactId: 'obeya-model' });
+const client = project.addModule({ dir: 'obeya-api-client', artifactId: 'obeya-api-client' });
+client.addModuleDependency(model);
+
+// a Spring Boot application module, repackaged into an executable jar
+const server = project.addSpringBootModule({ dir: 'obeya-server', artifactId: 'obeya-server' });
+server.addModuleDependency(model);
+server.addDependency('org.springframework.boot/spring-boot-starter-web');      // versionless: Boot's BOM manages it
+server.addTestDependency('org.springframework.boot/spring-boot-starter-test');
+
+project.addBom('org.testcontainers/testcontainers-bom@1.21.3');
+
+project.synth();
+```
+
+You get everything from [`JavaMavenProject`](#javamavenproject), plus:
+
+- `spring-boot-dependencies` imported as the **first** BOM, so starters and every library Boot manages (JUnit included) are added without a version. `springBootVersion` sets it; the default is the newest release of the line that supports `javaVersion` (see [Java version support](#java-version-support)).
+- `spring-boot-maven-plugin`, versioned in `<pluginManagement>`:
+  - In a **single-module** project the root jar is repackaged into an executable jar.
+  - In a **multi-module** project only modules added with `addSpringBootModule()` are repackaged; `addModule()` modules stay plain jars.
+  - A repackaged module needs its `@SpringBootApplication` class before `mvn verify` passes, because `repackage` fails with `Unable to find main class` until one exists. Add a module as a plain `addModule()` while it's still empty.
+- failsafe configured to run integration tests against the compiled classes rather than the repackaged jar (as `spring-boot-starter-parent` does).
+- no starters, no Docker, no Flyway, no CDK. Add the starters you need with `addDependency`.
 
 ### JavaServiceProject
 
-A Spring Boot service that publishes a Docker image and can trigger deploys in a companion CDK repo.
+A Spring Boot service that publishes a Docker image and can trigger deploys in a companion CDK repo. It is [`JavaSpringBootProject`](#javaspringbootproject) plus Docker, Flyway and a deploy hook. It is **single-module**, because the Docker build, the migrations and the deploy hook all assume one deployable at the repo root; `addModule()` fails and points you to `JavaSpringBootProject`.
 
 Scaffold it with the `java_service` type:
 
@@ -207,11 +376,11 @@ const project = new JavaServiceProject({
 project.synth();
 ```
 
-You get (everything from `JavaMavenProject` - `pom.xml`, `build` + drift check, nightly `upgrade` - plus):
+You get everything from [`JavaSpringBootProject`](#javaspringbootproject) (and so from `JavaMavenProject`), plus:
 
-- `spring-boot-starter-web` added to the pom.
+- `spring-boot-starter-web` added to the pom (versionless; Boot's BOM manages it).
 - `.github/workflows/publish-docker.yml` - manual dispatch: `mvn -B package && docker build -t <registry>/<name>:<sha>`, logged in with the `DOCKER_USERNAME` / `DOCKER_PASSWORD` secrets. `dockerRegistry` defaults to `docker.io`.
-- Flyway wiring when `useFlyway` (default `true`): `flyway-maven-plugin` ^10 + `flyway-core` ^10 in the pom, and `src/main/resources/db/migration/V1__init.sql`.
+- Flyway wiring when `useFlyway` (default `true`): `flyway-core` (versionless, so it matches what Boot's Flyway auto-configuration expects), `flyway-maven-plugin` pinned for the Java line, and `src/main/resources/db/migration/V1__init.sql`.
 - `.github/workflows/deploy-cdk.yml` (the `CdkDeployHook`, generated by default) - manual dispatch with an environment selector; each job sends a `workflow_dispatch` to `deploy.yml` in the companion `cdkDeployTargetRepo` (a `CdkInfraProject`/`CdkAppProject` repo). With no `cdkDeployTargetRepo` set, the workflow is still generated but each job's only step fails with instructions - it is dispatch-only, so that lands on whoever tries to deploy rather than on every PR. Turn the workflow off entirely with `cdkDeployHook: false`. `environments` defaults to `['prod']`.
 
 ### JavaAppProject
@@ -238,7 +407,7 @@ const project = new JavaAppProject({
 project.synth();
 ```
 
-You get everything from `JavaMavenProject`, plus `.github/workflows/publish-ghpackages.yml` - manual dispatch running `mvn -B deploy -DaltDeploymentRepository=github::<registry>`, authenticated with `GITHUB_TOKEN`. `ghPackagesRegistry` defaults to `https://maven.pkg.github.com/<repo>` derived from the repository URL.
+You get everything from [`JavaMavenProject`](#javamavenproject) (modules included), plus `.github/workflows/publish-ghpackages.yml` - manual dispatch running `mvn -B deploy -DaltDeploymentRepository=github::<registry>`, authenticated with `GITHUB_TOKEN`. `ghPackagesRegistry` defaults to `https://maven.pkg.github.com/<repo>` derived from the repository URL.
 
 ### GitHubActionProject
 
@@ -312,6 +481,60 @@ You get:
 
 Needs the same two secrets as everything else in this package: `PROJEN_GITHUB_TOKEN` (used for automated PR comments) and `SONAR_TOKEN` (the Sonar scan). Onboard a brand-new action repo following [Getting started](#getting-started), write the `.projenrc.ts` above, then hand-write `action.yml`/`auto-commit.sh`/`test/fixtures/`.
 
+## Java version support
+
+`javaVersion` picks the Java line a Java project targets. It defaults to `21`; the supported lines are `1.8` (alias `8`), `17`, `21` and `25`, and any other value fails the synth with that list. **Nothing in the generated build is hard-coded to one Java line.** Everything that depends on it comes from one table in this package, grouped by line:
+
+| | `1.8` | `17` | `21` | `25` |
+| --- | --- | --- | --- | --- |
+| Compiler level | `maven.compiler.source`/`target` = `1.8` (javac 8 has no `--release`) | `maven.compiler.release` = `17` | `release` = `21` | `release` = `25` |
+| Enforcer `requireJavaVersion` | `[1.8,)` | `[17,)` | `[21,)` | `[25,)` |
+| JUnit (`junit-bom`) | 5.14.4 (JUnit 6 needs Java 17) | 6.1.3 | 6.1.3 | 6.1.3 |
+| Default Spring Boot (`JavaSpringBootProject`) | 2.7.18 (Boot 3+ needs Java 17; a 3.x+ `springBootVersion` fails the synth) | 4.1.1 | 4.1.1 | 4.1.1 |
+| `flyway-maven-plugin` (`JavaServiceProject`) | 9.22.3 | 13.9.0 | 13.9.0 | 13.9.0 |
+| CI JDK (`actions/setup-java` `java-version`) | `8` | `17` | `21` | `25` |
+
+Maven plugins (the same on every line, because all of them run on JDK 8): `maven-compiler-plugin` 3.16.0, `maven-surefire-plugin`/`maven-failsafe-plugin` 3.6.0, `maven-jar-plugin` 3.5.1, `maven-enforcer-plugin` 3.6.3, `maven-source-plugin` 3.4.0 and `maven-javadoc-plugin` 3.12.0 (library only), `versions-maven-plugin` 2.22.0 (the `upgrade` report).
+
+**The enforcer.** `maven-enforcer-plugin` fails the build at the start when the JDK or Maven running it is older than the project needs. Without it you get confusing compiler errors later, or a jar built for the wrong runtime. Its Java rule always follows `javaVersion`. The Maven rule defaults to `[3.9,)`; change it with `minMavenVersion`, or drop the plugin entirely with `enforcer: false`. CI installs the matching JDK through `setup-java`, so the rule only fires on a developer machine with the wrong JDK. A Java 1.8 project builds on any newer JDK (the rule is a minimum), but the JDK 8 runtime API is guaranteed only when you build on JDK 8.
+
+**Overriding a version.** `pluginVersions` replaces any default in the table, keyed by `groupId/artifactId`, with an exact version:
+
+```typescript
+new JavaMavenProject({
+  name: 'svc',
+  groupId: 'org.xpertss',
+  artifactId: 'svc',
+  pluginVersions: {
+    'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6',
+    'org.junit/junit-bom': '5.14.4',
+  },
+});
+```
+
+`project.pinnedVersion('org.apache.maven.plugins/maven-surefire-plugin')` returns the version in effect, for reuse in your own plugin config.
+
+**New Java lines** are one new row in this package's version table and a release. Until a line is listed, `javaVersion` rejects it rather than guessing.
+
+## Adding CI jobs to a Java project
+
+`build.yml` is exposed as `project.buildVerifyWorkflow`, so jobs are added through projen's `addJob` rather than `addOverride`. `project.ciSetupSteps` holds the steps every Maven job here needs: pinned Node, `npm ci`, and the project's JDK with a Maven cache. Every job in `build.yml` can then be made a required check on `main`.
+
+```typescript
+import { github } from 'projen';
+
+project.buildVerifyWorkflow.addJob('integration', {
+  name: 'Container integration tests',
+  runsOn: ['self-hosted', 'linux', 'fedora', 'podman'],
+  permissions: { contents: github.workflows.JobPermission.READ },
+  steps: [
+    { name: 'Checkout', uses: 'actions/checkout@v7' },
+    ...project.ciSetupSteps,
+    { name: 'Integration tests', run: 'mvn -B verify -Pcontainer-its' },
+  ],
+});
+```
+
 ## Common options
 
 CDK project types (`CdkInfraProjectOptions` / `CdkAppProjectOptions`):
@@ -328,16 +551,30 @@ CDK project types (`CdkInfraProjectOptions` / `CdkAppProjectOptions`):
 | `database` | - (app only) | `DatabaseOptions` - `engine` (`postgres`/`mysql`/`dynamodb`, default `postgres`), `migrationTool` |
 | `appEntryPoint` | `src/app.ts` (app only) | Path of the generated application entrypoint |
 
-Java project types (`JavaLibraryProjectOptions` / `JavaServiceProjectOptions` / `JavaAppProjectOptions`):
+Java project types (`JavaMavenProjectOptions` and everything built on it - `JavaLibraryProjectOptions`, `JavaAppProjectOptions`, `JavaSpringBootProjectOptions`, `JavaServiceProjectOptions`):
 
 | Option | Default | Description |
 | --- | --- | --- |
 | `name` | - (required) | Project name |
 | `groupId` | - (required) | Maven group id |
-| `artifactId` | - (required) | Maven artifact id |
-| `version` | `0.1.0` | Maven version |
+| `artifactId` | - (required) | Maven artifact id (of the reactor parent, in a multi-module project) |
+| `version` | `0.1.0` | Maven version; must be exact |
+| `description` / `url` | - | Written to the root pom |
+| `javaVersion` | `21` | Java line: `1.8`, `17`, `21`, `25` - see [Java version support](#java-version-support) |
+| `javaDistribution` | `temurin` | `actions/setup-java` distribution for CI |
+| `packaging` | `jar` | Root packaging while the project has no modules; a project with modules is always `pom` |
+| `sample` | `false` | Starter `Main` + test under the `groupId` package (single-module only) |
+| `enforcer` | `true` | `maven-enforcer-plugin` with Maven and Java version rules |
+| `minMavenVersion` | `3.9` | The enforcer's `requireMavenVersion` minimum |
+| `pluginVersions` | - | Exact-version overrides for this package's defaults, keyed by `groupId/artifactId` |
+| `licensed` | `true` | Write a `LICENSE` |
+| `license` | `MIT` | SPDX identifier for the `LICENSE` |
+| `copyrightOwner` / `copyrightPeriod` | `xpertss` / current year | Named in the `LICENSE` |
+| `editorconfig` | `true` | Write a projen-managed `.editorconfig` (also on the CDK and action types) |
+| `upgradeWorkflow` | `true` | Generate the nightly update report (`upgrade.yml`) |
 | `sonarProjectKey` | - | SonarQube project key; the sonar step is skipped when unset |
 | `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
+| `springBootVersion` | newest Boot for `javaVersion` (Spring Boot types only) | Exact Spring Boot version: the BOM and `spring-boot-maven-plugin` |
 | `cdkDeployTargetRepo` | - (service only; `deploy-cdk.yml` fails until set) | Companion CDK repo (`owner/repo`) whose `deploy.yml` the deploy hook dispatches |
 | `cdkDeployHook` | `true` (service only) | Whether to generate `deploy-cdk.yml` at all |
 | `dockerRegistry` | `docker.io` (service only) | Registry the Docker image is pushed to |
@@ -400,7 +637,7 @@ Most actions need exactly one `scenario` step. Actions with a re-run/no-op/idemp
 
 ## Customizing `.gitignore`
 
-Every project type already ignores JetBrains IDE state (`/.idea/*`). To ignore more, call the inherited `addGitIgnore()` method after constructing the project in your `.projenrc.ts`:
+Every project type already ignores JetBrains IDE state (`/.idea/*`) and the `/spec/` directory with all of its subdirectories (local plans and specs, never committed). The Java types also ignore Maven `target/` output and Eclipse files. To ignore more, call the inherited `addGitIgnore()` method after constructing the project in your `.projenrc.ts`:
 
 ```typescript
 // .projenrc.ts
@@ -431,23 +668,25 @@ The project types are composed from smaller components you can also attach to yo
 | `DatabaseComponent` | `NodeProject` | Database construct stub + migration tool wiring |
 | `EcrEcsConstructs` | `Project` | ECR + Fargate ECS construct helper |
 | `EdgeNetworkingConstructs` | `Project` | Per-resource edge networking construct helpers |
-| `MavenCentralPublish` | `JavaProject` | Manual-dispatch Maven Central publish workflow |
-| `DockerPublish` | `JavaProject` | Manual-dispatch Docker build+push workflow |
-| `GitHubPackagesPublish` | `JavaProject` | Manual-dispatch GitHub Packages publish workflow |
-| `FlywayMigration` | `JavaProject` | Flyway plugin/dependency + migrations directory |
-| `CdkDeployHook` | `JavaProject` | Manual-dispatch workflow that triggers `deploy.yml` in a companion CDK repo |
-| `CodeIndexWorkflow` | `JavaProject` | Code index generation on push to `main` |
+| `MavenPom` | `Project` | A `pom.xml` with modules, BOM imports, dependency/plugin management, and exact versions only |
+| `MavenModule` | `JavaMavenProject` | One module of a reactor (created by `addModule()`) |
+| `MavenUpgradeReport` | `GitHubProject` | Nightly report-only `upgrade.yml` |
+| `MavenCentralPublish` | `JavaMavenProject` | Manual-dispatch Maven Central publish workflow |
+| `DockerPublish` | `JavaMavenProject` | Manual-dispatch Docker build+push workflow |
+| `GitHubPackagesPublish` | `JavaMavenProject` | Manual-dispatch GitHub Packages publish workflow |
+| `FlywayMigration` | `JavaSpringBootProject` | Flyway plugin/dependency + migrations directory |
+| `CdkDeployHook` | `JavaMavenProject` | Manual-dispatch workflow that triggers `deploy.yml` in a companion CDK repo |
+| `CodeIndexWorkflow` | `JavaMavenProject` | Code index generation on push to `main` |
 | `ActionBuildWorkflow` | `GitHubProject` | The `lint` task (shellcheck/yamllint/pinned actionlint) + `build.yml` |
 | `ActionDogfoodWorkflow` | `GitHubProject` | `test-dogfood.yml` from an `ActionDogfoodOptions` scenario |
 | `ActionSonarWorkflow` | `GitHubProject` | `sonar.yml` (SonarCloud scan via the Scanner CLI) |
 
-Example - adding a Docker publish to a plain projen `JavaProject`:
+Example - adding a Docker publish to a `JavaMavenProject` (`JavaServiceProject` is the packaged version of this, with Spring Boot):
 
 ```typescript
-import { java } from 'projen';
-import { DockerPublish } from '@xpertss/projen-types';
+import { DockerPublish, JavaMavenProject } from '@xpertss/projen-types';
 
-const project = new java.JavaProject({
+const project = new JavaMavenProject({
   name: 'my-service',
   groupId: 'org.xpertss',
   artifactId: 'my-service',
