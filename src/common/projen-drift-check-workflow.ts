@@ -65,6 +65,7 @@ export class ProjenDriftCheckWorkflow extends Component {
     );
     this.workflow.on({ pullRequest: {} });
     this.workflow.addJob('check', {
+      name: 'Projen drift check',
       runsOn: ['ubuntu-latest'],
       permissions: { contents: github.workflows.JobPermission.READ },
       env: { GH_TOKEN: `\${{ secrets.${gheTokenSecret} }}` },

@@ -62,10 +62,13 @@ export class WorkflowChangeNoticeWorkflow extends Component {
     );
     this.workflow.on({ pullRequestTarget: {} });
     this.workflow.addJob('check', {
+      name: 'Workflow change notice',
       runsOn: ['ubuntu-latest'],
       permissions: { pullRequests: github.workflows.JobPermission.WRITE },
       env: {
         GH_TOKEN: '${{ github.token }}',
+        // No checkout here, so `gh pr comment` can't infer the repo from git.
+        GH_REPO: '${{ github.repository }}',
         WATCH_PATHS: watchPaths.join(' '),
       },
       steps: [

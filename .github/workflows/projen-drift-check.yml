@@ -6,6 +6,7 @@ on:
   pull_request: {}
 jobs:
   check:
+    name: Projen drift check
     runs-on: ubuntu-latest
     permissions:
       contents: read

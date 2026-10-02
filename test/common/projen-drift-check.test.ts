@@ -11,6 +11,7 @@ describe('ProjenDriftCheckWorkflow', () => {
     const wf = snapshot['.github/workflows/projen-drift-check.yml'];
     expect(wf).toBeDefined();
     expect(wf.on.pull_request).toBeDefined();
+    expect(wf.jobs.check.name).toBe('Projen drift check');
     expect(wf.jobs.check.permissions.contents).toBe('read');
 
     const step = wf.jobs.check.steps.find(

@@ -13,7 +13,9 @@ describe('WorkflowChangeNoticeWorkflow', () => {
     expect(wf.on.pull_request_target).toBeDefined();
 
     const job = wf.jobs.check;
+    expect(job.name).toBe('Workflow change notice');
     expect(job.env.GH_TOKEN).toBe('${{ github.token }}');
+    expect(job.env.GH_REPO).toBe('${{ github.repository }}');
     expect(job.permissions['pull-requests']).toBe('write');
     expect(job.env.WATCH_PATHS).toBe(
       '.github/workflows/** .github/actions/**',
