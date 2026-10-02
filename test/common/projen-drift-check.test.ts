@@ -48,6 +48,6 @@ describe('ProjenDriftCheckWorkflow', () => {
     );
     expect(install.run).toContain('if [ ! -f package-lock.json ]; then');
     expect(install.run).toContain('::error file=package.json::package-lock.json is not committed');
-    expect(install.run).toContain('npm ci');
+    expect(install.run).toContain('npm ci --ignore-scripts');
   });
 });

@@ -417,7 +417,7 @@ describe('workflows', () => {
     expect(setupJava.with).toEqual({ 'distribution': 'corretto', 'java-version': '21', 'cache': 'maven' });
     const install = steps.find((s: { name: string }) => s.name === 'Install dependencies');
     expect(install.run).toContain('package-lock.json is not committed');
-    expect(install.run).toContain('npm ci');
+    expect(install.run).toContain('npm ci --ignore-scripts');
   });
 
   test('extra jobs can be added to build.yml through buildVerifyWorkflow', () => {

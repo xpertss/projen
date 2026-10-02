@@ -31,7 +31,7 @@ jobs:
             echo "::error file=package.json::package-lock.json is not committed. Run npm install, commit package-lock.json, and push."
             exit 1
           fi
-          npm ci
+          npm ci --ignore-scripts
       - name: Check for projen drift
         id: check_for_projen_drift
         run: |

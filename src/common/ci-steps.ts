@@ -15,7 +15,9 @@ export const SETUP_NODE_STEP: github.workflows.JobStep = {
 /**
  * `npm ci`, which needs a committed `package-lock.json`. Without one, `npm
  * ci` fails with a message that doesn't say what to do, so the missing
- * lockfile is reported first, as an annotation.
+ * lockfile is reported first, as an annotation. `--ignore-scripts` keeps
+ * dependency lifecycle scripts from running on PR code; projen synth
+ * doesn't need them.
  */
 export const NPM_CI_STEP: github.workflows.JobStep = {
   name: 'Install dependencies',
@@ -24,6 +26,6 @@ export const NPM_CI_STEP: github.workflows.JobStep = {
     '  echo "::error file=package.json::package-lock.json is not committed. Run npm install, commit package-lock.json, and push."',
     '  exit 1',
     'fi',
-    'npm ci',
+    'npm ci --ignore-scripts',
   ].join('\n'),
 };
