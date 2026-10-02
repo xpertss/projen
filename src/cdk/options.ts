@@ -28,6 +28,12 @@ export interface CommonCdkOptions {
 
   /** @default "PROJEN_GITHUB_TOKEN" */
   readonly gheTokenSecret?: string;
+
+  /**
+   * Write a projen-managed `.editorconfig`.
+   * @default true
+   */
+  readonly editorconfig?: boolean;
 }
 
 export interface CdkInfraProjectOptions extends CommonCdkOptions {

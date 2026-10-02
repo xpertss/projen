@@ -96,9 +96,19 @@ test('default task re-runs .projenrc.ts - the repo is configured in TypeScript',
   expect(snapshot['package.json'].devDependencies['ts-node']).toBeDefined();
 });
 
-test('gitignore excludes JetBrains IDE state', () => {
+test('gitignore excludes JetBrains IDE state and /spec/', () => {
   const snapshot = synthSnapshot(
     new CdkInfraProject({ name: 'infra-test', environments: [] }),
   );
   expect(snapshot['.gitignore']).toContain('/.idea/*');
+  expect(snapshot['.gitignore']).toContain('/spec/');
+});
+
+test('.editorconfig is written by default and can be turned off', () => {
+  expect(synthSnapshot(new CdkInfraProject({ name: 'infra-test', environments: [] }))['.editorconfig']).toContain(
+    'root = true',
+  );
+  expect(
+    synthSnapshot(new CdkInfraProject({ name: 'infra-test', environments: [], editorconfig: false }))['.editorconfig'],
+  ).toBeUndefined();
 });

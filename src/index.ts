@@ -14,6 +14,9 @@ export * from './cdk/database-component';
 
 export * from './java/options';
 export * from './java/java-maven-base';
+export * from './java/java-spring-boot-project';
+export * from './java/maven/maven-pom';
+export * from './java/maven/maven-module';
 export * from './java/java-library-project';
 export * from './java/java-service-project';
 export * from './java/java-app-project';
@@ -23,6 +26,7 @@ export * from './java/components/github-packages-publish';
 export * from './java/components/flyway-migration';
 export * from './java/components/cdk-deploy-hook';
 export * from './java/components/code-index-workflow';
+export * from './java/components/maven-upgrade-report';
 
 export * from './actions/github-action-project';
 export * from './actions/action-build-workflow';

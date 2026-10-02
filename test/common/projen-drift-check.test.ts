@@ -37,4 +37,16 @@ describe('ProjenDriftCheckWorkflow', () => {
     );
     expect(step.run).toContain('npx projen synth');
   });
+
+  test('installs with npm ci, failing with a clear annotation when no lockfile is committed', () => {
+    const project = new typescript.TypeScriptProject({ name: 'drift-test' });
+    new ProjenDriftCheckWorkflow(project);
+    const wf = synthSnapshot(project)['.github/workflows/projen-drift-check.yml'];
+    const install = wf.jobs.check.steps.find(
+      (s: { name: string }) => s.name === 'Install dependencies',
+    );
+    expect(install.run).toContain('if [ ! -f package-lock.json ]; then');
+    expect(install.run).toContain('::error file=package.json::package-lock.json is not committed');
+    expect(install.run).toContain('npm ci');
+  });
 });

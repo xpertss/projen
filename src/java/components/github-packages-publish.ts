@@ -1,6 +1,6 @@
 import { Component, github } from 'projen';
-import type { java } from 'projen';
 import { noteWorkflowPurpose } from '../../common/workflow-purpose';
+import type { JavaMavenProject } from '../java-maven-base';
 
 export interface GitHubPackagesPublishOptions {
   /** @default derived from the repository URL */
@@ -10,7 +10,7 @@ export interface GitHubPackagesPublishOptions {
 /** On-demand publish to GitHub Packages. */
 export class GitHubPackagesPublish extends Component {
   constructor(
-    project: java.JavaProject,
+    project: JavaMavenProject,
     options: GitHubPackagesPublishOptions = {},
   ) {
     super(project, 'GitHubPackagesPublish');

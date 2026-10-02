@@ -1,6 +1,6 @@
 import { Component, Task, github } from 'projen';
-import type { java } from 'projen';
 import { noteWorkflowPurpose } from '../../common/workflow-purpose';
+import type { JavaMavenProject } from '../java-maven-base';
 
 export interface MavenCentralPublishOptions {
   /** @default false */
@@ -12,7 +12,7 @@ export interface MavenCentralPublishOptions {
  * or OIDC trusted publishing.
  */
 export class MavenCentralPublish extends Component {
-  constructor(project: java.JavaProject, options: MavenCentralPublishOptions = {}) {
+  constructor(project: JavaMavenProject, options: MavenCentralPublishOptions = {}) {
     super(project, 'MavenCentralPublish');
 
     const gh = project.github;

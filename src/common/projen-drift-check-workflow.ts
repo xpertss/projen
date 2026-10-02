@@ -1,4 +1,5 @@
 import { Component, github } from 'projen';
+import { NPM_CI_STEP, SETUP_NODE_STEP } from './ci-steps';
 import { noteWorkflowPurpose } from './workflow-purpose';
 
 /**
@@ -76,19 +77,8 @@ export class ProjenDriftCheckWorkflow extends Component {
             repository: '${{ github.event.pull_request.head.repo.full_name }}',
           },
         },
-        {
-          name: 'Setup Node',
-          uses: 'actions/setup-node@v7',
-          // Pinned, not `lts/*` - a floating version can resolve a
-          // different npm than whatever generated the committed
-          // package-lock.json, and `npm ci` then fails on optional-
-          // dependency drift that isn't a real dependency bug.
-          with: { 'node-version': '24' },
-        },
-        {
-          name: 'Install dependencies',
-          run: 'npm ci',
-        },
+        SETUP_NODE_STEP,
+        NPM_CI_STEP,
         {
           name: 'Check for projen drift',
           run: `set -euo pipefail

@@ -2442,12 +2442,12 @@ which is exactly when "this repo has no deploy target" needs saying.
 ```typescript
 import { CdkDeployHook } from '@xpertss/projen-types'
 
-new CdkDeployHook(project: JavaProject, environments: (string | EnvironmentOptions)[], options?: CdkDeployHookOptions)
+new CdkDeployHook(project: JavaMavenProject, environments: (string | EnvironmentOptions)[], options?: CdkDeployHookOptions)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.CdkDeployHook.Initializer.parameter.project">project</a></code> | <code>projen.java.JavaProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkDeployHook.Initializer.parameter.project">project</a></code> | <code><a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkDeployHook.Initializer.parameter.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkDeployHook.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.CdkDeployHookOptions">CdkDeployHookOptions</a></code> | *No description.* |
 
@@ -2455,7 +2455,7 @@ new CdkDeployHook(project: JavaProject, environments: (string | EnvironmentOptio
 
 ##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.CdkDeployHook.Initializer.parameter.project"></a>
 
-- *Type:* projen.java.JavaProject
+- *Type:* <a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a>
 
 ---
 
@@ -5592,18 +5592,18 @@ Generates a code index and publishes it to `.cai/` on checkin.
 ```typescript
 import { CodeIndexWorkflow } from '@xpertss/projen-types'
 
-new CodeIndexWorkflow(project: JavaProject)
+new CodeIndexWorkflow(project: JavaMavenProject)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.CodeIndexWorkflow.Initializer.parameter.project">project</a></code> | <code>projen.java.JavaProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CodeIndexWorkflow.Initializer.parameter.project">project</a></code> | <code><a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a></code> | *No description.* |
 
 ---
 
 ##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.CodeIndexWorkflow.Initializer.parameter.project"></a>
 
-- *Type:* projen.java.JavaProject
+- *Type:* <a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a>
 
 ---
 
@@ -6048,19 +6048,19 @@ On-demand build+push of a Docker image, defaulting to Docker Hub.
 ```typescript
 import { DockerPublish } from '@xpertss/projen-types'
 
-new DockerPublish(project: JavaProject, options?: DockerPublishOptions)
+new DockerPublish(project: JavaMavenProject, options?: DockerPublishOptions)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.DockerPublish.Initializer.parameter.project">project</a></code> | <code>projen.java.JavaProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.DockerPublish.Initializer.parameter.project">project</a></code> | <code><a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.DockerPublish.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.DockerPublishOptions">DockerPublishOptions</a></code> | *No description.* |
 
 ---
 
 ##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.DockerPublish.Initializer.parameter.project"></a>
 
-- *Type:* projen.java.JavaProject
+- *Type:* <a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a>
 
 ---
 
@@ -6734,23 +6734,27 @@ public readonly project: Project;
 
 Adds Flyway config/dependencies + a migrations directory for DB migrations.
 
+`flyway-core` is versionless - Spring Boot's BOM manages it, so
+it always matches what Boot's Flyway auto-configuration expects. The Maven
+plugin (which Boot's BOM does not manage) is pinned for the Java line.
+
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.FlywayMigration.Initializer"></a>
 
 ```typescript
 import { FlywayMigration } from '@xpertss/projen-types'
 
-new FlywayMigration(project: JavaProject)
+new FlywayMigration(project: JavaSpringBootProject)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.FlywayMigration.Initializer.parameter.project">project</a></code> | <code>projen.java.JavaProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.FlywayMigration.Initializer.parameter.project">project</a></code> | <code><a href="#@xpertss/projen-types.JavaSpringBootProject">JavaSpringBootProject</a></code> | *No description.* |
 
 ---
 
 ##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.FlywayMigration.Initializer.parameter.project"></a>
 
-- *Type:* projen.java.JavaProject
+- *Type:* <a href="#@xpertss/projen-types.JavaSpringBootProject">JavaSpringBootProject</a>
 
 ---
 
@@ -7809,19 +7813,19 @@ On-demand publish to GitHub Packages.
 ```typescript
 import { GitHubPackagesPublish } from '@xpertss/projen-types'
 
-new GitHubPackagesPublish(project: JavaProject, options?: GitHubPackagesPublishOptions)
+new GitHubPackagesPublish(project: JavaMavenProject, options?: GitHubPackagesPublishOptions)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.GitHubPackagesPublish.Initializer.parameter.project">project</a></code> | <code>projen.java.JavaProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubPackagesPublish.Initializer.parameter.project">project</a></code> | <code><a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.GitHubPackagesPublish.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.GitHubPackagesPublishOptions">GitHubPackagesPublishOptions</a></code> | *No description.* |
 
 ---
 
 ##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.GitHubPackagesPublish.Initializer.parameter.project"></a>
 
-- *Type:* projen.java.JavaProject
+- *Type:* <a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a>
 
 ---
 
@@ -8075,9 +8079,13 @@ new JavaAppProject(options: JavaAppProjectOptions)
 | <code><a href="#@xpertss/projen-types.JavaAppProject.tryFindFile">tryFindFile</a></code> | Finds a file at the specified relative path within this project and all its subprojects. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.tryFindObjectFile">tryFindObjectFile</a></code> | Finds an object file (like JsonFile, YamlFile, etc.) by name. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.tryRemoveFile">tryRemoveFile</a></code> | Finds a file at the specified relative path within this project and removes it. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.addDependency">addDependency</a></code> | Adds a runtime dependency. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.addPlugin">addPlugin</a></code> | Adds a build plugin to the pom. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.addTestDependency">addTestDependency</a></code> | Adds a test dependency. |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.addBom">addBom</a></code> | Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`). |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.addDependency">addDependency</a></code> | Adds a compile-scope dependency to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.addManagedDependency">addManagedDependency</a></code> | Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless. |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.addModule">addModule</a></code> | Adds a Maven module in `dir` (relative to the repo root; |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.addPlugin">addPlugin</a></code> | Adds a build plugin to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.addTestDependency">addTestDependency</a></code> | Adds a test-scope dependency to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.pinnedVersion">pinnedVersion</a></code> | The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`. |
 
 ---
 
@@ -8336,45 +8344,95 @@ resolved from the root of _this_ project.
 
 ---
 
+##### `addBom` <a name="addBom" id="@xpertss/projen-types.JavaAppProject.addBom"></a>
+
+```typescript
+public addBom(spec: string): void
+```
+
+Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`).
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaAppProject.addBom.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
 ##### `addDependency` <a name="addDependency" id="@xpertss/projen-types.JavaAppProject.addDependency"></a>
 
 ```typescript
 public addDependency(spec: string): void
 ```
 
-Adds a runtime dependency.
+Adds a compile-scope dependency to the root pom.
+
+In a multi-module
+project every module inherits it; use `MavenModule.addDependency` for
+one module.
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaAppProject.addDependency.parameter.spec"></a>
 
 - *Type:* string
 
-Format `<groupId>/<artifactId>@<semver>`.
+`groupId/artifactId[@version]` - exact version, or none when a BOM manages it.
+
+---
+
+##### `addManagedDependency` <a name="addManagedDependency" id="@xpertss/projen-types.JavaAppProject.addManagedDependency"></a>
+
+```typescript
+public addManagedDependency(spec: string): void
+```
+
+Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaAppProject.addManagedDependency.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
+##### `addModule` <a name="addModule" id="@xpertss/projen-types.JavaAppProject.addModule"></a>
+
+```typescript
+public addModule(options: MavenModuleOptions): MavenModule
+```
+
+Adds a Maven module in `dir` (relative to the repo root;
+
+may be nested,
+e.g. `tools/stub-model`) and turns the root pom into the reactor parent
+(`packaging=pom`, `<modules>` in the order added). The parent manages
+every module at `${project.version}`, so modules depend on each other
+with `addModuleDependency()`, versionless.
+
+###### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.JavaAppProject.addModule.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModuleOptions">MavenModuleOptions</a>
 
 ---
 
 ##### `addPlugin` <a name="addPlugin" id="@xpertss/projen-types.JavaAppProject.addPlugin"></a>
 
 ```typescript
-public addPlugin(spec: string, options?: PluginOptions): Dependency
+public addPlugin(spec: string, options?: PluginOptions): void
 ```
 
-Adds a build plugin to the pom.
-
-The plug in is also added as a BUILD dep to the project.
+Adds a build plugin to the root pom (inherited by every module).
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaAppProject.addPlugin.parameter.spec"></a>
 
 - *Type:* string
-
-dependency spec (`group/artifact@version`).
 
 ---
 
 ###### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.JavaAppProject.addPlugin.parameter.options"></a>
 
 - *Type:* projen.java.PluginOptions
-
-plugin options.
 
 ---
 
@@ -8384,13 +8442,25 @@ plugin options.
 public addTestDependency(spec: string): void
 ```
 
-Adds a test dependency.
+Adds a test-scope dependency to the root pom (inherited by every module).
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaAppProject.addTestDependency.parameter.spec"></a>
 
 - *Type:* string
 
-Format `<groupId>/<artifactId>@<semver>`.
+---
+
+##### `pinnedVersion` <a name="pinnedVersion" id="@xpertss/projen-types.JavaAppProject.pinnedVersion"></a>
+
+```typescript
+public pinnedVersion(coordinates: string): string
+```
+
+The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`.
+
+###### `coordinates`<sup>Required</sup> <a name="coordinates" id="@xpertss/projen-types.JavaAppProject.pinnedVersion.parameter.coordinates"></a>
+
+- *Type:* string
 
 ---
 
@@ -8504,14 +8574,12 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.github">github</a></code> | <code>projen.github.GitHub</code> | Access all github components. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.gitpod">gitpod</a></code> | <code>projen.Gitpod</code> | Access for Gitpod. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.property.compile">compile</a></code> | <code>projen.java.MavenCompile</code> | Compile component. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.property.distdir">distdir</a></code> | <code>string</code> | Maven artifact output directory. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.property.packaging">packaging</a></code> | <code>projen.java.MavenPackaging</code> | Packaging component. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.property.pom">pom</a></code> | <code>projen.java.Pom</code> | API for managing `pom.xml`. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.property.junit">junit</a></code> | <code>projen.java.Junit</code> | JUnit component. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.property.projenrc">projenrc</a></code> | <code>projen.java.Projenrc</code> | Projenrc component. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
 
 ---
 
@@ -8882,78 +8950,6 @@ This will be `undefined` for subprojects.
 
 ---
 
-##### `compile`<sup>Required</sup> <a name="compile" id="@xpertss/projen-types.JavaAppProject.property.compile"></a>
-
-```typescript
-public readonly compile: MavenCompile;
-```
-
-- *Type:* projen.java.MavenCompile
-
-Compile component.
-
----
-
-##### `distdir`<sup>Required</sup> <a name="distdir" id="@xpertss/projen-types.JavaAppProject.property.distdir"></a>
-
-```typescript
-public readonly distdir: string;
-```
-
-- *Type:* string
-
-Maven artifact output directory.
-
----
-
-##### `packaging`<sup>Required</sup> <a name="packaging" id="@xpertss/projen-types.JavaAppProject.property.packaging"></a>
-
-```typescript
-public readonly packaging: MavenPackaging;
-```
-
-- *Type:* projen.java.MavenPackaging
-
-Packaging component.
-
----
-
-##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.JavaAppProject.property.pom"></a>
-
-```typescript
-public readonly pom: Pom;
-```
-
-- *Type:* projen.java.Pom
-
-API for managing `pom.xml`.
-
----
-
-##### `junit`<sup>Optional</sup> <a name="junit" id="@xpertss/projen-types.JavaAppProject.property.junit"></a>
-
-```typescript
-public readonly junit: Junit;
-```
-
-- *Type:* projen.java.Junit
-
-JUnit component.
-
----
-
-##### `projenrc`<sup>Optional</sup> <a name="projenrc" id="@xpertss/projen-types.JavaAppProject.property.projenrc"></a>
-
-```typescript
-public readonly projenrc: Projenrc;
-```
-
-- *Type:* projen.java.Projenrc
-
-Projenrc component.
-
----
-
 ##### `buildVerifyWorkflow`<sup>Required</sup> <a name="buildVerifyWorkflow" id="@xpertss/projen-types.JavaAppProject.property.buildVerifyWorkflow"></a>
 
 ```typescript
@@ -8961,6 +8957,56 @@ public readonly buildVerifyWorkflow: TaskWorkflow;
 ```
 
 - *Type:* projen.github.TaskWorkflow
+
+The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK.
+
+---
+
+##### `ciSetupSteps`<sup>Required</sup> <a name="ciSetupSteps" id="@xpertss/projen-types.JavaAppProject.property.ciSetupSteps"></a>
+
+```typescript
+public readonly ciSetupSteps: JobStep[];
+```
+
+- *Type:* projen.github.workflows.JobStep[]
+
+Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs.
+
+---
+
+##### `javaVersion`<sup>Required</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaAppProject.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+
+The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+
+---
+
+##### `modules`<sup>Required</sup> <a name="modules" id="@xpertss/projen-types.JavaAppProject.property.modules"></a>
+
+```typescript
+public readonly modules: MavenModule[];
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]
+
+The modules added with `addModule()`, in order.
+
+---
+
+##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.JavaAppProject.property.pom"></a>
+
+```typescript
+public readonly pom: MavenPom;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenPom">MavenPom</a>
+
+The root `pom.xml`.
 
 ---
 
@@ -8971,6 +9017,8 @@ public readonly upgradeTask: Task;
 ```
 
 - *Type:* projen.Task
+
+Prints available dependency/plugin updates (`npx projen upgrade`).
 
 ---
 
@@ -9000,6 +9048,10 @@ this task should synthesize the project files.
 ### JavaLibraryProject <a name="JavaLibraryProject" id="@xpertss/projen-types.JavaLibraryProject"></a>
 
 Reusable Java library, published to Maven Central.
+
+Single- or
+multi-module; attaches the source and javadoc jars Central requires (in a
+reactor, every module inherits them).
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.JavaLibraryProject.Initializer"></a>
 
@@ -9040,9 +9092,13 @@ new JavaLibraryProject(options: JavaLibraryProjectOptions)
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.tryFindFile">tryFindFile</a></code> | Finds a file at the specified relative path within this project and all its subprojects. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.tryFindObjectFile">tryFindObjectFile</a></code> | Finds an object file (like JsonFile, YamlFile, etc.) by name. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.tryRemoveFile">tryRemoveFile</a></code> | Finds a file at the specified relative path within this project and removes it. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.addDependency">addDependency</a></code> | Adds a runtime dependency. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.addPlugin">addPlugin</a></code> | Adds a build plugin to the pom. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.addTestDependency">addTestDependency</a></code> | Adds a test dependency. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.addBom">addBom</a></code> | Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`). |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.addDependency">addDependency</a></code> | Adds a compile-scope dependency to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.addManagedDependency">addManagedDependency</a></code> | Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.addModule">addModule</a></code> | Adds a Maven module in `dir` (relative to the repo root; |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.addPlugin">addPlugin</a></code> | Adds a build plugin to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.addTestDependency">addTestDependency</a></code> | Adds a test-scope dependency to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.pinnedVersion">pinnedVersion</a></code> | The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`. |
 
 ---
 
@@ -9301,45 +9357,95 @@ resolved from the root of _this_ project.
 
 ---
 
+##### `addBom` <a name="addBom" id="@xpertss/projen-types.JavaLibraryProject.addBom"></a>
+
+```typescript
+public addBom(spec: string): void
+```
+
+Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`).
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaLibraryProject.addBom.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
 ##### `addDependency` <a name="addDependency" id="@xpertss/projen-types.JavaLibraryProject.addDependency"></a>
 
 ```typescript
 public addDependency(spec: string): void
 ```
 
-Adds a runtime dependency.
+Adds a compile-scope dependency to the root pom.
+
+In a multi-module
+project every module inherits it; use `MavenModule.addDependency` for
+one module.
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaLibraryProject.addDependency.parameter.spec"></a>
 
 - *Type:* string
 
-Format `<groupId>/<artifactId>@<semver>`.
+`groupId/artifactId[@version]` - exact version, or none when a BOM manages it.
+
+---
+
+##### `addManagedDependency` <a name="addManagedDependency" id="@xpertss/projen-types.JavaLibraryProject.addManagedDependency"></a>
+
+```typescript
+public addManagedDependency(spec: string): void
+```
+
+Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaLibraryProject.addManagedDependency.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
+##### `addModule` <a name="addModule" id="@xpertss/projen-types.JavaLibraryProject.addModule"></a>
+
+```typescript
+public addModule(options: MavenModuleOptions): MavenModule
+```
+
+Adds a Maven module in `dir` (relative to the repo root;
+
+may be nested,
+e.g. `tools/stub-model`) and turns the root pom into the reactor parent
+(`packaging=pom`, `<modules>` in the order added). The parent manages
+every module at `${project.version}`, so modules depend on each other
+with `addModuleDependency()`, versionless.
+
+###### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.JavaLibraryProject.addModule.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModuleOptions">MavenModuleOptions</a>
 
 ---
 
 ##### `addPlugin` <a name="addPlugin" id="@xpertss/projen-types.JavaLibraryProject.addPlugin"></a>
 
 ```typescript
-public addPlugin(spec: string, options?: PluginOptions): Dependency
+public addPlugin(spec: string, options?: PluginOptions): void
 ```
 
-Adds a build plugin to the pom.
-
-The plug in is also added as a BUILD dep to the project.
+Adds a build plugin to the root pom (inherited by every module).
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaLibraryProject.addPlugin.parameter.spec"></a>
 
 - *Type:* string
-
-dependency spec (`group/artifact@version`).
 
 ---
 
 ###### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.JavaLibraryProject.addPlugin.parameter.options"></a>
 
 - *Type:* projen.java.PluginOptions
-
-plugin options.
 
 ---
 
@@ -9349,13 +9455,25 @@ plugin options.
 public addTestDependency(spec: string): void
 ```
 
-Adds a test dependency.
+Adds a test-scope dependency to the root pom (inherited by every module).
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaLibraryProject.addTestDependency.parameter.spec"></a>
 
 - *Type:* string
 
-Format `<groupId>/<artifactId>@<semver>`.
+---
+
+##### `pinnedVersion` <a name="pinnedVersion" id="@xpertss/projen-types.JavaLibraryProject.pinnedVersion"></a>
+
+```typescript
+public pinnedVersion(coordinates: string): string
+```
+
+The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`.
+
+###### `coordinates`<sup>Required</sup> <a name="coordinates" id="@xpertss/projen-types.JavaLibraryProject.pinnedVersion.parameter.coordinates"></a>
+
+- *Type:* string
 
 ---
 
@@ -9469,14 +9587,12 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.github">github</a></code> | <code>projen.github.GitHub</code> | Access all github components. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.gitpod">gitpod</a></code> | <code>projen.Gitpod</code> | Access for Gitpod. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.compile">compile</a></code> | <code>projen.java.MavenCompile</code> | Compile component. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.distdir">distdir</a></code> | <code>string</code> | Maven artifact output directory. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.packaging">packaging</a></code> | <code>projen.java.MavenPackaging</code> | Packaging component. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.pom">pom</a></code> | <code>projen.java.Pom</code> | API for managing `pom.xml`. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.junit">junit</a></code> | <code>projen.java.Junit</code> | JUnit component. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.projenrc">projenrc</a></code> | <code>projen.java.Projenrc</code> | Projenrc component. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
 
 ---
 
@@ -9847,78 +9963,6 @@ This will be `undefined` for subprojects.
 
 ---
 
-##### `compile`<sup>Required</sup> <a name="compile" id="@xpertss/projen-types.JavaLibraryProject.property.compile"></a>
-
-```typescript
-public readonly compile: MavenCompile;
-```
-
-- *Type:* projen.java.MavenCompile
-
-Compile component.
-
----
-
-##### `distdir`<sup>Required</sup> <a name="distdir" id="@xpertss/projen-types.JavaLibraryProject.property.distdir"></a>
-
-```typescript
-public readonly distdir: string;
-```
-
-- *Type:* string
-
-Maven artifact output directory.
-
----
-
-##### `packaging`<sup>Required</sup> <a name="packaging" id="@xpertss/projen-types.JavaLibraryProject.property.packaging"></a>
-
-```typescript
-public readonly packaging: MavenPackaging;
-```
-
-- *Type:* projen.java.MavenPackaging
-
-Packaging component.
-
----
-
-##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.JavaLibraryProject.property.pom"></a>
-
-```typescript
-public readonly pom: Pom;
-```
-
-- *Type:* projen.java.Pom
-
-API for managing `pom.xml`.
-
----
-
-##### `junit`<sup>Optional</sup> <a name="junit" id="@xpertss/projen-types.JavaLibraryProject.property.junit"></a>
-
-```typescript
-public readonly junit: Junit;
-```
-
-- *Type:* projen.java.Junit
-
-JUnit component.
-
----
-
-##### `projenrc`<sup>Optional</sup> <a name="projenrc" id="@xpertss/projen-types.JavaLibraryProject.property.projenrc"></a>
-
-```typescript
-public readonly projenrc: Projenrc;
-```
-
-- *Type:* projen.java.Projenrc
-
-Projenrc component.
-
----
-
 ##### `buildVerifyWorkflow`<sup>Required</sup> <a name="buildVerifyWorkflow" id="@xpertss/projen-types.JavaLibraryProject.property.buildVerifyWorkflow"></a>
 
 ```typescript
@@ -9926,6 +9970,56 @@ public readonly buildVerifyWorkflow: TaskWorkflow;
 ```
 
 - *Type:* projen.github.TaskWorkflow
+
+The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK.
+
+---
+
+##### `ciSetupSteps`<sup>Required</sup> <a name="ciSetupSteps" id="@xpertss/projen-types.JavaLibraryProject.property.ciSetupSteps"></a>
+
+```typescript
+public readonly ciSetupSteps: JobStep[];
+```
+
+- *Type:* projen.github.workflows.JobStep[]
+
+Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs.
+
+---
+
+##### `javaVersion`<sup>Required</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaLibraryProject.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+
+The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+
+---
+
+##### `modules`<sup>Required</sup> <a name="modules" id="@xpertss/projen-types.JavaLibraryProject.property.modules"></a>
+
+```typescript
+public readonly modules: MavenModule[];
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]
+
+The modules added with `addModule()`, in order.
+
+---
+
+##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.JavaLibraryProject.property.pom"></a>
+
+```typescript
+public readonly pom: MavenPom;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenPom">MavenPom</a>
+
+The root `pom.xml`.
 
 ---
 
@@ -9936,6 +10030,8 @@ public readonly upgradeTask: Task;
 ```
 
 - *Type:* projen.Task
+
+Prints available dependency/plugin updates (`npx projen upgrade`).
 
 ---
 
@@ -9964,7 +10060,23 @@ this task should synthesize the project files.
 
 ### JavaMavenProject <a name="JavaMavenProject" id="@xpertss/projen-types.JavaMavenProject"></a>
 
-Shared Maven build skeleton for all three Java project types: standard `pom.xml`/directory layout (via `java.JavaProject`), a PR-triggered build+test(+SonarQube) workflow that hard-fails on projen drift, and a nightly dependency-upgrade workflow.
+Baseline Maven project, single- or multi-module, with no framework assumptions.
+
+It is the base of every Java type in this package and is
+usable on its own (`projen new ... java_maven`).
+
+- The pom is written by this package (`MavenPom`), not projen's
+  `java.Pom`: exact versions only, BOM imports, `<modules>`,
+  `<dependencyManagement>`, `<pluginManagement>`.
+- Everything Java-version-dependent (compiler level, enforcer rule, JUnit
+  line, CI JDK) follows `javaVersion`.
+- With no `addModule()` calls the root pom is the artifact. After the
+  first `addModule()` it is a `pom`-packaged reactor parent and the
+  modules inherit its plugins and test dependencies.
+- `npx projen build` synthesizes, then runs Maven once: `mvn -B verify`
+  (unit tests via surefire, `*IT` tests via failsafe).
+- CI: a PR build (with an optional SonarQube scan), the projen drift
+  check, and a nightly report-only update check.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.JavaMavenProject.Initializer"></a>
 
@@ -10005,9 +10117,13 @@ new JavaMavenProject(options: JavaMavenProjectOptions)
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.tryFindFile">tryFindFile</a></code> | Finds a file at the specified relative path within this project and all its subprojects. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.tryFindObjectFile">tryFindObjectFile</a></code> | Finds an object file (like JsonFile, YamlFile, etc.) by name. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.tryRemoveFile">tryRemoveFile</a></code> | Finds a file at the specified relative path within this project and removes it. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.addDependency">addDependency</a></code> | Adds a runtime dependency. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.addPlugin">addPlugin</a></code> | Adds a build plugin to the pom. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.addTestDependency">addTestDependency</a></code> | Adds a test dependency. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.addBom">addBom</a></code> | Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`). |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.addDependency">addDependency</a></code> | Adds a compile-scope dependency to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.addManagedDependency">addManagedDependency</a></code> | Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.addModule">addModule</a></code> | Adds a Maven module in `dir` (relative to the repo root; |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.addPlugin">addPlugin</a></code> | Adds a build plugin to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.addTestDependency">addTestDependency</a></code> | Adds a test-scope dependency to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.pinnedVersion">pinnedVersion</a></code> | The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`. |
 
 ---
 
@@ -10266,45 +10382,95 @@ resolved from the root of _this_ project.
 
 ---
 
+##### `addBom` <a name="addBom" id="@xpertss/projen-types.JavaMavenProject.addBom"></a>
+
+```typescript
+public addBom(spec: string): void
+```
+
+Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`).
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaMavenProject.addBom.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
 ##### `addDependency` <a name="addDependency" id="@xpertss/projen-types.JavaMavenProject.addDependency"></a>
 
 ```typescript
 public addDependency(spec: string): void
 ```
 
-Adds a runtime dependency.
+Adds a compile-scope dependency to the root pom.
+
+In a multi-module
+project every module inherits it; use `MavenModule.addDependency` for
+one module.
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaMavenProject.addDependency.parameter.spec"></a>
 
 - *Type:* string
 
-Format `<groupId>/<artifactId>@<semver>`.
+`groupId/artifactId[@version]` - exact version, or none when a BOM manages it.
+
+---
+
+##### `addManagedDependency` <a name="addManagedDependency" id="@xpertss/projen-types.JavaMavenProject.addManagedDependency"></a>
+
+```typescript
+public addManagedDependency(spec: string): void
+```
+
+Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaMavenProject.addManagedDependency.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
+##### `addModule` <a name="addModule" id="@xpertss/projen-types.JavaMavenProject.addModule"></a>
+
+```typescript
+public addModule(options: MavenModuleOptions): MavenModule
+```
+
+Adds a Maven module in `dir` (relative to the repo root;
+
+may be nested,
+e.g. `tools/stub-model`) and turns the root pom into the reactor parent
+(`packaging=pom`, `<modules>` in the order added). The parent manages
+every module at `${project.version}`, so modules depend on each other
+with `addModuleDependency()`, versionless.
+
+###### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.JavaMavenProject.addModule.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModuleOptions">MavenModuleOptions</a>
 
 ---
 
 ##### `addPlugin` <a name="addPlugin" id="@xpertss/projen-types.JavaMavenProject.addPlugin"></a>
 
 ```typescript
-public addPlugin(spec: string, options?: PluginOptions): Dependency
+public addPlugin(spec: string, options?: PluginOptions): void
 ```
 
-Adds a build plugin to the pom.
-
-The plug in is also added as a BUILD dep to the project.
+Adds a build plugin to the root pom (inherited by every module).
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaMavenProject.addPlugin.parameter.spec"></a>
 
 - *Type:* string
-
-dependency spec (`group/artifact@version`).
 
 ---
 
 ###### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.JavaMavenProject.addPlugin.parameter.options"></a>
 
 - *Type:* projen.java.PluginOptions
-
-plugin options.
 
 ---
 
@@ -10314,13 +10480,25 @@ plugin options.
 public addTestDependency(spec: string): void
 ```
 
-Adds a test dependency.
+Adds a test-scope dependency to the root pom (inherited by every module).
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaMavenProject.addTestDependency.parameter.spec"></a>
 
 - *Type:* string
 
-Format `<groupId>/<artifactId>@<semver>`.
+---
+
+##### `pinnedVersion` <a name="pinnedVersion" id="@xpertss/projen-types.JavaMavenProject.pinnedVersion"></a>
+
+```typescript
+public pinnedVersion(coordinates: string): string
+```
+
+The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`.
+
+###### `coordinates`<sup>Required</sup> <a name="coordinates" id="@xpertss/projen-types.JavaMavenProject.pinnedVersion.parameter.coordinates"></a>
+
+- *Type:* string
 
 ---
 
@@ -10434,14 +10612,12 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.github">github</a></code> | <code>projen.github.GitHub</code> | Access all github components. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.gitpod">gitpod</a></code> | <code>projen.Gitpod</code> | Access for Gitpod. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.compile">compile</a></code> | <code>projen.java.MavenCompile</code> | Compile component. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.distdir">distdir</a></code> | <code>string</code> | Maven artifact output directory. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.packaging">packaging</a></code> | <code>projen.java.MavenPackaging</code> | Packaging component. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.pom">pom</a></code> | <code>projen.java.Pom</code> | API for managing `pom.xml`. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.junit">junit</a></code> | <code>projen.java.Junit</code> | JUnit component. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.projenrc">projenrc</a></code> | <code>projen.java.Projenrc</code> | Projenrc component. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
 
 ---
 
@@ -10812,78 +10988,6 @@ This will be `undefined` for subprojects.
 
 ---
 
-##### `compile`<sup>Required</sup> <a name="compile" id="@xpertss/projen-types.JavaMavenProject.property.compile"></a>
-
-```typescript
-public readonly compile: MavenCompile;
-```
-
-- *Type:* projen.java.MavenCompile
-
-Compile component.
-
----
-
-##### `distdir`<sup>Required</sup> <a name="distdir" id="@xpertss/projen-types.JavaMavenProject.property.distdir"></a>
-
-```typescript
-public readonly distdir: string;
-```
-
-- *Type:* string
-
-Maven artifact output directory.
-
----
-
-##### `packaging`<sup>Required</sup> <a name="packaging" id="@xpertss/projen-types.JavaMavenProject.property.packaging"></a>
-
-```typescript
-public readonly packaging: MavenPackaging;
-```
-
-- *Type:* projen.java.MavenPackaging
-
-Packaging component.
-
----
-
-##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.JavaMavenProject.property.pom"></a>
-
-```typescript
-public readonly pom: Pom;
-```
-
-- *Type:* projen.java.Pom
-
-API for managing `pom.xml`.
-
----
-
-##### `junit`<sup>Optional</sup> <a name="junit" id="@xpertss/projen-types.JavaMavenProject.property.junit"></a>
-
-```typescript
-public readonly junit: Junit;
-```
-
-- *Type:* projen.java.Junit
-
-JUnit component.
-
----
-
-##### `projenrc`<sup>Optional</sup> <a name="projenrc" id="@xpertss/projen-types.JavaMavenProject.property.projenrc"></a>
-
-```typescript
-public readonly projenrc: Projenrc;
-```
-
-- *Type:* projen.java.Projenrc
-
-Projenrc component.
-
----
-
 ##### `buildVerifyWorkflow`<sup>Required</sup> <a name="buildVerifyWorkflow" id="@xpertss/projen-types.JavaMavenProject.property.buildVerifyWorkflow"></a>
 
 ```typescript
@@ -10891,6 +10995,56 @@ public readonly buildVerifyWorkflow: TaskWorkflow;
 ```
 
 - *Type:* projen.github.TaskWorkflow
+
+The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK.
+
+---
+
+##### `ciSetupSteps`<sup>Required</sup> <a name="ciSetupSteps" id="@xpertss/projen-types.JavaMavenProject.property.ciSetupSteps"></a>
+
+```typescript
+public readonly ciSetupSteps: JobStep[];
+```
+
+- *Type:* projen.github.workflows.JobStep[]
+
+Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs.
+
+---
+
+##### `javaVersion`<sup>Required</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaMavenProject.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+
+The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+
+---
+
+##### `modules`<sup>Required</sup> <a name="modules" id="@xpertss/projen-types.JavaMavenProject.property.modules"></a>
+
+```typescript
+public readonly modules: MavenModule[];
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]
+
+The modules added with `addModule()`, in order.
+
+---
+
+##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.JavaMavenProject.property.pom"></a>
+
+```typescript
+public readonly pom: MavenPom;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenPom">MavenPom</a>
+
+The root `pom.xml`.
 
 ---
 
@@ -10901,6 +11055,8 @@ public readonly upgradeTask: Task;
 ```
 
 - *Type:* projen.Task
+
+Prints available dependency/plugin updates (`npx projen upgrade`).
 
 ---
 
@@ -10929,10 +11085,14 @@ this task should synthesize the project files.
 
 ### JavaServiceProject <a name="JavaServiceProject" id="@xpertss/projen-types.JavaServiceProject"></a>
 
-Springboot service application.
+Spring Boot service application deployed as a container: `JavaSpringBootProject` plus Docker publishing (Docker Hub by default - never Maven Central), Flyway, and a CDK deploy hook.
 
-Publishes to Docker Hub (never Maven
-Central); publish and deploy are both manual-dispatch, not on every merge.
+Publish and deploy
+are both manual-dispatch, not on every merge.
+
+Single-module only: the Docker build, Flyway migrations and deploy hook
+all assume one deployable at the repo root. For a multi-module Spring Boot
+repo use `JavaSpringBootProject`.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.JavaServiceProject.Initializer"></a>
 
@@ -10973,9 +11133,14 @@ new JavaServiceProject(options: JavaServiceProjectOptions)
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.tryFindFile">tryFindFile</a></code> | Finds a file at the specified relative path within this project and all its subprojects. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.tryFindObjectFile">tryFindObjectFile</a></code> | Finds an object file (like JsonFile, YamlFile, etc.) by name. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.tryRemoveFile">tryRemoveFile</a></code> | Finds a file at the specified relative path within this project and removes it. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.addDependency">addDependency</a></code> | Adds a runtime dependency. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.addPlugin">addPlugin</a></code> | Adds a build plugin to the pom. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.addTestDependency">addTestDependency</a></code> | Adds a test dependency. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.addBom">addBom</a></code> | Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.addDependency">addDependency</a></code> | Adds a compile-scope dependency to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.addManagedDependency">addManagedDependency</a></code> | Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.addModule">addModule</a></code> | Not supported: `JavaServiceProject` is single-module. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.addPlugin">addPlugin</a></code> | Adds a build plugin to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.addTestDependency">addTestDependency</a></code> | Adds a test-scope dependency to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.pinnedVersion">pinnedVersion</a></code> | The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.addSpringBootModule">addSpringBootModule</a></code> | Adds a module that is a Spring Boot application: like `addModule()`, plus `spring-boot-maven-plugin`'s `repackage`, which turns the module's jar into an executable one. |
 
 ---
 
@@ -11234,45 +11399,92 @@ resolved from the root of _this_ project.
 
 ---
 
+##### `addBom` <a name="addBom" id="@xpertss/projen-types.JavaServiceProject.addBom"></a>
+
+```typescript
+public addBom(spec: string): void
+```
+
+Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`).
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaServiceProject.addBom.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
 ##### `addDependency` <a name="addDependency" id="@xpertss/projen-types.JavaServiceProject.addDependency"></a>
 
 ```typescript
 public addDependency(spec: string): void
 ```
 
-Adds a runtime dependency.
+Adds a compile-scope dependency to the root pom.
+
+In a multi-module
+project every module inherits it; use `MavenModule.addDependency` for
+one module.
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaServiceProject.addDependency.parameter.spec"></a>
 
 - *Type:* string
 
-Format `<groupId>/<artifactId>@<semver>`.
+`groupId/artifactId[@version]` - exact version, or none when a BOM manages it.
+
+---
+
+##### `addManagedDependency` <a name="addManagedDependency" id="@xpertss/projen-types.JavaServiceProject.addManagedDependency"></a>
+
+```typescript
+public addManagedDependency(spec: string): void
+```
+
+Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaServiceProject.addManagedDependency.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
+##### `addModule` <a name="addModule" id="@xpertss/projen-types.JavaServiceProject.addModule"></a>
+
+```typescript
+public addModule(_options: MavenModuleOptions): MavenModule
+```
+
+Not supported: `JavaServiceProject` is single-module.
+
+Use
+`JavaSpringBootProject` for a multi-module Spring Boot repo.
+
+###### `_options`<sup>Required</sup> <a name="_options" id="@xpertss/projen-types.JavaServiceProject.addModule.parameter._options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModuleOptions">MavenModuleOptions</a>
 
 ---
 
 ##### `addPlugin` <a name="addPlugin" id="@xpertss/projen-types.JavaServiceProject.addPlugin"></a>
 
 ```typescript
-public addPlugin(spec: string, options?: PluginOptions): Dependency
+public addPlugin(spec: string, options?: PluginOptions): void
 ```
 
-Adds a build plugin to the pom.
-
-The plug in is also added as a BUILD dep to the project.
+Adds a build plugin to the root pom (inherited by every module).
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaServiceProject.addPlugin.parameter.spec"></a>
 
 - *Type:* string
-
-dependency spec (`group/artifact@version`).
 
 ---
 
 ###### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.JavaServiceProject.addPlugin.parameter.options"></a>
 
 - *Type:* projen.java.PluginOptions
-
-plugin options.
 
 ---
 
@@ -11282,13 +11494,39 @@ plugin options.
 public addTestDependency(spec: string): void
 ```
 
-Adds a test dependency.
+Adds a test-scope dependency to the root pom (inherited by every module).
 
 ###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaServiceProject.addTestDependency.parameter.spec"></a>
 
 - *Type:* string
 
-Format `<groupId>/<artifactId>@<semver>`.
+---
+
+##### `pinnedVersion` <a name="pinnedVersion" id="@xpertss/projen-types.JavaServiceProject.pinnedVersion"></a>
+
+```typescript
+public pinnedVersion(coordinates: string): string
+```
+
+The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`.
+
+###### `coordinates`<sup>Required</sup> <a name="coordinates" id="@xpertss/projen-types.JavaServiceProject.pinnedVersion.parameter.coordinates"></a>
+
+- *Type:* string
+
+---
+
+##### `addSpringBootModule` <a name="addSpringBootModule" id="@xpertss/projen-types.JavaServiceProject.addSpringBootModule"></a>
+
+```typescript
+public addSpringBootModule(options: MavenModuleOptions): MavenModule
+```
+
+Adds a module that is a Spring Boot application: like `addModule()`, plus `spring-boot-maven-plugin`'s `repackage`, which turns the module's jar into an executable one.
+
+###### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.JavaServiceProject.addSpringBootModule.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModuleOptions">MavenModuleOptions</a>
 
 ---
 
@@ -11402,14 +11640,13 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.github">github</a></code> | <code>projen.github.GitHub</code> | Access all github components. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.gitpod">gitpod</a></code> | <code>projen.Gitpod</code> | Access for Gitpod. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.compile">compile</a></code> | <code>projen.java.MavenCompile</code> | Compile component. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.distdir">distdir</a></code> | <code>string</code> | Maven artifact output directory. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.packaging">packaging</a></code> | <code>projen.java.MavenPackaging</code> | Packaging component. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.pom">pom</a></code> | <code>projen.java.Pom</code> | API for managing `pom.xml`. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.junit">junit</a></code> | <code>projen.java.Junit</code> | JUnit component. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.projenrc">projenrc</a></code> | <code>projen.java.Projenrc</code> | Projenrc component. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.springBootVersion">springBootVersion</a></code> | <code>string</code> | The Spring Boot version (BOM and Maven plugin). |
 
 ---
 
@@ -11780,78 +12017,6 @@ This will be `undefined` for subprojects.
 
 ---
 
-##### `compile`<sup>Required</sup> <a name="compile" id="@xpertss/projen-types.JavaServiceProject.property.compile"></a>
-
-```typescript
-public readonly compile: MavenCompile;
-```
-
-- *Type:* projen.java.MavenCompile
-
-Compile component.
-
----
-
-##### `distdir`<sup>Required</sup> <a name="distdir" id="@xpertss/projen-types.JavaServiceProject.property.distdir"></a>
-
-```typescript
-public readonly distdir: string;
-```
-
-- *Type:* string
-
-Maven artifact output directory.
-
----
-
-##### `packaging`<sup>Required</sup> <a name="packaging" id="@xpertss/projen-types.JavaServiceProject.property.packaging"></a>
-
-```typescript
-public readonly packaging: MavenPackaging;
-```
-
-- *Type:* projen.java.MavenPackaging
-
-Packaging component.
-
----
-
-##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.JavaServiceProject.property.pom"></a>
-
-```typescript
-public readonly pom: Pom;
-```
-
-- *Type:* projen.java.Pom
-
-API for managing `pom.xml`.
-
----
-
-##### `junit`<sup>Optional</sup> <a name="junit" id="@xpertss/projen-types.JavaServiceProject.property.junit"></a>
-
-```typescript
-public readonly junit: Junit;
-```
-
-- *Type:* projen.java.Junit
-
-JUnit component.
-
----
-
-##### `projenrc`<sup>Optional</sup> <a name="projenrc" id="@xpertss/projen-types.JavaServiceProject.property.projenrc"></a>
-
-```typescript
-public readonly projenrc: Projenrc;
-```
-
-- *Type:* projen.java.Projenrc
-
-Projenrc component.
-
----
-
 ##### `buildVerifyWorkflow`<sup>Required</sup> <a name="buildVerifyWorkflow" id="@xpertss/projen-types.JavaServiceProject.property.buildVerifyWorkflow"></a>
 
 ```typescript
@@ -11859,6 +12024,56 @@ public readonly buildVerifyWorkflow: TaskWorkflow;
 ```
 
 - *Type:* projen.github.TaskWorkflow
+
+The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK.
+
+---
+
+##### `ciSetupSteps`<sup>Required</sup> <a name="ciSetupSteps" id="@xpertss/projen-types.JavaServiceProject.property.ciSetupSteps"></a>
+
+```typescript
+public readonly ciSetupSteps: JobStep[];
+```
+
+- *Type:* projen.github.workflows.JobStep[]
+
+Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs.
+
+---
+
+##### `javaVersion`<sup>Required</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaServiceProject.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+
+The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+
+---
+
+##### `modules`<sup>Required</sup> <a name="modules" id="@xpertss/projen-types.JavaServiceProject.property.modules"></a>
+
+```typescript
+public readonly modules: MavenModule[];
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]
+
+The modules added with `addModule()`, in order.
+
+---
+
+##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.JavaServiceProject.property.pom"></a>
+
+```typescript
+public readonly pom: MavenPom;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenPom">MavenPom</a>
+
+The root `pom.xml`.
 
 ---
 
@@ -11869,6 +12084,20 @@ public readonly upgradeTask: Task;
 ```
 
 - *Type:* projen.Task
+
+Prints available dependency/plugin updates (`npx projen upgrade`).
+
+---
+
+##### `springBootVersion`<sup>Required</sup> <a name="springBootVersion" id="@xpertss/projen-types.JavaServiceProject.property.springBootVersion"></a>
+
+```typescript
+public readonly springBootVersion: string;
+```
+
+- *Type:* string
+
+The Spring Boot version (BOM and Maven plugin).
 
 ---
 
@@ -11895,6 +12124,1054 @@ this task should synthesize the project files.
 
 ---
 
+### JavaSpringBootProject <a name="JavaSpringBootProject" id="@xpertss/projen-types.JavaSpringBootProject"></a>
+
+Spring Boot on Maven, single- or multi-module, with no Docker, Flyway or CDK - `JavaMavenProject` plus Spring Boot dependency management.
+
+`spring-boot-dependencies` is imported as the first BOM, so starters and
+  the libraries Boot manages (JUnit included) are added versionless.
+- `spring-boot-maven-plugin` is versioned in `<pluginManagement>`. A
+  single-module project repackages its root jar into an executable one.
+  In a multi-module project only modules added with
+  `addSpringBootModule()` are repackaged; `addModule()` modules stay plain
+  jars (shared libraries, clients, ...).
+
+`JavaServiceProject` builds on this and adds Docker publishing, Flyway,
+and a CDK deploy hook.
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.JavaSpringBootProject.Initializer"></a>
+
+```typescript
+import { JavaSpringBootProject } from '@xpertss/projen-types'
+
+new JavaSpringBootProject(options: JavaSpringBootProjectOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions">JavaSpringBootProjectOptions</a></code> | *No description.* |
+
+---
+
+##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.JavaSpringBootProject.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.JavaSpringBootProjectOptions">JavaSpringBootProjectOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addExcludeFromCleanup">addExcludeFromCleanup</a></code> | Exclude the matching files from pre-synth cleanup. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addGitIgnore">addGitIgnore</a></code> | Adds a .gitignore pattern. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addPackageIgnore">addPackageIgnore</a></code> | Exclude these files from the bundled package. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addTask">addTask</a></code> | Adds a new task to this project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.annotateGenerated">annotateGenerated</a></code> | Marks the provided file(s) as being generated. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.postSynthesize">postSynthesize</a></code> | Called after all components are synthesized. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.preSynthesize">preSynthesize</a></code> | Called before all components are synthesized. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.removeTask">removeTask</a></code> | Removes a task from a project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.runTaskCommand">runTaskCommand</a></code> | Returns the shell command to execute in order to run a task. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.synth">synth</a></code> | Synthesize all project files into `outdir`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.tryFindFile">tryFindFile</a></code> | Finds a file at the specified relative path within this project and all its subprojects. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.tryFindObjectFile">tryFindObjectFile</a></code> | Finds an object file (like JsonFile, YamlFile, etc.) by name. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.tryRemoveFile">tryRemoveFile</a></code> | Finds a file at the specified relative path within this project and removes it. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addBom">addBom</a></code> | Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addDependency">addDependency</a></code> | Adds a compile-scope dependency to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addManagedDependency">addManagedDependency</a></code> | Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addModule">addModule</a></code> | Adds a Maven module in `dir` (relative to the repo root; |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addPlugin">addPlugin</a></code> | Adds a build plugin to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addTestDependency">addTestDependency</a></code> | Adds a test-scope dependency to the root pom (inherited by every module). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.pinnedVersion">pinnedVersion</a></code> | The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.addSpringBootModule">addSpringBootModule</a></code> | Adds a module that is a Spring Boot application: like `addModule()`, plus `spring-boot-maven-plugin`'s `repackage`, which turns the module's jar into an executable one. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.JavaSpringBootProject.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.JavaSpringBootProject.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.JavaSpringBootProject.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `addExcludeFromCleanup` <a name="addExcludeFromCleanup" id="@xpertss/projen-types.JavaSpringBootProject.addExcludeFromCleanup"></a>
+
+```typescript
+public addExcludeFromCleanup(globs: ...string[]): void
+```
+
+Exclude the matching files from pre-synth cleanup.
+
+Can be used when, for example, some
+source files include the projen marker and we don't want them to be erased during synth.
+
+###### `globs`<sup>Required</sup> <a name="globs" id="@xpertss/projen-types.JavaSpringBootProject.addExcludeFromCleanup.parameter.globs"></a>
+
+- *Type:* ...string[]
+
+The glob patterns to match.
+
+---
+
+##### `addGitIgnore` <a name="addGitIgnore" id="@xpertss/projen-types.JavaSpringBootProject.addGitIgnore"></a>
+
+```typescript
+public addGitIgnore(pattern: string): void
+```
+
+Adds a .gitignore pattern.
+
+###### `pattern`<sup>Required</sup> <a name="pattern" id="@xpertss/projen-types.JavaSpringBootProject.addGitIgnore.parameter.pattern"></a>
+
+- *Type:* string
+
+The glob pattern to ignore.
+
+---
+
+##### `addPackageIgnore` <a name="addPackageIgnore" id="@xpertss/projen-types.JavaSpringBootProject.addPackageIgnore"></a>
+
+```typescript
+public addPackageIgnore(_pattern: string): void
+```
+
+Exclude these files from the bundled package.
+
+Implemented by project types based on the
+packaging mechanism. For example, `NodeProject` delegates this to `.npmignore`.
+
+###### `_pattern`<sup>Required</sup> <a name="_pattern" id="@xpertss/projen-types.JavaSpringBootProject.addPackageIgnore.parameter._pattern"></a>
+
+- *Type:* string
+
+The glob pattern to exclude.
+
+---
+
+##### `addTask` <a name="addTask" id="@xpertss/projen-types.JavaSpringBootProject.addTask"></a>
+
+```typescript
+public addTask(name: string, props?: TaskOptions): Task
+```
+
+Adds a new task to this project.
+
+This will fail if the project already has
+a task with this name.
+
+###### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.JavaSpringBootProject.addTask.parameter.name"></a>
+
+- *Type:* string
+
+The task name to add.
+
+---
+
+###### `props`<sup>Optional</sup> <a name="props" id="@xpertss/projen-types.JavaSpringBootProject.addTask.parameter.props"></a>
+
+- *Type:* projen.TaskOptions
+
+Task properties.
+
+---
+
+##### `annotateGenerated` <a name="annotateGenerated" id="@xpertss/projen-types.JavaSpringBootProject.annotateGenerated"></a>
+
+```typescript
+public annotateGenerated(glob: string): void
+```
+
+Marks the provided file(s) as being generated.
+
+This is achieved using the
+github-linguist attributes. Generated files do not count against the
+repository statistics and language breakdown.
+
+> [https://github.com/github/linguist/blob/master/docs/overrides.md](https://github.com/github/linguist/blob/master/docs/overrides.md)
+
+###### `glob`<sup>Required</sup> <a name="glob" id="@xpertss/projen-types.JavaSpringBootProject.annotateGenerated.parameter.glob"></a>
+
+- *Type:* string
+
+the glob pattern to match (could be a file path).
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.JavaSpringBootProject.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after all components are synthesized.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.JavaSpringBootProject.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before all components are synthesized.
+
+##### `removeTask` <a name="removeTask" id="@xpertss/projen-types.JavaSpringBootProject.removeTask"></a>
+
+```typescript
+public removeTask(name: string): Task
+```
+
+Removes a task from a project.
+
+###### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.JavaSpringBootProject.removeTask.parameter.name"></a>
+
+- *Type:* string
+
+The name of the task to remove.
+
+---
+
+##### `runTaskCommand` <a name="runTaskCommand" id="@xpertss/projen-types.JavaSpringBootProject.runTaskCommand"></a>
+
+```typescript
+public runTaskCommand(task: Task): string
+```
+
+Returns the shell command to execute in order to run a task.
+
+By default, this is `npx projen@<version> <task>`
+
+###### `task`<sup>Required</sup> <a name="task" id="@xpertss/projen-types.JavaSpringBootProject.runTaskCommand.parameter.task"></a>
+
+- *Type:* projen.Task
+
+The task for which the command is required.
+
+---
+
+##### `synth` <a name="synth" id="@xpertss/projen-types.JavaSpringBootProject.synth"></a>
+
+```typescript
+public synth(): void
+```
+
+Synthesize all project files into `outdir`.
+
+1. Call "this.preSynthesize()"
+2. Delete all generated files
+3. Synthesize all subprojects
+4. Synthesize all components of this project
+5. Call "projectCreation()" for all components, only if the project is being created for the first time
+6. Call "postSynthesize()" for all components of this project
+7. Call "this.postSynthesize()"
+8. Call "postProjectCreation()" for all components, only if the project is being created for the first time
+
+##### `tryFindFile` <a name="tryFindFile" id="@xpertss/projen-types.JavaSpringBootProject.tryFindFile"></a>
+
+```typescript
+public tryFindFile(filePath: string): FileBase
+```
+
+Finds a file at the specified relative path within this project and all its subprojects.
+
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@xpertss/projen-types.JavaSpringBootProject.tryFindFile.parameter.filePath"></a>
+
+- *Type:* string
+
+The file path.
+
+If this path is relative, it will be resolved
+from the root of _this_ project.
+
+---
+
+##### `tryFindObjectFile` <a name="tryFindObjectFile" id="@xpertss/projen-types.JavaSpringBootProject.tryFindObjectFile"></a>
+
+```typescript
+public tryFindObjectFile(filePath: string): ObjectFile
+```
+
+Finds an object file (like JsonFile, YamlFile, etc.) by name.
+
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@xpertss/projen-types.JavaSpringBootProject.tryFindObjectFile.parameter.filePath"></a>
+
+- *Type:* string
+
+The file path.
+
+---
+
+##### `tryRemoveFile` <a name="tryRemoveFile" id="@xpertss/projen-types.JavaSpringBootProject.tryRemoveFile"></a>
+
+```typescript
+public tryRemoveFile(filePath: string): FileBase
+```
+
+Finds a file at the specified relative path within this project and removes it.
+
+###### `filePath`<sup>Required</sup> <a name="filePath" id="@xpertss/projen-types.JavaSpringBootProject.tryRemoveFile.parameter.filePath"></a>
+
+- *Type:* string
+
+The file path.
+
+If this path is relative, it will be
+resolved from the root of _this_ project.
+
+---
+
+##### `addBom` <a name="addBom" id="@xpertss/projen-types.JavaSpringBootProject.addBom"></a>
+
+```typescript
+public addBom(spec: string): void
+```
+
+Imports a BOM into the root `<dependencyManagement>` (`type=pom`, `scope=import`).
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaSpringBootProject.addBom.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
+##### `addDependency` <a name="addDependency" id="@xpertss/projen-types.JavaSpringBootProject.addDependency"></a>
+
+```typescript
+public addDependency(spec: string): void
+```
+
+Adds a compile-scope dependency to the root pom.
+
+In a multi-module
+project every module inherits it; use `MavenModule.addDependency` for
+one module.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaSpringBootProject.addDependency.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId[@version]` - exact version, or none when a BOM manages it.
+
+---
+
+##### `addManagedDependency` <a name="addManagedDependency" id="@xpertss/projen-types.JavaSpringBootProject.addManagedDependency"></a>
+
+```typescript
+public addManagedDependency(spec: string): void
+```
+
+Pins a version in the root `<dependencyManagement>` without adding the dependency, so modules (or the root) can use it versionless.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaSpringBootProject.addManagedDependency.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version`.
+
+---
+
+##### `addModule` <a name="addModule" id="@xpertss/projen-types.JavaSpringBootProject.addModule"></a>
+
+```typescript
+public addModule(options: MavenModuleOptions): MavenModule
+```
+
+Adds a Maven module in `dir` (relative to the repo root;
+
+may be nested,
+e.g. `tools/stub-model`) and turns the root pom into the reactor parent
+(`packaging=pom`, `<modules>` in the order added). The parent manages
+every module at `${project.version}`, so modules depend on each other
+with `addModuleDependency()`, versionless.
+
+###### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.JavaSpringBootProject.addModule.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModuleOptions">MavenModuleOptions</a>
+
+---
+
+##### `addPlugin` <a name="addPlugin" id="@xpertss/projen-types.JavaSpringBootProject.addPlugin"></a>
+
+```typescript
+public addPlugin(spec: string, options?: PluginOptions): void
+```
+
+Adds a build plugin to the root pom (inherited by every module).
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaSpringBootProject.addPlugin.parameter.spec"></a>
+
+- *Type:* string
+
+---
+
+###### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.JavaSpringBootProject.addPlugin.parameter.options"></a>
+
+- *Type:* projen.java.PluginOptions
+
+---
+
+##### `addTestDependency` <a name="addTestDependency" id="@xpertss/projen-types.JavaSpringBootProject.addTestDependency"></a>
+
+```typescript
+public addTestDependency(spec: string): void
+```
+
+Adds a test-scope dependency to the root pom (inherited by every module).
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.JavaSpringBootProject.addTestDependency.parameter.spec"></a>
+
+- *Type:* string
+
+---
+
+##### `pinnedVersion` <a name="pinnedVersion" id="@xpertss/projen-types.JavaSpringBootProject.pinnedVersion"></a>
+
+```typescript
+public pinnedVersion(coordinates: string): string
+```
+
+The exact version this project uses for a `groupId/artifactId` it pins by default: the `pluginVersions` override if set, otherwise the default for `javaVersion`.
+
+###### `coordinates`<sup>Required</sup> <a name="coordinates" id="@xpertss/projen-types.JavaSpringBootProject.pinnedVersion.parameter.coordinates"></a>
+
+- *Type:* string
+
+---
+
+##### `addSpringBootModule` <a name="addSpringBootModule" id="@xpertss/projen-types.JavaSpringBootProject.addSpringBootModule"></a>
+
+```typescript
+public addSpringBootModule(options: MavenModuleOptions): MavenModule
+```
+
+Adds a module that is a Spring Boot application: like `addModule()`, plus `spring-boot-maven-plugin`'s `repackage`, which turns the module's jar into an executable one.
+
+###### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.JavaSpringBootProject.addSpringBootModule.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModuleOptions">MavenModuleOptions</a>
+
+---
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.isProject">isProject</a></code> | Test whether the given construct is a project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.of">of</a></code> | Find the closest ancestor project for given construct. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.JavaSpringBootProject.isConstruct"></a>
+
+```typescript
+import { JavaSpringBootProject } from '@xpertss/projen-types'
+
+JavaSpringBootProject.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.JavaSpringBootProject.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isProject` <a name="isProject" id="@xpertss/projen-types.JavaSpringBootProject.isProject"></a>
+
+```typescript
+import { JavaSpringBootProject } from '@xpertss/projen-types'
+
+JavaSpringBootProject.isProject(x: any)
+```
+
+Test whether the given construct is a project.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.JavaSpringBootProject.isProject.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+##### `of` <a name="of" id="@xpertss/projen-types.JavaSpringBootProject.of"></a>
+
+```typescript
+import { JavaSpringBootProject } from '@xpertss/projen-types'
+
+JavaSpringBootProject.of(construct: IConstruct)
+```
+
+Find the closest ancestor project for given construct.
+
+When given a project, this it the project itself.
+
+###### `construct`<sup>Required</sup> <a name="construct" id="@xpertss/projen-types.JavaSpringBootProject.of.parameter.construct"></a>
+
+- *Type:* constructs.IConstruct
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.buildTask">buildTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.commitGenerated">commitGenerated</a></code> | <code>boolean</code> | Whether to commit the managed files by default. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.compileTask">compileTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.components">components</a></code> | <code>projen.Component[]</code> | Returns all the components within this project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.deps">deps</a></code> | <code>projen.Dependencies</code> | Project dependencies. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.ejected">ejected</a></code> | <code>boolean</code> | Whether or not the project is being ejected. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.files">files</a></code> | <code>projen.FileBase[]</code> | All files in this project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.gitattributes">gitattributes</a></code> | <code>projen.GitAttributesFile</code> | The .gitattributes file for this repository. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.gitignore">gitignore</a></code> | <code>projen.IgnoreFile</code> | .gitignore. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.logger">logger</a></code> | <code>projen.Logger</code> | Logging utilities. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.name">name</a></code> | <code>string</code> | Project name. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.outdir">outdir</a></code> | <code>string</code> | Absolute output directory of this project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.packageTask">packageTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.postCompileTask">postCompileTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.preCompileTask">preCompileTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.projectBuild">projectBuild</a></code> | <code>projen.ProjectBuild</code> | Manages the build process of the project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.projenCommand">projenCommand</a></code> | <code>string</code> | The command to use in order to run the projen CLI. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.root">root</a></code> | <code>projen.Project</code> | The root project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.subprojects">subprojects</a></code> | <code>projen.Project[]</code> | Returns all the subprojects within this project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.tasks">tasks</a></code> | <code>projen.Tasks</code> | Project tasks. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.testTask">testTask</a></code> | <code>projen.Task</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.defaultTask">defaultTask</a></code> | <code>projen.Task</code> | This is the "default" task, the one that executes "projen". |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.initProject">initProject</a></code> | <code>projen.InitProject</code> | The options used when this project is bootstrapped via `projen new`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.parent">parent</a></code> | <code>projen.Project</code> | A parent project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.autoApprove">autoApprove</a></code> | <code>projen.github.AutoApprove</code> | Auto approve set up for this project. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.devContainer">devContainer</a></code> | <code>projen.vscode.DevContainer</code> | Access for .devcontainer.json (used for GitHub Codespaces). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.github">github</a></code> | <code>projen.github.GitHub</code> | Access all github components. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.gitpod">gitpod</a></code> | <code>projen.Gitpod</code> | Access for Gitpod. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.springBootVersion">springBootVersion</a></code> | <code>string</code> | The Spring Boot version (BOM and Maven plugin). |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.JavaSpringBootProject.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `buildTask`<sup>Required</sup> <a name="buildTask" id="@xpertss/projen-types.JavaSpringBootProject.property.buildTask"></a>
+
+```typescript
+public readonly buildTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `commitGenerated`<sup>Required</sup> <a name="commitGenerated" id="@xpertss/projen-types.JavaSpringBootProject.property.commitGenerated"></a>
+
+```typescript
+public readonly commitGenerated: boolean;
+```
+
+- *Type:* boolean
+
+Whether to commit the managed files by default.
+
+---
+
+##### `compileTask`<sup>Required</sup> <a name="compileTask" id="@xpertss/projen-types.JavaSpringBootProject.property.compileTask"></a>
+
+```typescript
+public readonly compileTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `components`<sup>Required</sup> <a name="components" id="@xpertss/projen-types.JavaSpringBootProject.property.components"></a>
+
+```typescript
+public readonly components: Component[];
+```
+
+- *Type:* projen.Component[]
+
+Returns all the components within this project.
+
+---
+
+##### `deps`<sup>Required</sup> <a name="deps" id="@xpertss/projen-types.JavaSpringBootProject.property.deps"></a>
+
+```typescript
+public readonly deps: Dependencies;
+```
+
+- *Type:* projen.Dependencies
+
+Project dependencies.
+
+---
+
+##### `ejected`<sup>Required</sup> <a name="ejected" id="@xpertss/projen-types.JavaSpringBootProject.property.ejected"></a>
+
+```typescript
+public readonly ejected: boolean;
+```
+
+- *Type:* boolean
+
+Whether or not the project is being ejected.
+
+---
+
+##### `files`<sup>Required</sup> <a name="files" id="@xpertss/projen-types.JavaSpringBootProject.property.files"></a>
+
+```typescript
+public readonly files: FileBase[];
+```
+
+- *Type:* projen.FileBase[]
+
+All files in this project.
+
+---
+
+##### `gitattributes`<sup>Required</sup> <a name="gitattributes" id="@xpertss/projen-types.JavaSpringBootProject.property.gitattributes"></a>
+
+```typescript
+public readonly gitattributes: GitAttributesFile;
+```
+
+- *Type:* projen.GitAttributesFile
+
+The .gitattributes file for this repository.
+
+---
+
+##### `gitignore`<sup>Required</sup> <a name="gitignore" id="@xpertss/projen-types.JavaSpringBootProject.property.gitignore"></a>
+
+```typescript
+public readonly gitignore: IgnoreFile;
+```
+
+- *Type:* projen.IgnoreFile
+
+.gitignore.
+
+---
+
+##### `logger`<sup>Required</sup> <a name="logger" id="@xpertss/projen-types.JavaSpringBootProject.property.logger"></a>
+
+```typescript
+public readonly logger: Logger;
+```
+
+- *Type:* projen.Logger
+
+Logging utilities.
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.JavaSpringBootProject.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+Project name.
+
+---
+
+##### `outdir`<sup>Required</sup> <a name="outdir" id="@xpertss/projen-types.JavaSpringBootProject.property.outdir"></a>
+
+```typescript
+public readonly outdir: string;
+```
+
+- *Type:* string
+
+Absolute output directory of this project.
+
+---
+
+##### `packageTask`<sup>Required</sup> <a name="packageTask" id="@xpertss/projen-types.JavaSpringBootProject.property.packageTask"></a>
+
+```typescript
+public readonly packageTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `postCompileTask`<sup>Required</sup> <a name="postCompileTask" id="@xpertss/projen-types.JavaSpringBootProject.property.postCompileTask"></a>
+
+```typescript
+public readonly postCompileTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `preCompileTask`<sup>Required</sup> <a name="preCompileTask" id="@xpertss/projen-types.JavaSpringBootProject.property.preCompileTask"></a>
+
+```typescript
+public readonly preCompileTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `projectBuild`<sup>Required</sup> <a name="projectBuild" id="@xpertss/projen-types.JavaSpringBootProject.property.projectBuild"></a>
+
+```typescript
+public readonly projectBuild: ProjectBuild;
+```
+
+- *Type:* projen.ProjectBuild
+
+Manages the build process of the project.
+
+---
+
+##### `projenCommand`<sup>Required</sup> <a name="projenCommand" id="@xpertss/projen-types.JavaSpringBootProject.property.projenCommand"></a>
+
+```typescript
+public readonly projenCommand: string;
+```
+
+- *Type:* string
+
+The command to use in order to run the projen CLI.
+
+---
+
+##### `root`<sup>Required</sup> <a name="root" id="@xpertss/projen-types.JavaSpringBootProject.property.root"></a>
+
+```typescript
+public readonly root: Project;
+```
+
+- *Type:* projen.Project
+
+The root project.
+
+---
+
+##### `subprojects`<sup>Required</sup> <a name="subprojects" id="@xpertss/projen-types.JavaSpringBootProject.property.subprojects"></a>
+
+```typescript
+public readonly subprojects: Project[];
+```
+
+- *Type:* projen.Project[]
+
+Returns all the subprojects within this project.
+
+---
+
+##### `tasks`<sup>Required</sup> <a name="tasks" id="@xpertss/projen-types.JavaSpringBootProject.property.tasks"></a>
+
+```typescript
+public readonly tasks: Tasks;
+```
+
+- *Type:* projen.Tasks
+
+Project tasks.
+
+---
+
+##### `testTask`<sup>Required</sup> <a name="testTask" id="@xpertss/projen-types.JavaSpringBootProject.property.testTask"></a>
+
+```typescript
+public readonly testTask: Task;
+```
+
+- *Type:* projen.Task
+
+---
+
+##### `defaultTask`<sup>Optional</sup> <a name="defaultTask" id="@xpertss/projen-types.JavaSpringBootProject.property.defaultTask"></a>
+
+```typescript
+public readonly defaultTask: Task;
+```
+
+- *Type:* projen.Task
+
+This is the "default" task, the one that executes "projen".
+
+Undefined if
+the project is being ejected.
+
+---
+
+##### ~~`initProject`~~<sup>Optional</sup> <a name="initProject" id="@xpertss/projen-types.JavaSpringBootProject.property.initProject"></a>
+
+- *Deprecated:* use the `initProject` argument passed to `Component.projectCreation()` instead.
+
+```typescript
+public readonly initProject: InitProject;
+```
+
+- *Type:* projen.InitProject
+
+The options used when this project is bootstrapped via `projen new`.
+
+It
+includes the original set of options passed to the CLI and also the JSII
+FQN of the project type.
+
+---
+
+##### `parent`<sup>Optional</sup> <a name="parent" id="@xpertss/projen-types.JavaSpringBootProject.property.parent"></a>
+
+```typescript
+public readonly parent: Project;
+```
+
+- *Type:* projen.Project
+
+A parent project.
+
+If undefined, this is the root project.
+
+---
+
+##### `autoApprove`<sup>Optional</sup> <a name="autoApprove" id="@xpertss/projen-types.JavaSpringBootProject.property.autoApprove"></a>
+
+```typescript
+public readonly autoApprove: AutoApprove;
+```
+
+- *Type:* projen.github.AutoApprove
+
+Auto approve set up for this project.
+
+---
+
+##### `devContainer`<sup>Optional</sup> <a name="devContainer" id="@xpertss/projen-types.JavaSpringBootProject.property.devContainer"></a>
+
+```typescript
+public readonly devContainer: DevContainer;
+```
+
+- *Type:* projen.vscode.DevContainer
+
+Access for .devcontainer.json (used for GitHub Codespaces).
+
+This will be `undefined` if devContainer boolean is false
+
+---
+
+##### `github`<sup>Optional</sup> <a name="github" id="@xpertss/projen-types.JavaSpringBootProject.property.github"></a>
+
+```typescript
+public readonly github: GitHub;
+```
+
+- *Type:* projen.github.GitHub
+
+Access all github components.
+
+This will be `undefined` for subprojects.
+
+---
+
+##### `gitpod`<sup>Optional</sup> <a name="gitpod" id="@xpertss/projen-types.JavaSpringBootProject.property.gitpod"></a>
+
+```typescript
+public readonly gitpod: Gitpod;
+```
+
+- *Type:* projen.Gitpod
+
+Access for Gitpod.
+
+This will be `undefined` if gitpod boolean is false
+
+---
+
+##### `vscode`<sup>Optional</sup> <a name="vscode" id="@xpertss/projen-types.JavaSpringBootProject.property.vscode"></a>
+
+```typescript
+public readonly vscode: VsCode;
+```
+
+- *Type:* projen.vscode.VsCode
+
+Access all VSCode components.
+
+This will be `undefined` for subprojects.
+
+---
+
+##### `buildVerifyWorkflow`<sup>Required</sup> <a name="buildVerifyWorkflow" id="@xpertss/projen-types.JavaSpringBootProject.property.buildVerifyWorkflow"></a>
+
+```typescript
+public readonly buildVerifyWorkflow: TaskWorkflow;
+```
+
+- *Type:* projen.github.TaskWorkflow
+
+The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK.
+
+---
+
+##### `ciSetupSteps`<sup>Required</sup> <a name="ciSetupSteps" id="@xpertss/projen-types.JavaSpringBootProject.property.ciSetupSteps"></a>
+
+```typescript
+public readonly ciSetupSteps: JobStep[];
+```
+
+- *Type:* projen.github.workflows.JobStep[]
+
+Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs.
+
+---
+
+##### `javaVersion`<sup>Required</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaSpringBootProject.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+
+The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+
+---
+
+##### `modules`<sup>Required</sup> <a name="modules" id="@xpertss/projen-types.JavaSpringBootProject.property.modules"></a>
+
+```typescript
+public readonly modules: MavenModule[];
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]
+
+The modules added with `addModule()`, in order.
+
+---
+
+##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.JavaSpringBootProject.property.pom"></a>
+
+```typescript
+public readonly pom: MavenPom;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenPom">MavenPom</a>
+
+The root `pom.xml`.
+
+---
+
+##### `upgradeTask`<sup>Required</sup> <a name="upgradeTask" id="@xpertss/projen-types.JavaSpringBootProject.property.upgradeTask"></a>
+
+```typescript
+public readonly upgradeTask: Task;
+```
+
+- *Type:* projen.Task
+
+Prints available dependency/plugin updates (`npx projen upgrade`).
+
+---
+
+##### `springBootVersion`<sup>Required</sup> <a name="springBootVersion" id="@xpertss/projen-types.JavaSpringBootProject.property.springBootVersion"></a>
+
+```typescript
+public readonly springBootVersion: string;
+```
+
+- *Type:* string
+
+The Spring Boot version (BOM and Maven plugin).
+
+---
+
+#### Constants <a name="Constants" id="Constants"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.DEFAULT_TASK">DEFAULT_TASK</a></code> | <code>string</code> | The name of the default task (the task executed when `projen` is run without arguments). |
+
+---
+
+##### `DEFAULT_TASK`<sup>Required</sup> <a name="DEFAULT_TASK" id="@xpertss/projen-types.JavaSpringBootProject.property.DEFAULT_TASK"></a>
+
+```typescript
+public readonly DEFAULT_TASK: string;
+```
+
+- *Type:* string
+
+The name of the default task (the task executed when `projen` is run without arguments).
+
+Normally
+this task should synthesize the project files.
+
+---
+
 ### MavenCentralPublish <a name="MavenCentralPublish" id="@xpertss/projen-types.MavenCentralPublish"></a>
 
 On-demand publish workflow to Maven Central, with GPG signing (secrets) or OIDC trusted publishing.
@@ -11904,19 +13181,19 @@ On-demand publish workflow to Maven Central, with GPG signing (secrets) or OIDC 
 ```typescript
 import { MavenCentralPublish } from '@xpertss/projen-types'
 
-new MavenCentralPublish(project: JavaProject, options?: MavenCentralPublishOptions)
+new MavenCentralPublish(project: JavaMavenProject, options?: MavenCentralPublishOptions)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.MavenCentralPublish.Initializer.parameter.project">project</a></code> | <code>projen.java.JavaProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenCentralPublish.Initializer.parameter.project">project</a></code> | <code><a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.MavenCentralPublish.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.MavenCentralPublishOptions">MavenCentralPublishOptions</a></code> | *No description.* |
 
 ---
 
 ##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.MavenCentralPublish.Initializer.parameter.project"></a>
 
-- *Type:* projen.java.JavaProject
+- *Type:* <a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a>
 
 ---
 
@@ -12120,6 +13397,1191 @@ public readonly project: Project;
 ```
 
 - *Type:* projen.Project
+
+---
+
+
+### MavenModule <a name="MavenModule" id="@xpertss/projen-types.MavenModule"></a>
+
+One module of a Maven reactor: a `<dir>/pom.xml` owned by the root project (not a projen subproject - there is still one `.projen/`, one `.gitignore` and one `tasks.json`). Created by `JavaMavenProject.addModule()`.
+
+The module pom holds `<parent>`, `artifactId`, `name`, `description` and
+versionless dependencies/plugins. Any version given to `addDependency`,
+`addTestDependency` or `addPlugin` is moved into the parent pom's
+`<dependencyManagement>`/`<pluginManagement>`, so every module that uses
+an artifact gets the same version.
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.MavenModule.Initializer"></a>
+
+```typescript
+import { MavenModule } from '@xpertss/projen-types'
+
+new MavenModule(project: Project, parentPom: MavenPom, options: MavenModuleOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenModule.Initializer.parameter.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenModule.Initializer.parameter.parentPom">parentPom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenModule.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.MavenModuleOptions">MavenModuleOptions</a></code> | *No description.* |
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.MavenModule.Initializer.parameter.project"></a>
+
+- *Type:* projen.Project
+
+---
+
+##### `parentPom`<sup>Required</sup> <a name="parentPom" id="@xpertss/projen-types.MavenModule.Initializer.parameter.parentPom"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenPom">MavenPom</a>
+
+---
+
+##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.MavenModule.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModuleOptions">MavenModuleOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenModule.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.MavenModule.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.MavenModule.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.MavenModule.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.MavenModule.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.MavenModule.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.MavenModule.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+| <code><a href="#@xpertss/projen-types.MavenModule.addDependency">addDependency</a></code> | Adds a compile-scope dependency. |
+| <code><a href="#@xpertss/projen-types.MavenModule.addModuleDependency">addModuleDependency</a></code> | Depends on a sibling module. |
+| <code><a href="#@xpertss/projen-types.MavenModule.addPlugin">addPlugin</a></code> | Adds a build plugin. |
+| <code><a href="#@xpertss/projen-types.MavenModule.addTestDependency">addTestDependency</a></code> | Adds a `test`-scoped dependency; |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.MavenModule.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.MavenModule.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.MavenModule.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.MavenModule.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.MavenModule.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.MavenModule.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.MavenModule.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.MavenModule.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.MavenModule.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.MavenModule.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+##### `addDependency` <a name="addDependency" id="@xpertss/projen-types.MavenModule.addDependency"></a>
+
+```typescript
+public addDependency(spec: string): void
+```
+
+Adds a compile-scope dependency.
+
+A version, if given, is pinned in the
+parent's `<dependencyManagement>` and the module entry stays versionless.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.MavenModule.addDependency.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId[@version]`.
+
+---
+
+##### `addModuleDependency` <a name="addModuleDependency" id="@xpertss/projen-types.MavenModule.addModuleDependency"></a>
+
+```typescript
+public addModuleDependency(module: MavenModule, scope?: string): void
+```
+
+Depends on a sibling module.
+
+The dependency is versionless here; the
+parent manages every module at `${project.version}`.
+
+###### `module`<sup>Required</sup> <a name="module" id="@xpertss/projen-types.MavenModule.addModuleDependency.parameter.module"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenModule">MavenModule</a>
+
+---
+
+###### `scope`<sup>Optional</sup> <a name="scope" id="@xpertss/projen-types.MavenModule.addModuleDependency.parameter.scope"></a>
+
+- *Type:* string
+
+Maven scope (`test`, `provided`, ...).
+
+---
+
+##### `addPlugin` <a name="addPlugin" id="@xpertss/projen-types.MavenModule.addPlugin"></a>
+
+```typescript
+public addPlugin(spec: string, options?: PluginOptions): void
+```
+
+Adds a build plugin.
+
+A version, if given, is pinned in the parent's
+`<pluginManagement>` and the module entry stays versionless.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.MavenModule.addPlugin.parameter.spec"></a>
+
+- *Type:* string
+
+---
+
+###### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.MavenModule.addPlugin.parameter.options"></a>
+
+- *Type:* projen.java.PluginOptions
+
+---
+
+##### `addTestDependency` <a name="addTestDependency" id="@xpertss/projen-types.MavenModule.addTestDependency"></a>
+
+```typescript
+public addTestDependency(spec: string): void
+```
+
+Adds a `test`-scoped dependency;
+
+versions are hoisted like `addDependency`.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.MavenModule.addTestDependency.parameter.spec"></a>
+
+- *Type:* string
+
+---
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenModule.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.MavenModule.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.MavenModule.isConstruct"></a>
+
+```typescript
+import { MavenModule } from '@xpertss/projen-types'
+
+MavenModule.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.MavenModule.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.MavenModule.isComponent"></a>
+
+```typescript
+import { MavenModule } from '@xpertss/projen-types'
+
+MavenModule.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.MavenModule.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenModule.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.MavenModule.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenModule.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenModule.property.dir">dir</a></code> | <code>string</code> | Module directory, relative to the repo root. |
+| <code><a href="#@xpertss/projen-types.MavenModule.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The module's own `pom.xml`. |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.MavenModule.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.MavenModule.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `artifactId`<sup>Required</sup> <a name="artifactId" id="@xpertss/projen-types.MavenModule.property.artifactId"></a>
+
+```typescript
+public readonly artifactId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `dir`<sup>Required</sup> <a name="dir" id="@xpertss/projen-types.MavenModule.property.dir"></a>
+
+```typescript
+public readonly dir: string;
+```
+
+- *Type:* string
+
+Module directory, relative to the repo root.
+
+---
+
+##### `pom`<sup>Required</sup> <a name="pom" id="@xpertss/projen-types.MavenModule.property.pom"></a>
+
+```typescript
+public readonly pom: MavenPom;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.MavenPom">MavenPom</a>
+
+The module's own `pom.xml`.
+
+---
+
+
+### MavenPom <a name="MavenPom" id="@xpertss/projen-types.MavenPom"></a>
+
+A `pom.xml` written by this package (rather than projen's `java.Pom`).
+
+Supports `<modules>`, `<dependencyManagement>` (including BOM imports),
+`<pluginManagement>`, and versionless dependencies/plugins - what a Maven
+reactor needs and `java.Pom` cannot express. Every version it writes is
+exact; a spec carrying a range throws. Plugin executions render one
+`<goals>` element per execution (projen's `java.Pom` repeats `<goals>`,
+which Maven 3.9 rejects as non-parseable).
+
+Adding the same `groupId/artifactId` twice merges: a later version
+replaces an earlier one only if the earlier had none (two different
+versions throw), and plugin options are merged - `configuration` shallowly,
+`executions` and `dependencies` appended.
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.MavenPom.Initializer"></a>
+
+```typescript
+import { MavenPom } from '@xpertss/projen-types'
+
+new MavenPom(project: Project, options: MavenPomOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenPom.Initializer.parameter.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPom.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.MavenPomOptions">MavenPomOptions</a></code> | *No description.* |
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.MavenPom.Initializer.parameter.project"></a>
+
+- *Type:* projen.Project
+
+---
+
+##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.MavenPom.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenPomOptions">MavenPomOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenPom.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.MavenPom.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.MavenPom.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.MavenPom.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.MavenPom.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.MavenPom.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.MavenPom.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+| <code><a href="#@xpertss/projen-types.MavenPom.addBom">addBom</a></code> | Imports a BOM into `<dependencyManagement>` (`type=pom`, `scope=import`). |
+| <code><a href="#@xpertss/projen-types.MavenPom.addDependency">addDependency</a></code> | Adds a dependency (compile scope unless `scope` is given). |
+| <code><a href="#@xpertss/projen-types.MavenPom.addManagedDependency">addManagedDependency</a></code> | Pins a version in `<dependencyManagement>` without adding the dependency itself. |
+| <code><a href="#@xpertss/projen-types.MavenPom.addManagedPlugin">addManagedPlugin</a></code> | Adds a plugin to `<build><pluginManagement>` only: it pins the version (and optional default configuration) for this pom and its modules without running the plugin here. |
+| <code><a href="#@xpertss/projen-types.MavenPom.addModule">addModule</a></code> | Adds a `<module>` (a path relative to this pom's directory). |
+| <code><a href="#@xpertss/projen-types.MavenPom.addPlugin">addPlugin</a></code> | Adds a build plugin to `<build><plugins>`. |
+| <code><a href="#@xpertss/projen-types.MavenPom.addPluginRepository">addPluginRepository</a></code> | Adds a `<pluginRepository>`. |
+| <code><a href="#@xpertss/projen-types.MavenPom.addProperty">addProperty</a></code> | Sets a `<properties>` entry. |
+| <code><a href="#@xpertss/projen-types.MavenPom.addRepository">addRepository</a></code> | Adds a `<repository>`. |
+| <code><a href="#@xpertss/projen-types.MavenPom.addTestDependency">addTestDependency</a></code> | Adds a `test`-scoped dependency. |
+| <code><a href="#@xpertss/projen-types.MavenPom.hasPlugin">hasPlugin</a></code> | True if a plugin with these `groupId/artifactId` coordinates is in `<plugins>`. |
+| <code><a href="#@xpertss/projen-types.MavenPom.removeBom">removeBom</a></code> | Removes a BOM import added by `addBom`, if present. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.MavenPom.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.MavenPom.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.MavenPom.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.MavenPom.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.MavenPom.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.MavenPom.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.MavenPom.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.MavenPom.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.MavenPom.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.MavenPom.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+##### `addBom` <a name="addBom" id="@xpertss/projen-types.MavenPom.addBom"></a>
+
+```typescript
+public addBom(spec: string): void
+```
+
+Imports a BOM into `<dependencyManagement>` (`type=pom`, `scope=import`).
+
+BOMs are written in the order added, before every other
+managed dependency.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.MavenPom.addBom.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version` - the version is required.
+
+---
+
+##### `addDependency` <a name="addDependency" id="@xpertss/projen-types.MavenPom.addDependency"></a>
+
+```typescript
+public addDependency(spec: string, scope?: string): void
+```
+
+Adds a dependency (compile scope unless `scope` is given).
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.MavenPom.addDependency.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId[@version]` - omit the version when a BOM or the parent's `<dependencyManagement>` manages it.
+
+---
+
+###### `scope`<sup>Optional</sup> <a name="scope" id="@xpertss/projen-types.MavenPom.addDependency.parameter.scope"></a>
+
+- *Type:* string
+
+Maven scope (`test`, `provided`, `runtime`, ...).
+
+---
+
+##### `addManagedDependency` <a name="addManagedDependency" id="@xpertss/projen-types.MavenPom.addManagedDependency"></a>
+
+```typescript
+public addManagedDependency(spec: string): void
+```
+
+Pins a version in `<dependencyManagement>` without adding the dependency itself.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.MavenPom.addManagedDependency.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId@version` - the version is required.
+
+---
+
+##### `addManagedPlugin` <a name="addManagedPlugin" id="@xpertss/projen-types.MavenPom.addManagedPlugin"></a>
+
+```typescript
+public addManagedPlugin(spec: string, options?: PluginOptions): void
+```
+
+Adds a plugin to `<build><pluginManagement>` only: it pins the version (and optional default configuration) for this pom and its modules without running the plugin here.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.MavenPom.addManagedPlugin.parameter.spec"></a>
+
+- *Type:* string
+
+---
+
+###### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.MavenPom.addManagedPlugin.parameter.options"></a>
+
+- *Type:* projen.java.PluginOptions
+
+---
+
+##### `addModule` <a name="addModule" id="@xpertss/projen-types.MavenPom.addModule"></a>
+
+```typescript
+public addModule(path: string): void
+```
+
+Adds a `<module>` (a path relative to this pom's directory).
+
+###### `path`<sup>Required</sup> <a name="path" id="@xpertss/projen-types.MavenPom.addModule.parameter.path"></a>
+
+- *Type:* string
+
+---
+
+##### `addPlugin` <a name="addPlugin" id="@xpertss/projen-types.MavenPom.addPlugin"></a>
+
+```typescript
+public addPlugin(spec: string, options?: PluginOptions): void
+```
+
+Adds a build plugin to `<build><plugins>`.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.MavenPom.addPlugin.parameter.spec"></a>
+
+- *Type:* string
+
+`groupId/artifactId[@version]` - omit the version when `<pluginManagement>` (here or in the parent) manages it.
+
+---
+
+###### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.MavenPom.addPlugin.parameter.options"></a>
+
+- *Type:* projen.java.PluginOptions
+
+---
+
+##### `addPluginRepository` <a name="addPluginRepository" id="@xpertss/projen-types.MavenPom.addPluginRepository"></a>
+
+```typescript
+public addPluginRepository(repository: MavenRepository): void
+```
+
+Adds a `<pluginRepository>`.
+
+###### `repository`<sup>Required</sup> <a name="repository" id="@xpertss/projen-types.MavenPom.addPluginRepository.parameter.repository"></a>
+
+- *Type:* projen.java.MavenRepository
+
+---
+
+##### `addProperty` <a name="addProperty" id="@xpertss/projen-types.MavenPom.addProperty"></a>
+
+```typescript
+public addProperty(name: string, value: string): void
+```
+
+Sets a `<properties>` entry.
+
+###### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.MavenPom.addProperty.parameter.name"></a>
+
+- *Type:* string
+
+---
+
+###### `value`<sup>Required</sup> <a name="value" id="@xpertss/projen-types.MavenPom.addProperty.parameter.value"></a>
+
+- *Type:* string
+
+---
+
+##### `addRepository` <a name="addRepository" id="@xpertss/projen-types.MavenPom.addRepository"></a>
+
+```typescript
+public addRepository(repository: MavenRepository): void
+```
+
+Adds a `<repository>`.
+
+###### `repository`<sup>Required</sup> <a name="repository" id="@xpertss/projen-types.MavenPom.addRepository.parameter.repository"></a>
+
+- *Type:* projen.java.MavenRepository
+
+---
+
+##### `addTestDependency` <a name="addTestDependency" id="@xpertss/projen-types.MavenPom.addTestDependency"></a>
+
+```typescript
+public addTestDependency(spec: string): void
+```
+
+Adds a `test`-scoped dependency.
+
+###### `spec`<sup>Required</sup> <a name="spec" id="@xpertss/projen-types.MavenPom.addTestDependency.parameter.spec"></a>
+
+- *Type:* string
+
+---
+
+##### `hasPlugin` <a name="hasPlugin" id="@xpertss/projen-types.MavenPom.hasPlugin"></a>
+
+```typescript
+public hasPlugin(coordinates: string): boolean
+```
+
+True if a plugin with these `groupId/artifactId` coordinates is in `<plugins>`.
+
+###### `coordinates`<sup>Required</sup> <a name="coordinates" id="@xpertss/projen-types.MavenPom.hasPlugin.parameter.coordinates"></a>
+
+- *Type:* string
+
+---
+
+##### `removeBom` <a name="removeBom" id="@xpertss/projen-types.MavenPom.removeBom"></a>
+
+```typescript
+public removeBom(coordinates: string): void
+```
+
+Removes a BOM import added by `addBom`, if present.
+
+###### `coordinates`<sup>Required</sup> <a name="coordinates" id="@xpertss/projen-types.MavenPom.removeBom.parameter.coordinates"></a>
+
+- *Type:* string
+
+---
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenPom.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.MavenPom.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.MavenPom.isConstruct"></a>
+
+```typescript
+import { MavenPom } from '@xpertss/projen-types'
+
+MavenPom.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.MavenPom.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.MavenPom.isComponent"></a>
+
+```typescript
+import { MavenPom } from '@xpertss/projen-types'
+
+MavenPom.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.MavenPom.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.filePath">filePath</a></code> | <code>string</code> | Path of the pom, relative to the project root. |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.description">description</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.parent">parent</a></code> | <code>projen.java.ParentPom</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.url">url</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.version">version</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.managePluginVersions">managePluginVersions</a></code> | <code>boolean</code> | When true, the versions of `<plugins>` entries are written into `<pluginManagement>` and the `<plugins>` entries stay versionless - the shape a reactor parent wants, so modules can redeclare a plugin without repeating its version. |
+| <code><a href="#@xpertss/projen-types.MavenPom.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging (`jar`, `pom`, ...). |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.MavenPom.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.MavenPom.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `artifactId`<sup>Required</sup> <a name="artifactId" id="@xpertss/projen-types.MavenPom.property.artifactId"></a>
+
+```typescript
+public readonly artifactId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `filePath`<sup>Required</sup> <a name="filePath" id="@xpertss/projen-types.MavenPom.property.filePath"></a>
+
+```typescript
+public readonly filePath: string;
+```
+
+- *Type:* string
+
+Path of the pom, relative to the project root.
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.MavenPom.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+
+---
+
+##### `groupId`<sup>Optional</sup> <a name="groupId" id="@xpertss/projen-types.MavenPom.property.groupId"></a>
+
+```typescript
+public readonly groupId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `name`<sup>Optional</sup> <a name="name" id="@xpertss/projen-types.MavenPom.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+---
+
+##### `parent`<sup>Optional</sup> <a name="parent" id="@xpertss/projen-types.MavenPom.property.parent"></a>
+
+```typescript
+public readonly parent: ParentPom;
+```
+
+- *Type:* projen.java.ParentPom
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="@xpertss/projen-types.MavenPom.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+
+---
+
+##### `version`<sup>Optional</sup> <a name="version" id="@xpertss/projen-types.MavenPom.property.version"></a>
+
+```typescript
+public readonly version: string;
+```
+
+- *Type:* string
+
+---
+
+##### `managePluginVersions`<sup>Required</sup> <a name="managePluginVersions" id="@xpertss/projen-types.MavenPom.property.managePluginVersions"></a>
+
+```typescript
+public readonly managePluginVersions: boolean;
+```
+
+- *Type:* boolean
+
+When true, the versions of `<plugins>` entries are written into `<pluginManagement>` and the `<plugins>` entries stay versionless - the shape a reactor parent wants, so modules can redeclare a plugin without repeating its version.
+
+---
+
+##### `packaging`<sup>Required</sup> <a name="packaging" id="@xpertss/projen-types.MavenPom.property.packaging"></a>
+
+```typescript
+public readonly packaging: string;
+```
+
+- *Type:* string
+
+Maven packaging (`jar`, `pom`, ...).
+
+---
+
+
+### MavenUpgradeReport <a name="MavenUpgradeReport" id="@xpertss/projen-types.MavenUpgradeReport"></a>
+
+Nightly, report-only dependency check for the Maven types: runs the `upgrade` task (`versions:display-dependency-updates` and `display-plugin-updates`) and writes the available updates into the job summary.
+
+It deliberately changes nothing. Every version in a generated pom comes
+from `.projenrc.ts` (or this package's defaults), so rewriting `pom.xml`
+would just be reverted by the next `npx projen` and flagged by the drift
+check. Apply an update by changing the version in `.projenrc.ts`.
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.MavenUpgradeReport.Initializer"></a>
+
+```typescript
+import { MavenUpgradeReport } from '@xpertss/projen-types'
+
+new MavenUpgradeReport(scope: GitHubProject, options: MavenUpgradeReportOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.MavenUpgradeReportOptions">MavenUpgradeReportOptions</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="@xpertss/projen-types.MavenUpgradeReport.Initializer.parameter.scope"></a>
+
+- *Type:* projen.github.GitHubProject
+
+---
+
+##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.MavenUpgradeReport.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.MavenUpgradeReportOptions">MavenUpgradeReportOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.MavenUpgradeReport.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.MavenUpgradeReport.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.MavenUpgradeReport.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.MavenUpgradeReport.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.MavenUpgradeReport.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.MavenUpgradeReport.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.MavenUpgradeReport.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.MavenUpgradeReport.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.MavenUpgradeReport.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.MavenUpgradeReport.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.MavenUpgradeReport.isConstruct"></a>
+
+```typescript
+import { MavenUpgradeReport } from '@xpertss/projen-types'
+
+MavenUpgradeReport.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.MavenUpgradeReport.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.MavenUpgradeReport.isComponent"></a>
+
+```typescript
+import { MavenUpgradeReport } from '@xpertss/projen-types'
+
+MavenUpgradeReport.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.MavenUpgradeReport.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReport.property.workflow">workflow</a></code> | <code>projen.github.GithubWorkflow</code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.MavenUpgradeReport.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.MavenUpgradeReport.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `workflow`<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.MavenUpgradeReport.property.workflow"></a>
+
+```typescript
+public readonly workflow: GithubWorkflow;
+```
+
+- *Type:* projen.github.GithubWorkflow
 
 ---
 
@@ -12804,6 +15266,7 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
@@ -12831,6 +15294,19 @@ public readonly cdkVersion: string;
 
 - *Type:* string
 - *Default:* "2.189.1"
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.CdkAppProjectOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
 
 ---
 
@@ -12952,6 +15428,7 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
@@ -12977,6 +15454,19 @@ public readonly cdkVersion: string;
 
 - *Type:* string
 - *Default:* "2.189.1"
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.CdkInfraProjectOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
 
 ---
 
@@ -13046,6 +15536,7 @@ const cdkTypescriptProjectOptions: CdkTypescriptProjectOptions = { ... }
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | *No description.* |
 
@@ -13069,6 +15560,19 @@ public readonly cdkVersion: string;
 
 - *Type:* string
 - *Default:* "2.189.1"
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
 
 ---
 
@@ -13109,6 +15613,7 @@ const commonCdkOptions: CommonCdkOptions = { ... }
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
 
 ---
@@ -13131,6 +15636,19 @@ public readonly cdkVersion: string;
 
 - *Type:* string
 - *Default:* "2.189.1"
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.CommonCdkOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
 
 ---
 
@@ -13162,8 +15680,23 @@ const commonJavaOptions: CommonJavaOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 
 ---
@@ -13198,6 +15731,74 @@ public readonly name: string;
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.CommonJavaOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss" (same as `GitHubActionProject`)
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.CommonJavaOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.CommonJavaOptions.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project description, written to the root pom.
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.CommonJavaOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
+
+---
+
+##### `enforcer`<sup>Optional</sup> <a name="enforcer" id="@xpertss/projen-types.CommonJavaOptions.property.enforcer"></a>
+
+```typescript
+public readonly enforcer: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors).
+
+Its Java rule always follows
+`javaVersion`.
+
+---
+
 ##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.CommonJavaOptions.property.gheTokenSecret"></a>
 
 ```typescript
@@ -13206,6 +15807,124 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.CommonJavaOptions.property.javaDistribution"></a>
+
+```typescript
+public readonly javaDistribution: string;
+```
+
+- *Type:* string
+- *Default:* "temurin"
+
+`actions/setup-java` distribution CI installs the JDK from.
+
+---
+
+##### `javaVersion`<sup>Optional</sup> <a name="javaVersion" id="@xpertss/projen-types.CommonJavaOptions.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+- *Default:* "21"
+
+Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+
+Drives every Java-dependent part of the generated build: the compiler
+level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
+no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+the default Spring Boot line, and the JDK CI installs. Any other value
+fails at synth and lists the supported lines.
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CommonJavaOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.CommonJavaOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE` file.
+
+---
+
+##### `minMavenVersion`<sup>Optional</sup> <a name="minMavenVersion" id="@xpertss/projen-types.CommonJavaOptions.property.minMavenVersion"></a>
+
+```typescript
+public readonly minMavenVersion: string;
+```
+
+- *Type:* string
+- *Default:* "3.9"
+
+Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`).
+
+Ignored when `enforcer` is false.
+
+---
+
+##### `packaging`<sup>Optional</sup> <a name="packaging" id="@xpertss/projen-types.CommonJavaOptions.property.packaging"></a>
+
+```typescript
+public readonly packaging: string;
+```
+
+- *Type:* string
+- *Default:* "jar"
+
+Maven packaging of the root pom while the project has no modules.
+
+Once
+`addModule()` is called the root pom is always `pom`-packaged (and
+setting anything other than `pom` here is a synth error).
+
+---
+
+##### `pluginVersions`<sup>Optional</sup> <a name="pluginVersions" id="@xpertss/projen-types.CommonJavaOptions.property.pluginVersions"></a>
+
+```typescript
+public readonly pluginVersions: {[ key: string ]: string};
+```
+
+- *Type:* {[ key: string ]: string}
+- *Default:* the defaults for `javaVersion`
+
+Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions.
+
+---
+
+##### `sample`<sup>Optional</sup> <a name="sample" id="@xpertss/projen-types.CommonJavaOptions.property.sample"></a>
+
+```typescript
+public readonly sample: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet.
+
+Never written for a multi-module project.
 
 ---
 
@@ -13220,6 +15939,32 @@ public readonly sonarProjectKey: string;
 SonarCloud project key.
 
 If unset, the sonar scan step is skipped.
+
+---
+
+##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.CommonJavaOptions.property.upgradeWorkflow"></a>
+
+```typescript
+public readonly upgradeWorkflow: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`).
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="@xpertss/projen-types.CommonJavaOptions.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project URL, written to the root pom.
 
 ---
 
@@ -13463,6 +16208,7 @@ const gitHubActionProjectOptions: GitHubActionProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). MUST be reachable from github.com-hosted (public) runners (AD-001). Required, no default: a guessed server is worse than a loud failure. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.description">description</a></code> | <code>string</code> | One-line description of the action. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood">dogfood</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a></code> | The dogfood scenario (AD-001). |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003) and, when the action has a `token` input, the dogfood's invocation of it. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
@@ -13889,6 +16635,19 @@ single step that fails on every PR until a scenario is declared.
 
 ---
 
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.GitHubActionProjectOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
+
+---
+
 ##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret"></a>
 
 ```typescript
@@ -13985,8 +16744,23 @@ const javaAppProjectOptions: JavaAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.ghPackagesRegistry">ghPackagesRegistry</a></code> | <code>string</code> | *No description.* |
 
@@ -14022,6 +16796,74 @@ public readonly name: string;
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.JavaAppProjectOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss" (same as `GitHubActionProject`)
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.JavaAppProjectOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.JavaAppProjectOptions.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project description, written to the root pom.
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.JavaAppProjectOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
+
+---
+
+##### `enforcer`<sup>Optional</sup> <a name="enforcer" id="@xpertss/projen-types.JavaAppProjectOptions.property.enforcer"></a>
+
+```typescript
+public readonly enforcer: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors).
+
+Its Java rule always follows
+`javaVersion`.
+
+---
+
 ##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaAppProjectOptions.property.gheTokenSecret"></a>
 
 ```typescript
@@ -14030,6 +16872,124 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaAppProjectOptions.property.javaDistribution"></a>
+
+```typescript
+public readonly javaDistribution: string;
+```
+
+- *Type:* string
+- *Default:* "temurin"
+
+`actions/setup-java` distribution CI installs the JDK from.
+
+---
+
+##### `javaVersion`<sup>Optional</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaAppProjectOptions.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+- *Default:* "21"
+
+Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+
+Drives every Java-dependent part of the generated build: the compiler
+level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
+no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+the default Spring Boot line, and the JDK CI installs. Any other value
+fails at synth and lists the supported lines.
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.JavaAppProjectOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.JavaAppProjectOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE` file.
+
+---
+
+##### `minMavenVersion`<sup>Optional</sup> <a name="minMavenVersion" id="@xpertss/projen-types.JavaAppProjectOptions.property.minMavenVersion"></a>
+
+```typescript
+public readonly minMavenVersion: string;
+```
+
+- *Type:* string
+- *Default:* "3.9"
+
+Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`).
+
+Ignored when `enforcer` is false.
+
+---
+
+##### `packaging`<sup>Optional</sup> <a name="packaging" id="@xpertss/projen-types.JavaAppProjectOptions.property.packaging"></a>
+
+```typescript
+public readonly packaging: string;
+```
+
+- *Type:* string
+- *Default:* "jar"
+
+Maven packaging of the root pom while the project has no modules.
+
+Once
+`addModule()` is called the root pom is always `pom`-packaged (and
+setting anything other than `pom` here is a synth error).
+
+---
+
+##### `pluginVersions`<sup>Optional</sup> <a name="pluginVersions" id="@xpertss/projen-types.JavaAppProjectOptions.property.pluginVersions"></a>
+
+```typescript
+public readonly pluginVersions: {[ key: string ]: string};
+```
+
+- *Type:* {[ key: string ]: string}
+- *Default:* the defaults for `javaVersion`
+
+Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions.
+
+---
+
+##### `sample`<sup>Optional</sup> <a name="sample" id="@xpertss/projen-types.JavaAppProjectOptions.property.sample"></a>
+
+```typescript
+public readonly sample: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet.
+
+Never written for a multi-module project.
 
 ---
 
@@ -14044,6 +17004,32 @@ public readonly sonarProjectKey: string;
 SonarCloud project key.
 
 If unset, the sonar scan step is skipped.
+
+---
+
+##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.JavaAppProjectOptions.property.upgradeWorkflow"></a>
+
+```typescript
+public readonly upgradeWorkflow: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`).
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="@xpertss/projen-types.JavaAppProjectOptions.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project URL, written to the root pom.
 
 ---
 
@@ -14086,8 +17072,23 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.mavenCentralOidc">mavenCentralOidc</a></code> | <code>boolean</code> | Use Maven Central's OIDC trusted-publishing flow instead of secret-based GPG signing. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | *No description.* |
@@ -14124,6 +17125,74 @@ public readonly name: string;
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss" (same as `GitHubActionProject`)
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project description, written to the root pom.
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
+
+---
+
+##### `enforcer`<sup>Optional</sup> <a name="enforcer" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.enforcer"></a>
+
+```typescript
+public readonly enforcer: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors).
+
+Its Java rule always follows
+`javaVersion`.
+
+---
+
 ##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.gheTokenSecret"></a>
 
 ```typescript
@@ -14132,6 +17201,124 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.javaDistribution"></a>
+
+```typescript
+public readonly javaDistribution: string;
+```
+
+- *Type:* string
+- *Default:* "temurin"
+
+`actions/setup-java` distribution CI installs the JDK from.
+
+---
+
+##### `javaVersion`<sup>Optional</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+- *Default:* "21"
+
+Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+
+Drives every Java-dependent part of the generated build: the compiler
+level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
+no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+the default Spring Boot line, and the JDK CI installs. Any other value
+fails at synth and lists the supported lines.
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE` file.
+
+---
+
+##### `minMavenVersion`<sup>Optional</sup> <a name="minMavenVersion" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.minMavenVersion"></a>
+
+```typescript
+public readonly minMavenVersion: string;
+```
+
+- *Type:* string
+- *Default:* "3.9"
+
+Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`).
+
+Ignored when `enforcer` is false.
+
+---
+
+##### `packaging`<sup>Optional</sup> <a name="packaging" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.packaging"></a>
+
+```typescript
+public readonly packaging: string;
+```
+
+- *Type:* string
+- *Default:* "jar"
+
+Maven packaging of the root pom while the project has no modules.
+
+Once
+`addModule()` is called the root pom is always `pom`-packaged (and
+setting anything other than `pom` here is a synth error).
+
+---
+
+##### `pluginVersions`<sup>Optional</sup> <a name="pluginVersions" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.pluginVersions"></a>
+
+```typescript
+public readonly pluginVersions: {[ key: string ]: string};
+```
+
+- *Type:* {[ key: string ]: string}
+- *Default:* the defaults for `javaVersion`
+
+Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions.
+
+---
+
+##### `sample`<sup>Optional</sup> <a name="sample" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.sample"></a>
+
+```typescript
+public readonly sample: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet.
+
+Never written for a multi-module project.
 
 ---
 
@@ -14146,6 +17333,32 @@ public readonly sonarProjectKey: string;
 SonarCloud project key.
 
 If unset, the sonar scan step is skipped.
+
+---
+
+##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.upgradeWorkflow"></a>
+
+```typescript
+public readonly upgradeWorkflow: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`).
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project URL, written to the root pom.
 
 ---
 
@@ -14185,6 +17398,8 @@ public readonly publishCodeIndex: boolean;
 
 ### JavaMavenProjectOptions <a name="JavaMavenProjectOptions" id="@xpertss/projen-types.JavaMavenProjectOptions"></a>
 
+Options for `JavaMavenProject`.
+
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.JavaMavenProjectOptions.Initializer"></a>
 
 ```typescript
@@ -14200,8 +17415,23 @@ const javaMavenProjectOptions: JavaMavenProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 
 ---
@@ -14236,6 +17466,74 @@ public readonly name: string;
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.JavaMavenProjectOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss" (same as `GitHubActionProject`)
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.JavaMavenProjectOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.JavaMavenProjectOptions.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project description, written to the root pom.
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.JavaMavenProjectOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
+
+---
+
+##### `enforcer`<sup>Optional</sup> <a name="enforcer" id="@xpertss/projen-types.JavaMavenProjectOptions.property.enforcer"></a>
+
+```typescript
+public readonly enforcer: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors).
+
+Its Java rule always follows
+`javaVersion`.
+
+---
+
 ##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaMavenProjectOptions.property.gheTokenSecret"></a>
 
 ```typescript
@@ -14244,6 +17542,124 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaMavenProjectOptions.property.javaDistribution"></a>
+
+```typescript
+public readonly javaDistribution: string;
+```
+
+- *Type:* string
+- *Default:* "temurin"
+
+`actions/setup-java` distribution CI installs the JDK from.
+
+---
+
+##### `javaVersion`<sup>Optional</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaMavenProjectOptions.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+- *Default:* "21"
+
+Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+
+Drives every Java-dependent part of the generated build: the compiler
+level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
+no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+the default Spring Boot line, and the JDK CI installs. Any other value
+fails at synth and lists the supported lines.
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.JavaMavenProjectOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.JavaMavenProjectOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE` file.
+
+---
+
+##### `minMavenVersion`<sup>Optional</sup> <a name="minMavenVersion" id="@xpertss/projen-types.JavaMavenProjectOptions.property.minMavenVersion"></a>
+
+```typescript
+public readonly minMavenVersion: string;
+```
+
+- *Type:* string
+- *Default:* "3.9"
+
+Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`).
+
+Ignored when `enforcer` is false.
+
+---
+
+##### `packaging`<sup>Optional</sup> <a name="packaging" id="@xpertss/projen-types.JavaMavenProjectOptions.property.packaging"></a>
+
+```typescript
+public readonly packaging: string;
+```
+
+- *Type:* string
+- *Default:* "jar"
+
+Maven packaging of the root pom while the project has no modules.
+
+Once
+`addModule()` is called the root pom is always `pom`-packaged (and
+setting anything other than `pom` here is a synth error).
+
+---
+
+##### `pluginVersions`<sup>Optional</sup> <a name="pluginVersions" id="@xpertss/projen-types.JavaMavenProjectOptions.property.pluginVersions"></a>
+
+```typescript
+public readonly pluginVersions: {[ key: string ]: string};
+```
+
+- *Type:* {[ key: string ]: string}
+- *Default:* the defaults for `javaVersion`
+
+Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions.
+
+---
+
+##### `sample`<sup>Optional</sup> <a name="sample" id="@xpertss/projen-types.JavaMavenProjectOptions.property.sample"></a>
+
+```typescript
+public readonly sample: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet.
+
+Never written for a multi-module project.
 
 ---
 
@@ -14258,6 +17674,32 @@ public readonly sonarProjectKey: string;
 SonarCloud project key.
 
 If unset, the sonar scan step is skipped.
+
+---
+
+##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.JavaMavenProjectOptions.property.upgradeWorkflow"></a>
+
+```typescript
+public readonly upgradeWorkflow: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`).
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="@xpertss/projen-types.JavaMavenProjectOptions.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project URL, written to the root pom.
 
 ---
 
@@ -14289,9 +17731,25 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.springBootVersion">springBootVersion</a></code> | <code>string</code> | Spring Boot version: imports `spring-boot-dependencies` as the first BOM, and versions `spring-boot-maven-plugin`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.cdkDeployHook">cdkDeployHook</a></code> | <code>boolean</code> | Whether to generate the `deploy-cdk` workflow at all. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.cdkDeployTargetRepo">cdkDeployTargetRepo</a></code> | <code>string</code> | The companion CDK infra/app repo (`owner/repo`) whose `deploy.yml` the `deploy-cdk` workflow dispatches. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.dockerRegistry">dockerRegistry</a></code> | <code>string</code> | *No description.* |
@@ -14330,6 +17788,74 @@ public readonly name: string;
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.JavaServiceProjectOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss" (same as `GitHubActionProject`)
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.JavaServiceProjectOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.JavaServiceProjectOptions.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project description, written to the root pom.
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.JavaServiceProjectOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
+
+---
+
+##### `enforcer`<sup>Optional</sup> <a name="enforcer" id="@xpertss/projen-types.JavaServiceProjectOptions.property.enforcer"></a>
+
+```typescript
+public readonly enforcer: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors).
+
+Its Java rule always follows
+`javaVersion`.
+
+---
+
 ##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaServiceProjectOptions.property.gheTokenSecret"></a>
 
 ```typescript
@@ -14338,6 +17864,124 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaServiceProjectOptions.property.javaDistribution"></a>
+
+```typescript
+public readonly javaDistribution: string;
+```
+
+- *Type:* string
+- *Default:* "temurin"
+
+`actions/setup-java` distribution CI installs the JDK from.
+
+---
+
+##### `javaVersion`<sup>Optional</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaServiceProjectOptions.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+- *Default:* "21"
+
+Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+
+Drives every Java-dependent part of the generated build: the compiler
+level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
+no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+the default Spring Boot line, and the JDK CI installs. Any other value
+fails at synth and lists the supported lines.
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.JavaServiceProjectOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.JavaServiceProjectOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE` file.
+
+---
+
+##### `minMavenVersion`<sup>Optional</sup> <a name="minMavenVersion" id="@xpertss/projen-types.JavaServiceProjectOptions.property.minMavenVersion"></a>
+
+```typescript
+public readonly minMavenVersion: string;
+```
+
+- *Type:* string
+- *Default:* "3.9"
+
+Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`).
+
+Ignored when `enforcer` is false.
+
+---
+
+##### `packaging`<sup>Optional</sup> <a name="packaging" id="@xpertss/projen-types.JavaServiceProjectOptions.property.packaging"></a>
+
+```typescript
+public readonly packaging: string;
+```
+
+- *Type:* string
+- *Default:* "jar"
+
+Maven packaging of the root pom while the project has no modules.
+
+Once
+`addModule()` is called the root pom is always `pom`-packaged (and
+setting anything other than `pom` here is a synth error).
+
+---
+
+##### `pluginVersions`<sup>Optional</sup> <a name="pluginVersions" id="@xpertss/projen-types.JavaServiceProjectOptions.property.pluginVersions"></a>
+
+```typescript
+public readonly pluginVersions: {[ key: string ]: string};
+```
+
+- *Type:* {[ key: string ]: string}
+- *Default:* the defaults for `javaVersion`
+
+Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions.
+
+---
+
+##### `sample`<sup>Optional</sup> <a name="sample" id="@xpertss/projen-types.JavaServiceProjectOptions.property.sample"></a>
+
+```typescript
+public readonly sample: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet.
+
+Never written for a multi-module project.
 
 ---
 
@@ -14355,6 +17999,32 @@ If unset, the sonar scan step is skipped.
 
 ---
 
+##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.JavaServiceProjectOptions.property.upgradeWorkflow"></a>
+
+```typescript
+public readonly upgradeWorkflow: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`).
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="@xpertss/projen-types.JavaServiceProjectOptions.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project URL, written to the root pom.
+
+---
+
 ##### `version`<sup>Optional</sup> <a name="version" id="@xpertss/projen-types.JavaServiceProjectOptions.property.version"></a>
 
 ```typescript
@@ -14363,6 +18033,23 @@ public readonly version: string;
 
 - *Type:* string
 - *Default:* "0.1.0"
+
+---
+
+##### `springBootVersion`<sup>Optional</sup> <a name="springBootVersion" id="@xpertss/projen-types.JavaServiceProjectOptions.property.springBootVersion"></a>
+
+```typescript
+public readonly springBootVersion: string;
+```
+
+- *Type:* string
+- *Default:* the newest release of the line supporting `javaVersion` (2.7.x for 1.8, otherwise the current major)
+
+Spring Boot version: imports `spring-boot-dependencies` as the first BOM, and versions `spring-boot-maven-plugin`.
+
+Must be an exact version.
+Spring Boot 3 and later need Java 17+, so with `javaVersion: '1.8'` only
+a 2.x version is accepted.
 
 ---
 
@@ -14430,6 +18117,342 @@ public readonly useFlyway: boolean;
 
 ---
 
+### JavaSpringBootProjectOptions <a name="JavaSpringBootProjectOptions" id="@xpertss/projen-types.JavaSpringBootProjectOptions"></a>
+
+Options for `JavaSpringBootProject`.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.JavaSpringBootProjectOptions.Initializer"></a>
+
+```typescript
+import { JavaSpringBootProjectOptions } from '@xpertss/projen-types'
+
+const javaSpringBootProjectOptions: JavaSpringBootProjectOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.springBootVersion">springBootVersion</a></code> | <code>string</code> | Spring Boot version: imports `spring-boot-dependencies` as the first BOM, and versions `spring-boot-maven-plugin`. |
+
+---
+
+##### `artifactId`<sup>Required</sup> <a name="artifactId" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.artifactId"></a>
+
+```typescript
+public readonly artifactId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `groupId`<sup>Required</sup> <a name="groupId" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.groupId"></a>
+
+```typescript
+public readonly groupId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+---
+
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss" (same as `GitHubActionProject`)
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project description, written to the root pom.
+
+---
+
+##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.editorconfig"></a>
+
+```typescript
+public readonly editorconfig: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a projen-managed `.editorconfig`.
+
+---
+
+##### `enforcer`<sup>Optional</sup> <a name="enforcer" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.enforcer"></a>
+
+```typescript
+public readonly enforcer: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors).
+
+Its Java rule always follows
+`javaVersion`.
+
+---
+
+##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.gheTokenSecret"></a>
+
+```typescript
+public readonly gheTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaDistribution"></a>
+
+```typescript
+public readonly javaDistribution: string;
+```
+
+- *Type:* string
+- *Default:* "temurin"
+
+`actions/setup-java` distribution CI installs the JDK from.
+
+---
+
+##### `javaVersion`<sup>Optional</sup> <a name="javaVersion" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaVersion"></a>
+
+```typescript
+public readonly javaVersion: string;
+```
+
+- *Type:* string
+- *Default:* "21"
+
+Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+
+Drives every Java-dependent part of the generated build: the compiler
+level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
+no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+the default Spring Boot line, and the JDK CI installs. Any other value
+fails at synth and lists the supported lines.
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE` file.
+
+---
+
+##### `minMavenVersion`<sup>Optional</sup> <a name="minMavenVersion" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.minMavenVersion"></a>
+
+```typescript
+public readonly minMavenVersion: string;
+```
+
+- *Type:* string
+- *Default:* "3.9"
+
+Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`).
+
+Ignored when `enforcer` is false.
+
+---
+
+##### `packaging`<sup>Optional</sup> <a name="packaging" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.packaging"></a>
+
+```typescript
+public readonly packaging: string;
+```
+
+- *Type:* string
+- *Default:* "jar"
+
+Maven packaging of the root pom while the project has no modules.
+
+Once
+`addModule()` is called the root pom is always `pom`-packaged (and
+setting anything other than `pom` here is a synth error).
+
+---
+
+##### `pluginVersions`<sup>Optional</sup> <a name="pluginVersions" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.pluginVersions"></a>
+
+```typescript
+public readonly pluginVersions: {[ key: string ]: string};
+```
+
+- *Type:* {[ key: string ]: string}
+- *Default:* the defaults for `javaVersion`
+
+Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions.
+
+---
+
+##### `sample`<sup>Optional</sup> <a name="sample" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.sample"></a>
+
+```typescript
+public readonly sample: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet.
+
+Never written for a multi-module project.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+
+SonarCloud project key.
+
+If unset, the sonar scan step is skipped.
+
+---
+
+##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.upgradeWorkflow"></a>
+
+```typescript
+public readonly upgradeWorkflow: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`).
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+Project URL, written to the root pom.
+
+---
+
+##### `version`<sup>Optional</sup> <a name="version" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.version"></a>
+
+```typescript
+public readonly version: string;
+```
+
+- *Type:* string
+- *Default:* "0.1.0"
+
+---
+
+##### `springBootVersion`<sup>Optional</sup> <a name="springBootVersion" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.springBootVersion"></a>
+
+```typescript
+public readonly springBootVersion: string;
+```
+
+- *Type:* string
+- *Default:* the newest release of the line supporting `javaVersion` (2.7.x for 1.8, otherwise the current major)
+
+Spring Boot version: imports `spring-boot-dependencies` as the first BOM, and versions `spring-boot-maven-plugin`.
+
+Must be an exact version.
+Spring Boot 3 and later need Java 17+, so with `javaVersion: '1.8'` only
+a 2.x version is accepted.
+
+---
+
 ### MavenCentralPublishOptions <a name="MavenCentralPublishOptions" id="@xpertss/projen-types.MavenCentralPublishOptions"></a>
 
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.MavenCentralPublishOptions.Initializer"></a>
@@ -14456,6 +18479,316 @@ public readonly mavenCentralOidc: boolean;
 
 - *Type:* boolean
 - *Default:* false
+
+---
+
+### MavenCoordinates <a name="MavenCoordinates" id="@xpertss/projen-types.MavenCoordinates"></a>
+
+Parsed `groupId/artifactId[@version]` spec.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.MavenCoordinates.Initializer"></a>
+
+```typescript
+import { MavenCoordinates } from '@xpertss/projen-types'
+
+const mavenCoordinates: MavenCoordinates = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenCoordinates.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenCoordinates.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenCoordinates.property.version">version</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `artifactId`<sup>Required</sup> <a name="artifactId" id="@xpertss/projen-types.MavenCoordinates.property.artifactId"></a>
+
+```typescript
+public readonly artifactId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `groupId`<sup>Required</sup> <a name="groupId" id="@xpertss/projen-types.MavenCoordinates.property.groupId"></a>
+
+```typescript
+public readonly groupId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `version`<sup>Optional</sup> <a name="version" id="@xpertss/projen-types.MavenCoordinates.property.version"></a>
+
+```typescript
+public readonly version: string;
+```
+
+- *Type:* string
+
+---
+
+### MavenModuleOptions <a name="MavenModuleOptions" id="@xpertss/projen-types.MavenModuleOptions"></a>
+
+Options for `JavaMavenProject.addModule()`.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.MavenModuleOptions.Initializer"></a>
+
+```typescript
+import { MavenModuleOptions } from '@xpertss/projen-types'
+
+const mavenModuleOptions: MavenModuleOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenModuleOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenModuleOptions.property.dir">dir</a></code> | <code>string</code> | Module directory, relative to the repo root (may be nested, e.g. `tools/stub-model`). Its `pom.xml` is generated there. |
+| <code><a href="#@xpertss/projen-types.MavenModuleOptions.property.description">description</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenModuleOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenModuleOptions.property.packaging">packaging</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `artifactId`<sup>Required</sup> <a name="artifactId" id="@xpertss/projen-types.MavenModuleOptions.property.artifactId"></a>
+
+```typescript
+public readonly artifactId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `dir`<sup>Required</sup> <a name="dir" id="@xpertss/projen-types.MavenModuleOptions.property.dir"></a>
+
+```typescript
+public readonly dir: string;
+```
+
+- *Type:* string
+
+Module directory, relative to the repo root (may be nested, e.g. `tools/stub-model`). Its `pom.xml` is generated there.
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.MavenModuleOptions.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+---
+
+##### `name`<sup>Optional</sup> <a name="name" id="@xpertss/projen-types.MavenModuleOptions.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+- *Default:* the artifactId
+
+---
+
+##### `packaging`<sup>Optional</sup> <a name="packaging" id="@xpertss/projen-types.MavenModuleOptions.property.packaging"></a>
+
+```typescript
+public readonly packaging: string;
+```
+
+- *Type:* string
+- *Default:* "jar"
+
+---
+
+### MavenPomOptions <a name="MavenPomOptions" id="@xpertss/projen-types.MavenPomOptions"></a>
+
+Options for `MavenPom`.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.MavenPomOptions.Initializer"></a>
+
+```typescript
+import { MavenPomOptions } from '@xpertss/projen-types'
+
+const mavenPomOptions: MavenPomOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenPomOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPomOptions.property.description">description</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPomOptions.property.filePath">filePath</a></code> | <code>string</code> | Path of the pom, relative to the project root. |
+| <code><a href="#@xpertss/projen-types.MavenPomOptions.property.groupId">groupId</a></code> | <code>string</code> | `groupId`. |
+| <code><a href="#@xpertss/projen-types.MavenPomOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPomOptions.property.packaging">packaging</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPomOptions.property.parent">parent</a></code> | <code>projen.java.ParentPom</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPomOptions.property.url">url</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenPomOptions.property.version">version</a></code> | <code>string</code> | `version`. |
+
+---
+
+##### `artifactId`<sup>Required</sup> <a name="artifactId" id="@xpertss/projen-types.MavenPomOptions.property.artifactId"></a>
+
+```typescript
+public readonly artifactId: string;
+```
+
+- *Type:* string
+
+---
+
+##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.MavenPomOptions.property.description"></a>
+
+```typescript
+public readonly description: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+---
+
+##### `filePath`<sup>Optional</sup> <a name="filePath" id="@xpertss/projen-types.MavenPomOptions.property.filePath"></a>
+
+```typescript
+public readonly filePath: string;
+```
+
+- *Type:* string
+- *Default:* "pom.xml"
+
+Path of the pom, relative to the project root.
+
+---
+
+##### `groupId`<sup>Optional</sup> <a name="groupId" id="@xpertss/projen-types.MavenPomOptions.property.groupId"></a>
+
+```typescript
+public readonly groupId: string;
+```
+
+- *Type:* string
+- *Default:* inherited from the parent
+
+`groupId`.
+
+Omit in a module pom to inherit it from `<parent>`.
+
+---
+
+##### `name`<sup>Optional</sup> <a name="name" id="@xpertss/projen-types.MavenPomOptions.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+---
+
+##### `packaging`<sup>Optional</sup> <a name="packaging" id="@xpertss/projen-types.MavenPomOptions.property.packaging"></a>
+
+```typescript
+public readonly packaging: string;
+```
+
+- *Type:* string
+- *Default:* "jar"
+
+---
+
+##### `parent`<sup>Optional</sup> <a name="parent" id="@xpertss/projen-types.MavenPomOptions.property.parent"></a>
+
+```typescript
+public readonly parent: ParentPom;
+```
+
+- *Type:* projen.java.ParentPom
+- *Default:* no parent
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="@xpertss/projen-types.MavenPomOptions.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+---
+
+##### `version`<sup>Optional</sup> <a name="version" id="@xpertss/projen-types.MavenPomOptions.property.version"></a>
+
+```typescript
+public readonly version: string;
+```
+
+- *Type:* string
+- *Default:* inherited from the parent
+
+`version`.
+
+Omit in a module pom to inherit it from `<parent>`.
+
+---
+
+### MavenUpgradeReportOptions <a name="MavenUpgradeReportOptions" id="@xpertss/projen-types.MavenUpgradeReportOptions"></a>
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.MavenUpgradeReportOptions.Initializer"></a>
+
+```typescript
+import { MavenUpgradeReportOptions } from '@xpertss/projen-types'
+
+const mavenUpgradeReportOptions: MavenUpgradeReportOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReportOptions.property.setupSteps">setupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node, the projen toolchain, and the JDK. |
+| <code><a href="#@xpertss/projen-types.MavenUpgradeReportOptions.property.task">task</a></code> | <code>projen.Task</code> | The task that prints the available updates. |
+
+---
+
+##### `setupSteps`<sup>Required</sup> <a name="setupSteps" id="@xpertss/projen-types.MavenUpgradeReportOptions.property.setupSteps"></a>
+
+```typescript
+public readonly setupSteps: JobStep[];
+```
+
+- *Type:* projen.github.workflows.JobStep[]
+
+Steps that install Node, the projen toolchain, and the JDK.
+
+---
+
+##### `task`<sup>Required</sup> <a name="task" id="@xpertss/projen-types.MavenUpgradeReportOptions.property.task"></a>
+
+```typescript
+public readonly task: Task;
+```
+
+- *Type:* projen.Task
+
+The task that prints the available updates.
 
 ---
 

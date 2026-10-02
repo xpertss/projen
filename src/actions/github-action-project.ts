@@ -10,6 +10,7 @@ import { ActionBuildWorkflow } from './action-build-workflow';
 import { ActionDogfoodOptions, ActionDogfoodWorkflow } from './action-dogfood-workflow';
 import { ActionSonarWorkflow } from './action-sonar-workflow';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
+import { addEditorConfig } from '../common/editorconfig';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
 import { attachTypeScriptProjenrc } from '../common/projenrc-ts';
@@ -86,6 +87,12 @@ export interface GitHubActionProjectOptions
    * @default "MIT"
    */
   readonly license?: string;
+
+  /**
+   * Write a projen-managed `.editorconfig`.
+   * @default true
+   */
+  readonly editorconfig?: boolean;
 }
 
 function defaultReadmeContents(options: GitHubActionProjectOptions): string {
@@ -156,8 +163,15 @@ export class GitHubActionProject extends github.GitHubProject {
     }
     applyInternalActionOverrides(gh);
 
-    // JetBrains IDE state (.idea/) is never tracked in generated repos.
+    // JetBrains IDE state (.idea/) is never tracked in generated repos, and
+    // neither is /spec/ (local plans and specs; the pattern covers every
+    // subdirectory).
     this.addGitIgnore('/.idea/*');
+    this.addGitIgnore('/spec/');
+
+    if (options.editorconfig ?? true) {
+      addEditorConfig(this);
+    }
 
     new ProjenDriftCheckWorkflow(this, {
       gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
