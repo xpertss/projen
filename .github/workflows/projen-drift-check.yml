@@ -36,7 +36,7 @@ jobs:
         id: check_for_projen_drift
         run: |
           set -euo pipefail
-          npx projen
+          ./node_modules/.bin/projen
           drifted="$(git diff --name-only)"
           if [ -n "$drifted" ]; then
             while IFS= read -r f; do

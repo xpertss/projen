@@ -1,4 +1,4 @@
-import { posix } from 'path';
+import { posix } from 'node:path';
 import { JsonFile, License, SampleDir, Task, github, java } from 'projen';
 import { MavenUpgradeReport } from './components/maven-upgrade-report';
 import {

@@ -104,7 +104,7 @@ const ALIASES: Record<string, string> = { 8: '1.8' };
 /** The Java lines `javaVersion` accepts, in ascending order. */
 export function supportedJavaVersions(): string[] {
   // Integer-like keys ('17') enumerate before '1.8', so sort explicitly.
-  return Object.keys(JAVA_LINES).sort((a, b) => parseFloat(a) - parseFloat(b));
+  return Object.keys(JAVA_LINES).sort((a, b) => Number.parseFloat(a) - Number.parseFloat(b));
 }
 
 /**

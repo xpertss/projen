@@ -17,7 +17,8 @@ describe('ProjenDriftCheckWorkflow', () => {
     const step = wf.jobs.check.steps.find(
       (s: { name: string }) => s.name === 'Check for projen drift',
     );
-    expect(step.run).toContain('npx projen');
+    // Locally installed (lockfile-pinned) projen, not `npx`.
+    expect(step.run).toMatch(/^set -euo pipefail\n\.\/node_modules\/\.bin\/projen\n/);
     expect(step.run).toContain('git diff --name-only');
   });
 

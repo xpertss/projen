@@ -18,8 +18,10 @@ import { noteWorkflowPurpose } from './workflow-purpose';
  */
 export interface ProjenDriftCheckWorkflowOptions {
   /**
-   * The command that regenerates the project from `.projenrc.ts`.
-   * @default "npx projen"
+   * The command that regenerates the project from `.projenrc.ts`. The
+   * default runs the projen that `npm ci` just installed (exact version from
+   * `package-lock.json`) rather than `npx`, which can install on demand.
+   * @default "./node_modules/.bin/projen"
    */
   readonly projenCommand?: string;
 
@@ -52,7 +54,7 @@ export class ProjenDriftCheckWorkflow extends Component {
       );
     }
 
-    const projenCommand = options.projenCommand ?? 'npx projen';
+    const projenCommand = options.projenCommand ?? './node_modules/.bin/projen';
     const gheTokenSecret = options.gheTokenSecret ?? 'PROJEN_GITHUB_TOKEN';
 
     this.workflow = new github.GithubWorkflow(

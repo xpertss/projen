@@ -130,6 +130,19 @@ test('lint task: shellcheck, yamllint, pinned actionlint', () => {
   );
 });
 
+test('lint task: actionlint runs from a private mktemp dir, never shared /tmp', () => {
+  const tasks = synthSnapshot(new GitHubActionProject(baseOptions()))[
+    '.projen/tasks.json'
+  ];
+
+  const steps: { exec?: string }[] = tasks.tasks.lint.steps;
+  expect(JSON.stringify(steps)).not.toContain('/tmp');
+  const actionlint = steps.filter((s) => s.exec?.includes('actionlint'));
+  expect(actionlint).toHaveLength(1);
+  expect(actionlint[0].exec).toMatch(/^TMP="\$\(mktemp -d\)" && /);
+  expect(actionlint[0].exec).toContain('"$TMP/actionlint" action.yml');
+});
+
 test('test-dogfood.yml: scenario steps round-trip in order, cleanup always runs', () => {
   const dogfood = synthSnapshot(new GitHubActionProject(baseOptions()))[
     '.github/workflows/test-dogfood.yml'

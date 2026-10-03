@@ -39,17 +39,21 @@ export class ActionBuildWorkflow extends Component {
       'sudo apt-get update -y && sudo apt-get install -y shellcheck yamllint',
     );
     this.task.exec(
-      `curl -fsSL -o /tmp/actionlint.tar.gz "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"`,
-    );
-    this.task.exec(
-      `echo "${ACTIONLINT_SHA256}  /tmp/actionlint.tar.gz" | sha256sum -c -`,
-    );
-    this.task.exec('tar -xzf /tmp/actionlint.tar.gz -C /tmp actionlint');
-    this.task.exec(
       'find . -path ./node_modules -prune -o -name "*.sh" -print0 | xargs -0 -r shellcheck',
     );
     this.task.exec('yamllint -c .yamllint action.yml .github/workflows/*.yml');
-    this.task.exec('/tmp/actionlint action.yml .github/workflows/*.yml');
+    // One step, so the private `mktemp -d` dir carries from download through
+    // execution - never the world-writable shared /tmp, where another local
+    // user could plant the binary that gets run.
+    this.task.exec(
+      [
+        'TMP="$(mktemp -d)"',
+        `curl -fsSL -o "$TMP/actionlint.tar.gz" "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"`,
+        `echo "${ACTIONLINT_SHA256}  $TMP/actionlint.tar.gz" | sha256sum -c -`,
+        'tar -xzf "$TMP/actionlint.tar.gz" -C "$TMP" actionlint',
+        '"$TMP/actionlint" action.yml .github/workflows/*.yml',
+      ].join(' && '),
+    );
 
     this.workflow = new github.TaskWorkflow(gh, {
       name: 'build',

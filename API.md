@@ -18820,7 +18820,7 @@ const projenDriftCheckWorkflowOptions: ProjenDriftCheckWorkflowOptions = { ... }
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | GitHub secret holding a token with permission to comment on PRs, used for the best-effort drift report comment. |
-| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.projenCommand">projenCommand</a></code> | <code>string</code> | The command that regenerates the project from `.projenrc.ts`. |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.projenCommand">projenCommand</a></code> | <code>string</code> | The command that regenerates the project from `.projenrc.ts`. The default runs the projen that `npm ci` just installed (exact version from `package-lock.json`) rather than `npx`, which can install on demand. |
 | <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.workflowName">workflowName</a></code> | <code>string</code> | *No description.* |
 
 ---
@@ -18849,9 +18849,9 @@ public readonly projenCommand: string;
 ```
 
 - *Type:* string
-- *Default:* "npx projen"
+- *Default:* "./node_modules/.bin/projen"
 
-The command that regenerates the project from `.projenrc.ts`.
+The command that regenerates the project from `.projenrc.ts`. The default runs the projen that `npm ci` just installed (exact version from `package-lock.json`) rather than `npx`, which can install on demand.
 
 ---
 
