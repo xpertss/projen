@@ -35,7 +35,7 @@ export class JavaSpringBootProject extends JavaMavenProject {
 
     const version = options.springBootVersion ?? this.pinnedVersion(SPRING_BOOT_BOM);
     assertExactVersion(version, 'springBootVersion');
-    const major = parseInt(version.split('.')[0], 10);
+    const major = Number.parseInt(version.split('.')[0], 10);
     const maxMajor = this.maxSpringBootMajor();
     if (maxMajor !== undefined && major > maxMajor) {
       throw new Error(

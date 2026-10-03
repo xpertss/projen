@@ -332,7 +332,12 @@ export class MavenPom extends Component {
     });
   }
 
-  private synthPom(): any {
+  /**
+   * Renders `<plugins>` and `<pluginManagement>`. With `managePluginVersions`,
+   * a versioned plugin's version moves into `<pluginManagement>` (unless one
+   * is already managed there) and the plugin itself is rendered versionless.
+   */
+  private renderPlugins(): { plugins: any[]; pluginManagement: any[] } {
     const managedPlugins = new Map(this.managedPlugins);
     const plugins: any[] = [];
     for (const p of this.plugins.values()) {
@@ -346,15 +351,22 @@ export class MavenPom extends Component {
         plugins.push(renderPlugin(p.coords, p.options));
       }
     }
+    const pluginManagement = [...managedPlugins.values()].map((p) =>
+      renderPlugin(p.coords, p.options),
+    );
+    return { plugins, pluginManagement };
+  }
 
+  private renderDependencyManagement(): any {
     const managed = [
       ...this.boms.map((b) => ({ ...renderCoords(b), type: 'pom', scope: 'import' })),
       ...[...this.managedDeps.values()].map(renderDependency),
     ];
+    return managed.length ? { dependencies: { dependency: managed } } : undefined;
+  }
 
-    const pluginManagement = [...managedPlugins.values()].map((p) =>
-      renderPlugin(p.coords, p.options),
-    );
+  private synthPom(): any {
+    const { plugins, pluginManagement } = this.renderPlugins();
 
     // JSON round-trip drops every `undefined` field, so absent sections are
     // omitted rather than written as empty elements.
@@ -379,24 +391,26 @@ export class MavenPom extends Component {
         pluginRepositories: this.pluginRepositories.length
           ? { pluginRepository: this.pluginRepositories }
           : undefined,
-        dependencyManagement: managed.length
-          ? { dependencies: { dependency: managed } }
-          : undefined,
+        dependencyManagement: this.renderDependencyManagement(),
         dependencies: this.deps.size
           ? { dependency: [...this.deps.values()].map(renderDependency) }
           : undefined,
-        build:
-          plugins.length || pluginManagement.length
-            ? {
-              pluginManagement: pluginManagement.length
-                ? { plugins: { plugin: pluginManagement } }
-                : undefined,
-              plugins: plugins.length ? { plugin: plugins } : undefined,
-            }
-            : undefined,
+        build: renderBuild(plugins, pluginManagement),
       },
     }));
   }
+}
+
+function renderBuild(plugins: any[], pluginManagement: any[]): any {
+  if (!plugins.length && !pluginManagement.length) {
+    return undefined;
+  }
+  return {
+    pluginManagement: pluginManagement.length
+      ? { plugins: { plugin: pluginManagement } }
+      : undefined,
+    plugins: plugins.length ? { plugin: plugins } : undefined,
+  };
 }
 
 function mergeVersion(
