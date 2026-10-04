@@ -1,5 +1,5 @@
 import { posix } from 'node:path';
-import { JsonFile, License, SampleDir, Task, github, java } from 'projen';
+import { JsonFile, SampleDir, Task, github, java } from 'projen';
 import { MavenUpgradeReport } from './components/maven-upgrade-report';
 import {
   DEFAULT_MIN_MAVEN_VERSION,
@@ -18,6 +18,7 @@ import { MavenPom, assertExactVersion } from './maven/maven-pom';
 import { JavaMavenProjectOptions, MavenModuleOptions } from './options';
 import { NPM_CI_STEP, SETUP_NODE_STEP } from '../common/ci-steps';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
+import { addLicenseFile } from '../common/license-file';
 import { addEditorConfig } from '../common/editorconfig';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
@@ -143,7 +144,7 @@ export class JavaMavenProject extends github.GitHubProject {
     this.addGitIgnore('.settings');
 
     if (options.licensed ?? true) {
-      new License(this, {
+      addLicenseFile(this, {
         spdx: options.license ?? 'MIT',
         copyrightOwner: options.copyrightOwner ?? 'xpertss',
         copyrightPeriod: options.copyrightPeriod,

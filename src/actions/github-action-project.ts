@@ -1,6 +1,5 @@
 import {
   JsonFile,
-  License,
   ReleasableCommits,
   YamlFile,
   github,
@@ -10,6 +9,7 @@ import { ActionBuildWorkflow } from './action-build-workflow';
 import { ActionDogfoodOptions, ActionDogfoodWorkflow } from './action-dogfood-workflow';
 import { ActionSonarWorkflow } from './action-sonar-workflow';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
+import { addLicenseFile } from '../common/license-file';
 import { addEditorConfig } from '../common/editorconfig';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
@@ -178,7 +178,7 @@ export class GitHubActionProject extends github.GitHubProject {
     });
     new WorkflowChangeNoticeWorkflow(this);
 
-    new License(this, {
+    addLicenseFile(this, {
       spdx: options.license ?? 'MIT',
       copyrightOwner: 'xpertss',
     });

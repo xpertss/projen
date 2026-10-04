@@ -643,6 +643,31 @@ Java project types (`JavaMavenProjectOptions` and everything built on it - `Java
 | `dockerRegistry` | `docker.io` (service only) | Registry the Docker image is pushed to |
 | `useFlyway` | `true` (service only) | Flyway plugin/dependency + `V1__init.sql` |
 
+With the default MIT license, the generated `LICENSE` looks like:
+
+```
+MIT License
+
+Copyright (c) 2024-2026 Xpert Software
+
+Permission is hereby granted, ...
+```
+
+The header line (`MIT License`) is specific to the license type — an `Apache-2.0` project would instead show `Apache-2.0`.
+
+Override the license type and copyright fields:
+
+```typescript
+new JavaMavenProject({
+  name: 'my-lib',
+  groupId: 'org.xpertss',
+  artifactId: 'my-lib',
+  license: 'Apache-2.0',            // any SPDX id projen ships a template for
+  copyrightOwner: 'Xpert Software',
+  copyrightPeriod: '2024-2026',
+});
+```
+
 `EnvironmentOptions` for deploy targets:
 
 ```text
