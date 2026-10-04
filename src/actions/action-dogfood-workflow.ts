@@ -38,7 +38,12 @@ export interface ActionDogfoodStep {
    */
   readonly inputs?: Record<string, string>;
 
-  /** Shell assertions after this invocation - the job fails unless every one exits 0. */
+  /**
+   * Shell assertions after this invocation - the job fails unless every one
+   * exits 0. The generated step runs under `set -euo pipefail`, so a failing
+   * assertion fails the step immediately rather than being masked by a later,
+   * passing one.
+   */
   readonly assertions: string[];
 }
 
@@ -57,7 +62,12 @@ export interface ActionDogfoodOptions {
   /** One or more scenario steps, run in order, in the dogfood job. */
   readonly scenario: ActionDogfoodStep[];
 
-  /** Shell cleanup, run once at the end with `if: always()`, so repeated runs start clean. */
+  /**
+   * Shell cleanup, run once at the end with `if: always()` so repeated runs
+   * start clean. Intentionally **best-effort**: unlike the assert step it does
+   * *not* run under `set -e`, so a failing line (e.g. deleting an already
+   * deleted ref) does not fail the job.
+   */
   readonly cleanup: string[];
 }
 
@@ -134,7 +144,7 @@ export class ActionDogfoodWorkflow extends Component {
 
       steps.push({
         name: `${step.name}: assert`,
-        run: step.assertions.join('\n'),
+        run: ['set -euo pipefail', ...step.assertions].join('\n'),
       });
     });
 

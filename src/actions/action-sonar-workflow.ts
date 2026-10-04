@@ -14,6 +14,14 @@ export interface ActionSonarWorkflowOptions {
    */
   readonly sonarHostUrl: string;
 
+  /**
+   * SonarCloud organization key (`sonar.organization`). Mandatory for the
+   * Scanner CLI on SonarCloud - it is not derived from the token, so a scan
+   * without it always fails.
+   * @default "xpertss"
+   */
+  readonly sonarOrganization?: string;
+
   /** @default "SONAR_TOKEN" */
   readonly sonarTokenSecret?: string;
 
@@ -52,6 +60,7 @@ export class ActionSonarWorkflow extends Component {
 
     const sonarTokenSecret = options.sonarTokenSecret ?? 'SONAR_TOKEN';
     const pullRequestGate = options.sonarPullRequestGate ?? true;
+    const sonarOrganization = options.sonarOrganization ?? 'xpertss';
 
     this.workflow = new github.GithubWorkflow(gh, 'sonar');
     noteWorkflowPurpose(
@@ -81,6 +90,7 @@ echo "/tmp/sonar-scanner-${SONAR_SCANNER_VERSION}-linux-x64/bin" >> "$GITHUB_PAT
           name: 'Scan',
           run: `sonar-scanner \\
   -Dsonar.host.url=${options.sonarHostUrl} \\
+  -Dsonar.organization=${sonarOrganization} \\
   -Dsonar.projectKey=${scope.name} \\
   -Dsonar.projectVersion="$(git describe --tags --always)" \\
   -Dsonar.inclusions=.github/workflows/**,action.yml,**/*.sh \\

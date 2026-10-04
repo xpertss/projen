@@ -189,6 +189,30 @@ test('test-dogfood.yml: scenario steps round-trip in order, cleanup always runs'
   expect(cleanup.run).toContain('gh pr close');
 });
 
+test('dogfood assert step runs under set -euo pipefail so a failing assertion is not masked; cleanup stays best-effort', () => {
+  const options = {
+    name: 'create-pull-request',
+    sonarHostUrl: 'https://sonar.example.org',
+    dogfood: {
+      scenario: [{ name: 'Assert', assertions: ['false', 'true'] }],
+      cleanup: ['git push origin --delete test/dogfood || true'],
+    },
+  };
+  const dogfood = synthSnapshot(new GitHubActionProject(options as any))[
+    '.github/workflows/test-dogfood.yml'
+  ];
+
+  const assertStep = dogfood.jobs.dogfood.steps.find(
+    (s: any) => s.name === 'Assert: assert',
+  );
+  expect(assertStep.run).toMatch(/^set -euo pipefail\nfalse\ntrue/);
+
+  const cleanupStep = dogfood.jobs.dogfood.steps.find(
+    (s: any) => s.name === 'Cleanup',
+  );
+  expect(cleanupStep.run).not.toContain('set -e');
+});
+
 test('dogfood step id: explicit id overrides the default slug, so assertions can reference outputs', () => {
   const options = baseOptions();
   (options.dogfood.scenario[0] as any).id = 'committed-check';
@@ -227,6 +251,22 @@ test('sonar.yml: no marketplace action, explicit inclusions, quality gate wait, 
     }),
   )['.github/workflows/sonar.yml'];
   expect(noGate.on.pull_request).toBeUndefined();
+});
+
+test('sonar.yml: emits sonar.organization with default xpertss and honors an override', () => {
+  const defSteps = JSON.stringify(
+    synthSnapshot(new GitHubActionProject(baseOptions()))[
+      '.github/workflows/sonar.yml'
+    ].jobs.sonar.steps,
+  );
+  expect(defSteps).toContain('sonar.organization=xpertss');
+
+  const ovrSteps = JSON.stringify(
+    synthSnapshot(
+      new GitHubActionProject({ ...baseOptions(), sonarOrganization: 'my-org' }),
+    )['.github/workflows/sonar.yml'].jobs.sonar.steps,
+  );
+  expect(ovrSteps).toContain('sonar.organization=my-org');
 });
 
 test('release.yml: continuous trigger, write permissions, npm ci, no npm publish, tag prefix v', () => {

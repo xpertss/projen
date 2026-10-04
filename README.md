@@ -491,6 +491,7 @@ const project = new GitHubActionProject({
   name: 'auto-commit',
   description: 'Stage a folder and, only if it changed, commit and push it',
   sonarHostUrl: 'https://sonarcloud.io',       // required, no default - your SonarCloud URL
+  sonarOrganization: 'xpertss',                 // default - your SonarCloud org key
   dogfood: {
     // Two scenario steps: the "changed" path and the "no-op" path are both
     // load-bearing behavior for this action (a double-commit or a
@@ -688,11 +689,12 @@ Plain strings (`'dev'`) are shorthand for `{ name: 'dev' }`.
 | `name` | - (required) | Project name |
 | `description` | - | One-line description; used in the default README template and recorded in the private `package.json` |
 | `sonarHostUrl` | - (required) | URL of your SonarCloud instance (e.g. `https://sonarcloud.io`); must be reachable from github.com-hosted runners |
+| `sonarOrganization` | `xpertss` | SonarCloud org key (`sonar.organization`); required by the Scanner CLI, not derived from the token |
 | `sonarTokenSecret` | `SONAR_TOKEN` | GitHub secret holding the Sonar token |
 | `sonarPullRequestGate` | `true` | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate |
 | `dogfood` | - (a `test-dogfood.yml` that fails until you declare one) | `ActionDogfoodOptions` - the scenario that exercises the action end-to-end via `uses: ./` |
 | `license` | `MIT` | SPDX identifier for the generated `LICENSE` |
-| `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
+| `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT (drift-check PR comments); a dogfood that passes a `token` input must reference this secret in the step's `inputs` |
 
 `ActionDogfoodOptions`/`ActionDogfoodStep` - the dogfood scenario (`test-dogfood.yml`):
 
@@ -707,7 +709,7 @@ interface ActionDogfoodStep {
   readonly id?: string;                     // step id for the `uses: ./` call; default: a slug of `name`
   readonly fixtureSteps?: string[];         // shell, before the invocation (default: none)
   readonly inputs?: Record<string, string>; // `with:` for this invocation (default: none)
-  readonly assertions: string[];            // shell, after the invocation - required, job fails unless all exit 0
+   readonly assertions: string[];            // shell, after the invocation - required; the step runs under set -euo pipefail so any failing line fails the job
 }
 ```
 

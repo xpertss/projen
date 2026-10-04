@@ -15078,7 +15078,7 @@ const actionDogfoodOptions: ActionDogfoodOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.ActionDogfoodOptions.property.cleanup">cleanup</a></code> | <code>string[]</code> | Shell cleanup, run once at the end with `if: always()`, so repeated runs start clean. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodOptions.property.cleanup">cleanup</a></code> | <code>string[]</code> | Shell cleanup, run once at the end with `if: always()` so repeated runs start clean. |
 | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions.property.scenario">scenario</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodStep">ActionDogfoodStep</a>[]</code> | One or more scenario steps, run in order, in the dogfood job. |
 
 ---
@@ -15091,7 +15091,11 @@ public readonly cleanup: string[];
 
 - *Type:* string[]
 
-Shell cleanup, run once at the end with `if: always()`, so repeated runs start clean.
+Shell cleanup, run once at the end with `if: always()` so repeated runs start clean.
+
+Intentionally **best-effort**: unlike the assert step it does
+*not* run under `set -e`, so a failing line (e.g. deleting an already
+deleted ref) does not fail the job.
 
 ---
 
@@ -15140,6 +15144,10 @@ public readonly assertions: string[];
 - *Type:* string[]
 
 Shell assertions after this invocation - the job fails unless every one exits 0.
+
+The generated step runs under `set -euo pipefail`, so a failing
+assertion fails the step immediately rather than being masked by a later,
+passing one.
 
 ---
 
@@ -15209,6 +15217,7 @@ const actionSonarWorkflowOptions: ActionSonarWorkflowOptions = { ... }
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure. |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
 | <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 
@@ -15223,6 +15232,19 @@ public readonly sonarHostUrl: string;
 - *Type:* string
 
 URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure.
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
 
 ---
 
@@ -16209,8 +16231,9 @@ const gitHubActionProjectOptions: GitHubActionProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.description">description</a></code> | <code>string</code> | One-line description of the action. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood">dogfood</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a></code> | The dogfood scenario (AD-001). |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003) and, when the action has a `token` input, the dogfood's invocation of it. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003) and the drift-check's PR comments. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`), required by the Scanner CLI on SonarCloud. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 
@@ -16657,7 +16680,11 @@ public readonly gheTokenSecret: string;
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
 
-Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003) and, when the action has a `token` input, the dogfood's invocation of it.
+Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003) and the drift-check's PR comments.
+
+It is **not** wired into the dogfood automatically: a dogfood that invokes
+an action with a `token` input must reference this secret in the step's
+`inputs` (e.g. `token: '${{ secrets.PROJEN_GITHUB_TOKEN }}'`).
 
 ---
 
@@ -16671,6 +16698,19 @@ public readonly license: string;
 - *Default:* "MIT"
 
 SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`), required by the Scanner CLI on SonarCloud.
 
 ---
 

@@ -43,8 +43,10 @@ export interface GitHubActionProjectOptions
 
   /**
    * Name of the GitHub Actions secret holding the PAT used for
-   * projen-automation PR comments (F003) and, when the action has a
-   * `token` input, the dogfood's invocation of it.
+   * projen-automation PR comments (F003) and the drift-check's PR comments.
+   * It is **not** wired into the dogfood automatically: a dogfood that invokes
+   * an action with a `token` input must reference this secret in the step's
+   * `inputs` (e.g. `token: '${{ secrets.PROJEN_GITHUB_TOKEN }}'`).
    * @default "PROJEN_GITHUB_TOKEN"
    */
   readonly gheTokenSecret?: string;
@@ -55,6 +57,13 @@ export interface GitHubActionProjectOptions
    * Required, no default: a guessed server is worse than a loud failure.
    */
   readonly sonarHostUrl: string;
+
+  /**
+   * SonarCloud organization key (`sonar.organization`), required by the
+   * Scanner CLI on SonarCloud.
+   * @default "xpertss"
+   */
+  readonly sonarOrganization?: string;
 
   /** @default "SONAR_TOKEN" */
   readonly sonarTokenSecret?: string;
@@ -221,6 +230,7 @@ export class GitHubActionProject extends github.GitHubProject {
 
     this.sonarWorkflow = new ActionSonarWorkflow(this, {
       sonarHostUrl: options.sonarHostUrl,
+      sonarOrganization: options.sonarOrganization,
       sonarTokenSecret: options.sonarTokenSecret,
       sonarPullRequestGate: options.sonarPullRequestGate,
     });
