@@ -15288,8 +15288,12 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
@@ -15319,6 +15323,32 @@ public readonly cdkVersion: string;
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.CdkAppProjectOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "Xpert Software"
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.CdkAppProjectOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
 ##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.CdkAppProjectOptions.property.editorconfig"></a>
 
 ```typescript
@@ -15340,6 +15370,32 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CdkAppProjectOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.CdkAppProjectOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE`.
 
 ---
 
@@ -15450,8 +15506,12 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
@@ -15479,6 +15539,32 @@ public readonly cdkVersion: string;
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "Xpert Software"
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
 ##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.CdkInfraProjectOptions.property.editorconfig"></a>
 
 ```typescript
@@ -15500,6 +15586,32 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CdkInfraProjectOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.CdkInfraProjectOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE`.
 
 ---
 
@@ -15558,8 +15670,12 @@ const cdkTypescriptProjectOptions: CdkTypescriptProjectOptions = { ... }
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | *No description.* |
 
 ---
@@ -15585,6 +15701,32 @@ public readonly cdkVersion: string;
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "Xpert Software"
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
 ##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.editorconfig"></a>
 
 ```typescript
@@ -15606,6 +15748,32 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE`.
 
 ---
 
@@ -15635,8 +15803,12 @@ const commonCdkOptions: CommonCdkOptions = { ... }
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 
 ---
 
@@ -15661,6 +15833,32 @@ public readonly cdkVersion: string;
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.CommonCdkOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "Xpert Software"
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.CommonCdkOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
 ##### `editorconfig`<sup>Optional</sup> <a name="editorconfig" id="@xpertss/projen-types.CommonCdkOptions.property.editorconfig"></a>
 
 ```typescript
@@ -15682,6 +15880,32 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+---
+
+##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CommonCdkOptions.property.license"></a>
+
+```typescript
+public readonly license: string;
+```
+
+- *Type:* string
+- *Default:* "MIT"
+
+SPDX identifier for the generated `LICENSE`.
+
+---
+
+##### `licensed`<sup>Optional</sup> <a name="licensed" id="@xpertss/projen-types.CommonCdkOptions.property.licensed"></a>
+
+```typescript
+public readonly licensed: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Write a `LICENSE`.
 
 ---
 
@@ -15760,7 +15984,7 @@ public readonly copyrightOwner: string;
 ```
 
 - *Type:* string
-- *Default:* "xpertss" (same as `GitHubActionProject`)
+- *Default:* "Xpert Software"
 
 Copyright owner named in the `LICENSE`.
 
@@ -16228,6 +16452,8 @@ const gitHubActionProjectOptions: GitHubActionProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.staleOptions">staleOptions</a></code> | <code>projen.github.StaleOptions</code> | Auto-close stale issues and pull requests. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.vscode">vscode</a></code> | <code>boolean</code> | Enable VSCode integration. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). MUST be reachable from github.com-hosted (public) runners (AD-001). Required, no default: a guessed server is worse than a loud failure. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.description">description</a></code> | <code>string</code> | One-line description of the action. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood">dogfood</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a></code> | The dogfood scenario (AD-001). |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
@@ -16619,6 +16845,32 @@ URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). MUST be rea
 
 ---
 
+##### `copyrightOwner`<sup>Optional</sup> <a name="copyrightOwner" id="@xpertss/projen-types.GitHubActionProjectOptions.property.copyrightOwner"></a>
+
+```typescript
+public readonly copyrightOwner: string;
+```
+
+- *Type:* string
+- *Default:* "Xpert Software"
+
+Copyright owner named in the `LICENSE`.
+
+---
+
+##### `copyrightPeriod`<sup>Optional</sup> <a name="copyrightPeriod" id="@xpertss/projen-types.GitHubActionProjectOptions.property.copyrightPeriod"></a>
+
+```typescript
+public readonly copyrightPeriod: string;
+```
+
+- *Type:* string
+- *Default:* the current year
+
+Copyright period named in the `LICENSE`.
+
+---
+
 ##### `description`<sup>Optional</sup> <a name="description" id="@xpertss/projen-types.GitHubActionProjectOptions.property.description"></a>
 
 ```typescript
@@ -16843,7 +17095,7 @@ public readonly copyrightOwner: string;
 ```
 
 - *Type:* string
-- *Default:* "xpertss" (same as `GitHubActionProject`)
+- *Default:* "Xpert Software"
 
 Copyright owner named in the `LICENSE`.
 
@@ -17172,7 +17424,7 @@ public readonly copyrightOwner: string;
 ```
 
 - *Type:* string
-- *Default:* "xpertss" (same as `GitHubActionProject`)
+- *Default:* "Xpert Software"
 
 Copyright owner named in the `LICENSE`.
 
@@ -17513,7 +17765,7 @@ public readonly copyrightOwner: string;
 ```
 
 - *Type:* string
-- *Default:* "xpertss" (same as `GitHubActionProject`)
+- *Default:* "Xpert Software"
 
 Copyright owner named in the `LICENSE`.
 
@@ -17835,7 +18087,7 @@ public readonly copyrightOwner: string;
 ```
 
 - *Type:* string
-- *Default:* "xpertss" (same as `GitHubActionProject`)
+- *Default:* "Xpert Software"
 
 Copyright owner named in the `LICENSE`.
 
@@ -18235,7 +18487,7 @@ public readonly copyrightOwner: string;
 ```
 
 - *Type:* string
-- *Default:* "xpertss" (same as `GitHubActionProject`)
+- *Default:* "Xpert Software"
 
 Copyright owner named in the `LICENSE`.
 
