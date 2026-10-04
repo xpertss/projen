@@ -4,6 +4,7 @@ import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { addEditorConfig } from '../common/editorconfig';
 import { EnvironmentOptions } from '../common/environment-options';
 import { applyInternalActionOverrides } from '../common/internal-actions';
+import { addLicenseFile } from '../common/license-file';
 import { ManualDeployWorkflow } from '../common/manual-deploy-workflow';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
@@ -38,6 +39,9 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
       ...options,
       name: options.name,
       cdkVersion: options.cdkVersion ?? '2.189.1',
+      // We write LICENSE ourselves (with a human-readable header);
+      // suppress projen's built-in License component.
+      licensed: false,
       defaultReleaseBranch: 'main',
       sampleCode: true,
       // PR titles are not gated: `feat:`/`fix:` matter only because they drive
@@ -86,6 +90,14 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
 
     if (options.editorconfig ?? true) {
       addEditorConfig(this);
+    }
+
+    if (options.licensed ?? true) {
+      addLicenseFile(this, {
+        spdx: options.license ?? 'MIT',
+        copyrightOwner: options.copyrightOwner ?? 'Xpert Software',
+        copyrightPeriod: options.copyrightPeriod,
+      });
     }
 
     const gh = this.github;

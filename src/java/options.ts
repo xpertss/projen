@@ -98,7 +98,7 @@ export interface CommonJavaOptions {
 
   /**
    * Copyright owner named in the `LICENSE`.
-   * @default "xpertss" (same as `GitHubActionProject`)
+   * @default "Xpert Software"
    */
   readonly copyrightOwner?: string;
 

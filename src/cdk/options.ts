@@ -30,6 +30,30 @@ export interface CommonCdkOptions {
   readonly gheTokenSecret?: string;
 
   /**
+   * Write a `LICENSE`.
+   * @default true
+   */
+  readonly licensed?: boolean;
+
+  /**
+   * SPDX identifier for the generated `LICENSE`.
+   * @default "MIT"
+   */
+  readonly license?: string;
+
+  /**
+   * Copyright owner named in the `LICENSE`.
+   * @default "Xpert Software"
+   */
+  readonly copyrightOwner?: string;
+
+  /**
+   * Copyright period named in the `LICENSE`.
+   * @default - the current year
+   */
+  readonly copyrightPeriod?: string;
+
+  /**
    * Write a projen-managed `.editorconfig`.
    * @default true
    */

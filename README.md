@@ -214,6 +214,7 @@ You get:
 - `cdk.json`, `cdk synth` / `cdk diff` / `cdk deploy` tasks, and the standard `AwsCdkTypeScriptApp` layout (CDK 2.189.1 by default).
 - `.github/workflows/build.yml` - PR build that hard-fails on projen drift.
 - `.github/workflows/deploy.yml` - manual dispatch with one `deploy-<env>` job per environment (runs `cdk deploy --all` with `--context environment=<env>`); `requiresApproval` environments get a GitHub Environment approval gate.
+- `LICENSE` (MIT by default), `.editorconfig`, and the projen drift check.
 - `src/constructs/edge-networking.ts` - helper constructs only for the requested `edgeResources` (`cloudfront`, `route53`, `apigateway`, `cognito`, `sqs`).
 - `src/constructs/ecr-ecs.ts` when `ecrEcs.enabled` - ECR repo + Fargate service; `externalImageSource: true` (default) means the service pulls an image built outside this repo.
 
@@ -609,6 +610,9 @@ CDK project types (`CdkInfraProjectOptions` / `CdkAppProjectOptions`):
 | `name` | - (required) | Project name; must match `package.json` |
 | `cdkVersion` | `2.189.1` | AWS CDK version |
 | `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
+| `licensed` | `true` | Write a `LICENSE` |
+| `license` | `MIT` | SPDX identifier for the `LICENSE` |
+| `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
 | `environments` | - (no `deploy` workflow) | Deploy targets for the `deploy` workflow; strings or `EnvironmentOptions` |
 | `ecrEcs` | - | `EcrEcsOptions` - `enabled`, `externalImageSource` (default `true`) |
 | `edgeResources` | - | Subset of `cloudfront`, `route53`, `apigateway`, `cognito`, `sqs` |
@@ -633,7 +637,7 @@ Java project types (`JavaMavenProjectOptions` and everything built on it - `Java
 | `pluginVersions` | - | Exact-version overrides for this package's defaults, keyed by `groupId/artifactId` |
 | `licensed` | `true` | Write a `LICENSE` |
 | `license` | `MIT` | SPDX identifier for the `LICENSE` |
-| `copyrightOwner` / `copyrightPeriod` | `xpertss` / current year | Named in the `LICENSE` |
+| `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
 | `editorconfig` | `true` | Write a projen-managed `.editorconfig` (also on the CDK and action types) |
 | `upgradeWorkflow` | `true` | Generate the nightly update report (`upgrade.yml`) |
 | `sonarProjectKey` | - | SonarQube project key; the sonar step is skipped when unset |
@@ -694,6 +698,7 @@ Plain strings (`'dev'`) are shorthand for `{ name: 'dev' }`.
 | `sonarPullRequestGate` | `true` | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate |
 | `dogfood` | - (a `test-dogfood.yml` that fails until you declare one) | `ActionDogfoodOptions` - the scenario that exercises the action end-to-end via `uses: ./` |
 | `license` | `MIT` | SPDX identifier for the generated `LICENSE` |
+| `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
 | `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT (drift-check PR comments); a dogfood that passes a `token` input must reference this secret in the step's `inputs` |
 
 `ActionDogfoodOptions`/`ActionDogfoodStep` - the dogfood scenario (`test-dogfood.yml`):

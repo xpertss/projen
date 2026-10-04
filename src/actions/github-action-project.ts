@@ -98,6 +98,18 @@ export interface GitHubActionProjectOptions
   readonly license?: string;
 
   /**
+   * Copyright owner named in the `LICENSE`.
+   * @default "Xpert Software"
+   */
+  readonly copyrightOwner?: string;
+
+  /**
+   * Copyright period named in the `LICENSE`.
+   * @default - the current year
+   */
+  readonly copyrightPeriod?: string;
+
+  /**
    * Write a projen-managed `.editorconfig`.
    * @default true
    */
@@ -189,7 +201,8 @@ export class GitHubActionProject extends github.GitHubProject {
 
     addLicenseFile(this, {
       spdx: options.license ?? 'MIT',
-      copyrightOwner: 'xpertss',
+      copyrightOwner: options.copyrightOwner ?? 'Xpert Software',
+      copyrightPeriod: options.copyrightPeriod,
     });
 
     // `.projenrc.ts` + `npx projen`, same as every other type here. A bare

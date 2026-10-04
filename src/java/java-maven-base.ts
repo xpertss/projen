@@ -146,7 +146,7 @@ export class JavaMavenProject extends github.GitHubProject {
     if (options.licensed ?? true) {
       addLicenseFile(this, {
         spdx: options.license ?? 'MIT',
-        copyrightOwner: options.copyrightOwner ?? 'xpertss',
+        copyrightOwner: options.copyrightOwner ?? 'Xpert Software',
         copyrightPeriod: options.copyrightPeriod,
       });
     }
