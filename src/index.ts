@@ -1,5 +1,7 @@
 export * from './common/environment-options';
 export * from './common/projen-drift-check-workflow';
+export * from './common/sonar-options';
+export * from './common/sonar-workflow';
 export * from './common/workflow-change-notice-workflow';
 export * from './common/internal-actions';
 

@@ -23,6 +23,7 @@ import { applyInternalActionOverrides } from '../common/internal-actions';
 import { addLicenseFile } from '../common/license-file';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
 import { attachTypeScriptProjenrc } from '../common/projenrc-ts';
+import { SonarWorkflow } from '../common/sonar-workflow';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
 import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
@@ -50,8 +51,9 @@ const PROJEN_TYPES_VERSION: string = require('../../package.json').version;
  *   modules inherit its plugins and test dependencies.
  * - `npx projen build` synthesizes, then runs Maven once: `mvn -B verify`
  *   (unit tests via surefire, `*IT` tests via failsafe).
- * - CI: a PR build (with an optional SonarQube scan), the projen drift
- *   check, and a nightly report-only update check.
+   * - CI: a PR build, the projen drift check, an optional SonarCloud scan
+   *   (`sonar.yml`, when `sonarHostUrl` is set), and a nightly report-only
+   *   update check.
  */
 export class JavaMavenProject extends github.GitHubProject {
   /** The root `pom.xml`. */
@@ -75,6 +77,9 @@ export class JavaMavenProject extends github.GitHubProject {
    * Maven cache - the setup every Maven CI job in this repo needs.
    */
   public readonly ciSetupSteps: github.workflows.JobStep[];
+
+  /** Set only when `sonarHostUrl` is provided. */
+  public readonly sonarWorkflow?: SonarWorkflow;
 
   private readonly javaLine: JavaLineProfile;
   private readonly rootPackaging?: string;
@@ -180,6 +185,16 @@ export class JavaMavenProject extends github.GitHubProject {
     });
     new WorkflowChangeNoticeWorkflow(this);
 
+    if (options.sonarHostUrl) {
+      this.sonarWorkflow = new SonarWorkflow(this, {
+        sonarHostUrl: options.sonarHostUrl,
+        sonarOrganization: options.sonarOrganization,
+        sonarTokenSecret: options.sonarTokenSecret,
+        sonarPullRequestGate: options.sonarPullRequestGate,
+        sonarProjectKey: options.sonarProjectKey,
+      });
+    }
+
     this.ciSetupSteps = [
       SETUP_NODE_STEP,
       NPM_CI_STEP,
@@ -194,15 +209,6 @@ export class JavaMavenProject extends github.GitHubProject {
       },
     ];
 
-    const postBuildSteps: github.workflows.JobStep[] = [];
-    if (options.sonarProjectKey) {
-      postBuildSteps.push({
-        name: 'SonarQube scan',
-        run: `mvn -B sonar:sonar -Dsonar.projectKey=${options.sonarProjectKey}`,
-        env: { SONAR_TOKEN: '${{ secrets.SONAR_TOKEN }}' },
-      });
-    }
-
     this.buildVerifyWorkflow = new github.TaskWorkflow(gh, {
       name: 'build',
       jobId: 'build',
@@ -210,11 +216,10 @@ export class JavaMavenProject extends github.GitHubProject {
       triggers: { pullRequest: {}, workflowDispatch: {} },
       permissions: { contents: github.workflows.JobPermission.READ },
       preBuildSteps: this.ciSetupSteps,
-      postBuildSteps,
     });
     noteWorkflowPurpose(
       this.buildVerifyWorkflow.file,
-      'Build and test the Maven project on pull requests, with an optional SonarQube scan.',
+      'Build and test the Maven project on pull requests.',
     );
 
     const versionsPlugin = `org.codehaus.mojo:versions-maven-plugin:${this.pinnedVersion(VERSIONS_MAVEN_PLUGIN)}`;

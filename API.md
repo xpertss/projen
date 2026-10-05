@@ -500,23 +500,18 @@ public readonly workflow: GithubWorkflow;
 
 ### ActionSonarWorkflow <a name="ActionSonarWorkflow" id="@xpertss/projen-types.ActionSonarWorkflow"></a>
 
-AD-001 Layer 2: SonarCloud via the Scanner CLI only (never `SonarSource/sonarqube-scan-action` - third-party, and it carried a security advisory).
-
-`sonar.inclusions` is set explicitly since default
-inclusions may skip `action.yml` outside `.github/`.
-
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionSonarWorkflow.Initializer"></a>
 
 ```typescript
 import { ActionSonarWorkflow } from '@xpertss/projen-types'
 
-new ActionSonarWorkflow(scope: GitHubProject, options: ActionSonarWorkflowOptions)
+new ActionSonarWorkflow(scope: GitHubProject, options: SonarWorkflowOptions)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions">ActionSonarWorkflowOptions</a></code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionSonarWorkflow.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflowOptions">SonarWorkflowOptions</a></code> | *No description.* |
 
 ---
 
@@ -528,7 +523,7 @@ new ActionSonarWorkflow(scope: GitHubProject, options: ActionSonarWorkflowOption
 
 ##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.ActionSonarWorkflow.Initializer.parameter.options"></a>
 
-- *Type:* <a href="#@xpertss/projen-types.ActionSonarWorkflowOptions">ActionSonarWorkflowOptions</a>
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflowOptions">SonarWorkflowOptions</a>
 
 ---
 
@@ -546,7 +541,7 @@ new ActionSonarWorkflow(scope: GitHubProject, options: ActionSonarWorkflowOption
 
 ---
 
-##### `toString` <a name="toString" id="@xpertss/projen-types.ActionSonarWorkflow.toString"></a>
+##### ~~`toString`~~ <a name="toString" id="@xpertss/projen-types.ActionSonarWorkflow.toString"></a>
 
 ```typescript
 public toString(): string
@@ -554,7 +549,7 @@ public toString(): string
 
 Returns a string representation of this construct.
 
-##### `with` <a name="with" id="@xpertss/projen-types.ActionSonarWorkflow.with"></a>
+##### ~~`with`~~ <a name="with" id="@xpertss/projen-types.ActionSonarWorkflow.with"></a>
 
 ```typescript
 public with(mixins: ...IMixin[]): IConstruct
@@ -575,7 +570,7 @@ The mixins to apply.
 
 ---
 
-##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.ActionSonarWorkflow.postProjectCreation"></a>
+##### ~~`postProjectCreation`~~ <a name="postProjectCreation" id="@xpertss/projen-types.ActionSonarWorkflow.postProjectCreation"></a>
 
 ```typescript
 public postProjectCreation(initProject: InitProject): void
@@ -596,7 +591,7 @@ Details about how the project was created, e.g. its type and the original CLI ar
 
 ---
 
-##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.ActionSonarWorkflow.postSynthesize"></a>
+##### ~~`postSynthesize`~~ <a name="postSynthesize" id="@xpertss/projen-types.ActionSonarWorkflow.postSynthesize"></a>
 
 ```typescript
 public postSynthesize(): void
@@ -606,7 +601,7 @@ Called after synthesis.
 
 Order is *not* guaranteed.
 
-##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.ActionSonarWorkflow.preSynthesize"></a>
+##### ~~`preSynthesize`~~ <a name="preSynthesize" id="@xpertss/projen-types.ActionSonarWorkflow.preSynthesize"></a>
 
 ```typescript
 public preSynthesize(): void
@@ -614,7 +609,7 @@ public preSynthesize(): void
 
 Called before synthesis.
 
-##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.ActionSonarWorkflow.projectCreation"></a>
+##### ~~`projectCreation`~~ <a name="projectCreation" id="@xpertss/projen-types.ActionSonarWorkflow.projectCreation"></a>
 
 ```typescript
 public projectCreation(initProject: InitProject): void
@@ -633,7 +628,7 @@ Details about how the project was created, e.g. its type and the original CLI ar
 
 ---
 
-##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.ActionSonarWorkflow.synthesize"></a>
+##### ~~`synthesize`~~ <a name="synthesize" id="@xpertss/projen-types.ActionSonarWorkflow.synthesize"></a>
 
 ```typescript
 public synthesize(): void
@@ -650,7 +645,7 @@ Synthesizes files to the project output directory.
 
 ---
 
-##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.ActionSonarWorkflow.isConstruct"></a>
+##### ~~`isConstruct`~~ <a name="isConstruct" id="@xpertss/projen-types.ActionSonarWorkflow.isConstruct"></a>
 
 ```typescript
 import { ActionSonarWorkflow } from '@xpertss/projen-types'
@@ -682,7 +677,7 @@ Any object.
 
 ---
 
-##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.ActionSonarWorkflow.isComponent"></a>
+##### ~~`isComponent`~~ <a name="isComponent" id="@xpertss/projen-types.ActionSonarWorkflow.isComponent"></a>
 
 ```typescript
 import { ActionSonarWorkflow } from '@xpertss/projen-types'
@@ -708,7 +703,12 @@ Test whether the given construct is a component.
 
 ---
 
-##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.ActionSonarWorkflow.property.node"></a>
+##### ~~`node`~~<sup>Required</sup> <a name="node" id="@xpertss/projen-types.ActionSonarWorkflow.property.node"></a>
+
+- *Deprecated:* Renamed to `SonarWorkflow` (now in `src/common/` and applied to
+every project type, not just actions). Use `SonarWorkflow` instead; this
+subclass is kept only so existing imports of `ActionSonarWorkflow` keep
+compiling. It behaves identically to `SonarWorkflow`.
 
 ```typescript
 public readonly node: Node;
@@ -720,7 +720,12 @@ The tree node.
 
 ---
 
-##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.ActionSonarWorkflow.property.project"></a>
+##### ~~`project`~~<sup>Required</sup> <a name="project" id="@xpertss/projen-types.ActionSonarWorkflow.property.project"></a>
+
+- *Deprecated:* Renamed to `SonarWorkflow` (now in `src/common/` and applied to
+every project type, not just actions). Use `SonarWorkflow` instead; this
+subclass is kept only so existing imports of `ActionSonarWorkflow` keep
+compiling. It behaves identically to `SonarWorkflow`.
 
 ```typescript
 public readonly project: Project;
@@ -730,7 +735,12 @@ public readonly project: Project;
 
 ---
 
-##### `workflow`<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.ActionSonarWorkflow.property.workflow"></a>
+##### ~~`workflow`~~<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.ActionSonarWorkflow.property.workflow"></a>
+
+- *Deprecated:* Renamed to `SonarWorkflow` (now in `src/common/` and applied to
+every project type, not just actions). Use `SonarWorkflow` instead; this
+subclass is kept only so existing imports of `ActionSonarWorkflow` keep
+compiling. It behaves identically to `SonarWorkflow`.
 
 ```typescript
 public readonly workflow: GithubWorkflow;
@@ -1634,6 +1644,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.CdkAppProject.property.cdkDeps">cdkDeps</a></code> | <code>projen.awscdk.AwsCdkDeps</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProject.property.cdkTasks">cdkTasks</a></code> | <code>projen.awscdk.CdkTasks</code> | Common CDK tasks. |
 | <code><a href="#@xpertss/projen-types.CdkAppProject.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | The CDK version this app is using. |
+| <code><a href="#@xpertss/projen-types.CdkAppProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a></code> | Set only when `sonarHostUrl` is provided. |
 
 ---
 
@@ -2389,6 +2400,18 @@ public readonly cdkVersion: string;
 - *Type:* string
 
 The CDK version this app is using.
+
+---
+
+##### `sonarWorkflow`<sup>Optional</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.CdkAppProject.property.sonarWorkflow"></a>
+
+```typescript
+public readonly sonarWorkflow: SonarWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a>
+
+Set only when `sonarHostUrl` is provided.
 
 ---
 
@@ -3335,6 +3358,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.CdkInfraProject.property.cdkDeps">cdkDeps</a></code> | <code>projen.awscdk.AwsCdkDeps</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProject.property.cdkTasks">cdkTasks</a></code> | <code>projen.awscdk.CdkTasks</code> | Common CDK tasks. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProject.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | The CDK version this app is using. |
+| <code><a href="#@xpertss/projen-types.CdkInfraProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a></code> | Set only when `sonarHostUrl` is provided. |
 
 ---
 
@@ -4093,6 +4117,18 @@ The CDK version this app is using.
 
 ---
 
+##### `sonarWorkflow`<sup>Optional</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.CdkInfraProject.property.sonarWorkflow"></a>
+
+```typescript
+public readonly sonarWorkflow: SonarWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a>
+
+Set only when `sonarHostUrl` is provided.
+
+---
+
 #### Constants <a name="Constants" id="Constants"></a>
 
 | **Name** | **Type** | **Description** |
@@ -4791,6 +4827,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProject.property.cdkDeps">cdkDeps</a></code> | <code>projen.awscdk.AwsCdkDeps</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProject.property.cdkTasks">cdkTasks</a></code> | <code>projen.awscdk.CdkTasks</code> | Common CDK tasks. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProject.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | The CDK version this app is using. |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a></code> | Set only when `sonarHostUrl` is provided. |
 
 ---
 
@@ -5546,6 +5583,18 @@ public readonly cdkVersion: string;
 - *Type:* string
 
 The CDK version this app is using.
+
+---
+
+##### `sonarWorkflow`<sup>Optional</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.CdkTypescriptProject.property.sonarWorkflow"></a>
+
+```typescript
+public readonly sonarWorkflow: SonarWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a>
+
+Set only when `sonarHostUrl` is provided.
 
 ---
 
@@ -7370,7 +7419,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.GitHubActionProject.property.buildWorkflow">buildWorkflow</a></code> | <code><a href="#@xpertss/projen-types.ActionBuildWorkflow">ActionBuildWorkflow</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.GitHubActionProject.property.dogfoodWorkflow">dogfoodWorkflow</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodWorkflow">ActionDogfoodWorkflow</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.GitHubActionProject.property.release">release</a></code> | <code>projen.release.Release</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.ActionSonarWorkflow">ActionSonarWorkflow</a></code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.GitHubActionProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a></code> | Set only when `sonarHostUrl` is provided. |
 
 ---
 
@@ -7771,13 +7820,15 @@ public readonly release: Release;
 
 ---
 
-##### `sonarWorkflow`<sup>Required</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.GitHubActionProject.property.sonarWorkflow"></a>
+##### `sonarWorkflow`<sup>Optional</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.GitHubActionProject.property.sonarWorkflow"></a>
 
 ```typescript
-public readonly sonarWorkflow: ActionSonarWorkflow;
+public readonly sonarWorkflow: SonarWorkflow;
 ```
 
-- *Type:* <a href="#@xpertss/projen-types.ActionSonarWorkflow">ActionSonarWorkflow</a>
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a>
+
+Set only when `sonarHostUrl` is provided.
 
 ---
 
@@ -8580,6 +8631,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a></code> | Set only when `sonarHostUrl` is provided. |
 
 ---
 
@@ -9019,6 +9071,18 @@ public readonly upgradeTask: Task;
 - *Type:* projen.Task
 
 Prints available dependency/plugin updates (`npx projen upgrade`).
+
+---
+
+##### `sonarWorkflow`<sup>Optional</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.JavaAppProject.property.sonarWorkflow"></a>
+
+```typescript
+public readonly sonarWorkflow: SonarWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a>
+
+Set only when `sonarHostUrl` is provided.
 
 ---
 
@@ -9593,6 +9657,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a></code> | Set only when `sonarHostUrl` is provided. |
 
 ---
 
@@ -10035,6 +10100,18 @@ Prints available dependency/plugin updates (`npx projen upgrade`).
 
 ---
 
+##### `sonarWorkflow`<sup>Optional</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.JavaLibraryProject.property.sonarWorkflow"></a>
+
+```typescript
+public readonly sonarWorkflow: SonarWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a>
+
+Set only when `sonarHostUrl` is provided.
+
+---
+
 #### Constants <a name="Constants" id="Constants"></a>
 
 | **Name** | **Type** | **Description** |
@@ -10075,8 +10152,9 @@ usable on its own (`projen new ... java_maven`).
   modules inherit its plugins and test dependencies.
 - `npx projen build` synthesizes, then runs Maven once: `mvn -B verify`
   (unit tests via surefire, `*IT` tests via failsafe).
-- CI: a PR build (with an optional SonarQube scan), the projen drift
-  check, and a nightly report-only update check.
+ - CI: a PR build, the projen drift check, an optional SonarCloud scan
+ (`sonar.yml`, when `sonarHostUrl` is set), and a nightly report-only
+ update check.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.JavaMavenProject.Initializer"></a>
 
@@ -10618,6 +10696,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a></code> | Set only when `sonarHostUrl` is provided. |
 
 ---
 
@@ -11057,6 +11136,18 @@ public readonly upgradeTask: Task;
 - *Type:* projen.Task
 
 Prints available dependency/plugin updates (`npx projen upgrade`).
+
+---
+
+##### `sonarWorkflow`<sup>Optional</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.JavaMavenProject.property.sonarWorkflow"></a>
+
+```typescript
+public readonly sonarWorkflow: SonarWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a>
+
+Set only when `sonarHostUrl` is provided.
 
 ---
 
@@ -11646,6 +11737,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a></code> | Set only when `sonarHostUrl` is provided. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.springBootVersion">springBootVersion</a></code> | <code>string</code> | The Spring Boot version (BOM and Maven plugin). |
 
 ---
@@ -12086,6 +12178,18 @@ public readonly upgradeTask: Task;
 - *Type:* projen.Task
 
 Prints available dependency/plugin updates (`npx projen upgrade`).
+
+---
+
+##### `sonarWorkflow`<sup>Optional</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.JavaServiceProject.property.sonarWorkflow"></a>
+
+```typescript
+public readonly sonarWorkflow: SonarWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a>
+
+Set only when `sonarHostUrl` is provided.
 
 ---
 
@@ -12694,6 +12798,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.sonarWorkflow">sonarWorkflow</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a></code> | Set only when `sonarHostUrl` is provided. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.springBootVersion">springBootVersion</a></code> | <code>string</code> | The Spring Boot version (BOM and Maven plugin). |
 
 ---
@@ -13134,6 +13239,18 @@ public readonly upgradeTask: Task;
 - *Type:* projen.Task
 
 Prints available dependency/plugin updates (`npx projen upgrade`).
+
+---
+
+##### `sonarWorkflow`<sup>Optional</sup> <a name="sonarWorkflow" id="@xpertss/projen-types.JavaSpringBootProject.property.sonarWorkflow"></a>
+
+```typescript
+public readonly sonarWorkflow: SonarWorkflow;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflow">SonarWorkflow</a>
+
+Set only when `sonarHostUrl` is provided.
 
 ---
 
@@ -14824,6 +14941,251 @@ public readonly workflow: GithubWorkflow;
 ---
 
 
+### SonarWorkflow <a name="SonarWorkflow" id="@xpertss/projen-types.SonarWorkflow"></a>
+
+AD-001 Layer 2: SonarCloud via the Scanner CLI only (never `SonarSource/sonarqube-scan-action` - third-party, and it carried a security advisory).
+
+`sonar.projectKey` defaults to
+`${sonarOrganization}_${name}` (the org + project key SonarCloud uses);
+`sonar.inclusions` is emitted only when provided, since the defaults are
+enough for default-recognized languages.
+
+#### Initializers <a name="Initializers" id="@xpertss/projen-types.SonarWorkflow.Initializer"></a>
+
+```typescript
+import { SonarWorkflow } from '@xpertss/projen-types'
+
+new SonarWorkflow(scope: GitHubProject, options: SonarWorkflowOptions)
+```
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.SonarWorkflowOptions">SonarWorkflowOptions</a></code> | *No description.* |
+
+---
+
+##### `scope`<sup>Required</sup> <a name="scope" id="@xpertss/projen-types.SonarWorkflow.Initializer.parameter.scope"></a>
+
+- *Type:* projen.github.GitHubProject
+
+---
+
+##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.SonarWorkflow.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.SonarWorkflowOptions">SonarWorkflowOptions</a>
+
+---
+
+#### Methods <a name="Methods" id="Methods"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.toString">toString</a></code> | Returns a string representation of this construct. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.with">with</a></code> | Applies one or more mixins to this construct. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.postProjectCreation">postProjectCreation</a></code> | Called once, right after `postSynthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.postSynthesize">postSynthesize</a></code> | Called after synthesis. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.preSynthesize">preSynthesize</a></code> | Called before synthesis. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.projectCreation">projectCreation</a></code> | Called once, right after `synthesize()`, only when the project is created for the first time. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
+
+---
+
+##### `toString` <a name="toString" id="@xpertss/projen-types.SonarWorkflow.toString"></a>
+
+```typescript
+public toString(): string
+```
+
+Returns a string representation of this construct.
+
+##### `with` <a name="with" id="@xpertss/projen-types.SonarWorkflow.with"></a>
+
+```typescript
+public with(mixins: ...IMixin[]): IConstruct
+```
+
+Applies one or more mixins to this construct.
+
+Mixins are applied in order. The list of constructs is captured at the
+start of the call, so constructs added by a mixin will not be visited.
+Use multiple `with()` calls if subsequent mixins should apply to added
+constructs.
+
+###### `mixins`<sup>Required</sup> <a name="mixins" id="@xpertss/projen-types.SonarWorkflow.with.parameter.mixins"></a>
+
+- *Type:* ...constructs.IMixin[]
+
+The mixins to apply.
+
+---
+
+##### `postProjectCreation` <a name="postProjectCreation" id="@xpertss/projen-types.SonarWorkflow.postProjectCreation"></a>
+
+```typescript
+public postProjectCreation(initProject: InitProject): void
+```
+
+Called once, right after `postSynthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+It is also skipped when post-synthesis steps are disabled, e.g. `--no-post` or `PROJEN_DISABLE_POST`.
+Use it for one-off setup that can be turned off by the user, like running a task to give the user immediate
+feedback on their new project. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.SonarWorkflow.postProjectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `postSynthesize` <a name="postSynthesize" id="@xpertss/projen-types.SonarWorkflow.postSynthesize"></a>
+
+```typescript
+public postSynthesize(): void
+```
+
+Called after synthesis.
+
+Order is *not* guaranteed.
+
+##### `preSynthesize` <a name="preSynthesize" id="@xpertss/projen-types.SonarWorkflow.preSynthesize"></a>
+
+```typescript
+public preSynthesize(): void
+```
+
+Called before synthesis.
+
+##### `projectCreation` <a name="projectCreation" id="@xpertss/projen-types.SonarWorkflow.projectCreation"></a>
+
+```typescript
+public projectCreation(initProject: InitProject): void
+```
+
+Called once, right after `synthesize()`, only when the project is created for the first time.
+
+It does not run on later `projen` invocations. It only fires for `projen new` (or `Projects.createProject`).
+Use it for deterministic, one-off file generation. Order across components is not guaranteed.
+
+###### `initProject`<sup>Required</sup> <a name="initProject" id="@xpertss/projen-types.SonarWorkflow.projectCreation.parameter.initProject"></a>
+
+- *Type:* projen.InitProject
+
+Details about how the project was created, e.g. its type and the original CLI args.
+
+---
+
+##### `synthesize` <a name="synthesize" id="@xpertss/projen-types.SonarWorkflow.synthesize"></a>
+
+```typescript
+public synthesize(): void
+```
+
+Synthesizes files to the project output directory.
+
+#### Static Functions <a name="Static Functions" id="Static Functions"></a>
+
+| **Name** | **Description** |
+| --- | --- |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.isConstruct">isConstruct</a></code> | Checks if `x` is a construct. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.isComponent">isComponent</a></code> | Test whether the given construct is a component. |
+
+---
+
+##### `isConstruct` <a name="isConstruct" id="@xpertss/projen-types.SonarWorkflow.isConstruct"></a>
+
+```typescript
+import { SonarWorkflow } from '@xpertss/projen-types'
+
+SonarWorkflow.isConstruct(x: any)
+```
+
+Checks if `x` is a construct.
+
+Use this method instead of `instanceof` to properly detect `Construct`
+instances, even when the construct library is symlinked.
+
+Explanation: in JavaScript, multiple copies of the `constructs` library on
+disk are seen as independent, completely different libraries. As a
+consequence, the class `Construct` in each copy of the `constructs` library
+is seen as a different class, and an instance of one class will not test as
+`instanceof` the other class. `npm install` will not create installations
+like this, but users may manually symlink construct libraries together or
+use a monorepo tool: in those cases, multiple copies of the `constructs`
+library can be accidentally installed, and `instanceof` will behave
+unpredictably. It is safest to avoid using `instanceof`, and using
+this type-testing method instead.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.SonarWorkflow.isConstruct.parameter.x"></a>
+
+- *Type:* any
+
+Any object.
+
+---
+
+##### `isComponent` <a name="isComponent" id="@xpertss/projen-types.SonarWorkflow.isComponent"></a>
+
+```typescript
+import { SonarWorkflow } from '@xpertss/projen-types'
+
+SonarWorkflow.isComponent(x: any)
+```
+
+Test whether the given construct is a component.
+
+###### `x`<sup>Required</sup> <a name="x" id="@xpertss/projen-types.SonarWorkflow.isComponent.parameter.x"></a>
+
+- *Type:* any
+
+---
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.property.node">node</a></code> | <code>constructs.Node</code> | The tree node. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.property.project">project</a></code> | <code>projen.Project</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.SonarWorkflow.property.workflow">workflow</a></code> | <code>projen.github.GithubWorkflow</code> | *No description.* |
+
+---
+
+##### `node`<sup>Required</sup> <a name="node" id="@xpertss/projen-types.SonarWorkflow.property.node"></a>
+
+```typescript
+public readonly node: Node;
+```
+
+- *Type:* constructs.Node
+
+The tree node.
+
+---
+
+##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.SonarWorkflow.property.project"></a>
+
+```typescript
+public readonly project: Project;
+```
+
+- *Type:* projen.Project
+
+---
+
+##### `workflow`<sup>Required</sup> <a name="workflow" id="@xpertss/projen-types.SonarWorkflow.property.workflow"></a>
+
+```typescript
+public readonly workflow: GithubWorkflow;
+```
+
+- *Type:* projen.github.GithubWorkflow
+
+---
+
+
 ### WorkflowChangeNoticeWorkflow <a name="WorkflowChangeNoticeWorkflow" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow"></a>
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.Initializer"></a>
@@ -15202,76 +15564,6 @@ public readonly inputs: {[ key: string ]: string};
 
 ---
 
-### ActionSonarWorkflowOptions <a name="ActionSonarWorkflowOptions" id="@xpertss/projen-types.ActionSonarWorkflowOptions"></a>
-
-#### Initializer <a name="Initializer" id="@xpertss/projen-types.ActionSonarWorkflowOptions.Initializer"></a>
-
-```typescript
-import { ActionSonarWorkflowOptions } from '@xpertss/projen-types'
-
-const actionSonarWorkflowOptions: ActionSonarWorkflowOptions = { ... }
-```
-
-#### Properties <a name="Properties" id="Properties"></a>
-
-| **Name** | **Type** | **Description** |
-| --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure. |
-| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
-| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
-| <code><a href="#@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
-
----
-
-##### `sonarHostUrl`<sup>Required</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarHostUrl"></a>
-
-```typescript
-public readonly sonarHostUrl: string;
-```
-
-- *Type:* string
-
-URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure.
-
----
-
-##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarOrganization"></a>
-
-```typescript
-public readonly sonarOrganization: string;
-```
-
-- *Type:* string
-- *Default:* "xpertss"
-
-SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
-
----
-
-##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarPullRequestGate"></a>
-
-```typescript
-public readonly sonarPullRequestGate: boolean;
-```
-
-- *Type:* boolean
-- *Default:* true
-
-Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
-
----
-
-##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.ActionSonarWorkflowOptions.property.sonarTokenSecret"></a>
-
-```typescript
-public readonly sonarTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "SONAR_TOKEN"
-
----
-
 ### CdkAppProjectOptions <a name="CdkAppProjectOptions" id="@xpertss/projen-types.CdkAppProjectOptions"></a>
 
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.CdkAppProjectOptions.Initializer"></a>
@@ -15286,6 +15578,11 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
@@ -15299,6 +15596,68 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.appEntryPoint">appEntryPoint</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.database">database</a></code> | <code><a href="#@xpertss/projen-types.DatabaseOptions">DatabaseOptions</a></code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.CdkAppProjectOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.CdkAppProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.CdkAppProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.CdkAppProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.CdkAppProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -15504,6 +15863,11 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
@@ -15515,6 +15879,68 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.CdkInfraProjectOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.CdkInfraProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.CdkInfraProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.CdkInfraProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.CdkInfraProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -15668,6 +16094,11 @@ const cdkTypescriptProjectOptions: CdkTypescriptProjectOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
@@ -15677,6 +16108,68 @@ const cdkTypescriptProjectOptions: CdkTypescriptProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -15801,6 +16294,11 @@ const commonCdkOptions: CommonCdkOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
@@ -15809,6 +16307,68 @@ const commonCdkOptions: CommonCdkOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.CommonCdkOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.CommonCdkOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.CommonCdkOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.CommonCdkOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.CommonCdkOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -15923,6 +16483,11 @@ const commonJavaOptions: CommonJavaOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -15940,10 +16505,71 @@ const commonJavaOptions: CommonJavaOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
-| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.CommonJavaOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.CommonJavaOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.CommonJavaOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.CommonJavaOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.CommonJavaOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -16171,20 +16797,6 @@ public readonly sample: boolean;
 Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet.
 
 Never written for a multi-module project.
-
----
-
-##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.CommonJavaOptions.property.sonarProjectKey"></a>
-
-```typescript
-public readonly sonarProjectKey: string;
-```
-
-- *Type:* string
-
-SonarCloud project key.
-
-If unset, the sonar scan step is skipped.
 
 ---
 
@@ -16451,7 +17063,11 @@ const gitHubActionProjectOptions: GitHubActionProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.stale">stale</a></code> | <code>boolean</code> | Auto-close of stale issues and pull request. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.staleOptions">staleOptions</a></code> | <code>projen.github.StaleOptions</code> | Auto-close stale issues and pull requests. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.vscode">vscode</a></code> | <code>boolean</code> | Enable VSCode integration. |
-| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). MUST be reachable from github.com-hosted (public) runners (AD-001). Required, no default: a guessed server is worse than a loud failure. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.description">description</a></code> | <code>string</code> | One-line description of the action. |
@@ -16459,9 +17075,6 @@ const gitHubActionProjectOptions: GitHubActionProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003) and the drift-check's PR comments. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
-| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`), required by the Scanner CLI on SonarCloud. |
-| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
-| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 
 ---
 
@@ -16833,7 +17446,7 @@ Enabled by default for root projects. Disabled for non-root projects.
 
 ---
 
-##### `sonarHostUrl`<sup>Required</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl"></a>
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarHostUrl"></a>
 
 ```typescript
 public readonly sonarHostUrl: string;
@@ -16841,7 +17454,57 @@ public readonly sonarHostUrl: string;
 
 - *Type:* string
 
-URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). MUST be reachable from github.com-hosted (public) runners (AD-001). Required, no default: a guessed server is worse than a loud failure.
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -16953,43 +17616,6 @@ SPDX identifier for the generated `LICENSE`.
 
 ---
 
-##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarOrganization"></a>
-
-```typescript
-public readonly sonarOrganization: string;
-```
-
-- *Type:* string
-- *Default:* "xpertss"
-
-SonarCloud organization key (`sonar.organization`), required by the Scanner CLI on SonarCloud.
-
----
-
-##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarPullRequestGate"></a>
-
-```typescript
-public readonly sonarPullRequestGate: boolean;
-```
-
-- *Type:* boolean
-- *Default:* true
-
-Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
-
----
-
-##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.GitHubActionProjectOptions.property.sonarTokenSecret"></a>
-
-```typescript
-public readonly sonarTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "SONAR_TOKEN"
-
----
-
 ### GitHubPackagesPublishOptions <a name="GitHubPackagesPublishOptions" id="@xpertss/projen-types.GitHubPackagesPublishOptions"></a>
 
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.GitHubPackagesPublishOptions.Initializer"></a>
@@ -17033,6 +17659,11 @@ const javaAppProjectOptions: JavaAppProjectOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -17050,11 +17681,72 @@ const javaAppProjectOptions: JavaAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
-| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.ghPackagesRegistry">ghPackagesRegistry</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.JavaAppProjectOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.JavaAppProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaAppProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.JavaAppProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.JavaAppProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -17285,20 +17977,6 @@ Never written for a multi-module project.
 
 ---
 
-##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaAppProjectOptions.property.sonarProjectKey"></a>
-
-```typescript
-public readonly sonarProjectKey: string;
-```
-
-- *Type:* string
-
-SonarCloud project key.
-
-If unset, the sonar scan step is skipped.
-
----
-
 ##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.JavaAppProjectOptions.property.upgradeWorkflow"></a>
 
 ```typescript
@@ -17361,6 +18039,11 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -17378,12 +18061,73 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.mavenCentralOidc">mavenCentralOidc</a></code> | <code>boolean</code> | Use Maven Central's OIDC trusted-publishing flow instead of secret-based GPG signing. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -17614,20 +18358,6 @@ Never written for a multi-module project.
 
 ---
 
-##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarProjectKey"></a>
-
-```typescript
-public readonly sonarProjectKey: string;
-```
-
-- *Type:* string
-
-SonarCloud project key.
-
-If unset, the sonar scan step is skipped.
-
----
-
 ##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.upgradeWorkflow"></a>
 
 ```typescript
@@ -17704,6 +18434,11 @@ const javaMavenProjectOptions: JavaMavenProjectOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -17721,10 +18456,71 @@ const javaMavenProjectOptions: JavaMavenProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.JavaMavenProjectOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.JavaMavenProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaMavenProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.JavaMavenProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.JavaMavenProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -17955,20 +18751,6 @@ Never written for a multi-module project.
 
 ---
 
-##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaMavenProjectOptions.property.sonarProjectKey"></a>
-
-```typescript
-public readonly sonarProjectKey: string;
-```
-
-- *Type:* string
-
-SonarCloud project key.
-
-If unset, the sonar scan step is skipped.
-
----
-
 ##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.JavaMavenProjectOptions.property.upgradeWorkflow"></a>
 
 ```typescript
@@ -18020,6 +18802,11 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -18037,7 +18824,6 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
@@ -18047,6 +18833,68 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.dockerRegistry">dockerRegistry</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets to offer on the `CdkDeployHook`'s manual-dispatch workflow, when the hook is enabled. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.useFlyway">useFlyway</a></code> | <code>boolean</code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.JavaServiceProjectOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.JavaServiceProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaServiceProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.JavaServiceProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.JavaServiceProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -18277,20 +19125,6 @@ Never written for a multi-module project.
 
 ---
 
-##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaServiceProjectOptions.property.sonarProjectKey"></a>
-
-```typescript
-public readonly sonarProjectKey: string;
-```
-
-- *Type:* string
-
-SonarCloud project key.
-
-If unset, the sonar scan step is skipped.
-
----
-
 ##### `upgradeWorkflow`<sup>Optional</sup> <a name="upgradeWorkflow" id="@xpertss/projen-types.JavaServiceProjectOptions.property.upgradeWorkflow"></a>
 
 ```typescript
@@ -18425,6 +19259,11 @@ const javaSpringBootProjectOptions: JavaSpringBootProjectOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -18442,11 +19281,72 @@ const javaSpringBootProjectOptions: JavaSpringBootProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
-| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | SonarCloud project key. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.springBootVersion">springBootVersion</a></code> | <code>string</code> | Spring Boot version: imports `spring-boot-dependencies` as the first BOM, and versions `spring-boot-maven-plugin`. |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 
@@ -18674,20 +19574,6 @@ public readonly sample: boolean;
 Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet.
 
 Never written for a multi-module project.
-
----
-
-##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarProjectKey"></a>
-
-```typescript
-public readonly sonarProjectKey: string;
-```
-
-- *Type:* string
-
-SonarCloud project key.
-
-If unset, the sonar scan step is skipped.
 
 ---
 
@@ -19155,6 +20041,188 @@ public readonly workflowName: string;
 
 - *Type:* string
 - *Default:* "projen-drift-check"
+
+---
+
+### SonarScanOptions <a name="SonarScanOptions" id="@xpertss/projen-types.SonarScanOptions"></a>
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.SonarScanOptions.Initializer"></a>
+
+```typescript
+import { SonarScanOptions } from '@xpertss/projen-types'
+
+const sonarScanOptions: SonarScanOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.SonarScanOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001). |
+| <code><a href="#@xpertss/projen-types.SonarScanOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.SonarScanOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.SonarScanOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.SonarScanOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Optional</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.SonarScanOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). When set, a `sonar.yml` SonarScanner workflow is generated; when omitted, no Sonar workflow is produced. Must be reachable from github.com-hosted (public) runners (AD-001).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.SonarScanOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.SonarScanOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.SonarScanOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.SonarScanOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
+
+---
+
+### SonarWorkflowOptions <a name="SonarWorkflowOptions" id="@xpertss/projen-types.SonarWorkflowOptions"></a>
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.SonarWorkflowOptions.Initializer"></a>
+
+```typescript
+import { SonarWorkflowOptions } from '@xpertss/projen-types'
+
+const sonarWorkflowOptions: SonarWorkflowOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarInclusions">sonarInclusions</a></code> | <code>string</code> | `sonar.inclusions` glob, only needed for files Sonar's default inclusions skip - e.g. a composite action's `action.yml` and `*.sh` scripts, which live outside the defaults. Omit it for default-recognized languages (Java, TypeScript, ...). |
+| <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `sonarHostUrl`<sup>Required</sup> <a name="sonarHostUrl" id="@xpertss/projen-types.SonarWorkflowOptions.property.sonarHostUrl"></a>
+
+```typescript
+public readonly sonarHostUrl: string;
+```
+
+- *Type:* string
+
+URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure.
+
+---
+
+##### `sonarInclusions`<sup>Optional</sup> <a name="sonarInclusions" id="@xpertss/projen-types.SonarWorkflowOptions.property.sonarInclusions"></a>
+
+```typescript
+public readonly sonarInclusions: string;
+```
+
+- *Type:* string
+- *Default:* none (Sonar's default inclusions)
+
+`sonar.inclusions` glob, only needed for files Sonar's default inclusions skip - e.g. a composite action's `action.yml` and `*.sh` scripts, which live outside the defaults. Omit it for default-recognized languages (Java, TypeScript, ...).
+
+---
+
+##### `sonarOrganization`<sup>Optional</sup> <a name="sonarOrganization" id="@xpertss/projen-types.SonarWorkflowOptions.property.sonarOrganization"></a>
+
+```typescript
+public readonly sonarOrganization: string;
+```
+
+- *Type:* string
+- *Default:* "xpertss"
+
+SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails.
+
+---
+
+##### `sonarProjectKey`<sup>Optional</sup> <a name="sonarProjectKey" id="@xpertss/projen-types.SonarWorkflowOptions.property.sonarProjectKey"></a>
+
+```typescript
+public readonly sonarProjectKey: string;
+```
+
+- *Type:* string
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+
+`sonar.projectKey`.
+
+---
+
+##### `sonarPullRequestGate`<sup>Optional</sup> <a name="sonarPullRequestGate" id="@xpertss/projen-types.SonarWorkflowOptions.property.sonarPullRequestGate"></a>
+
+```typescript
+public readonly sonarPullRequestGate: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
+
+---
+
+##### `sonarTokenSecret`<sup>Optional</sup> <a name="sonarTokenSecret" id="@xpertss/projen-types.SonarWorkflowOptions.property.sonarTokenSecret"></a>
+
+```typescript
+public readonly sonarTokenSecret: string;
+```
+
+- *Type:* string
+- *Default:* "SONAR_TOKEN"
 
 ---
 

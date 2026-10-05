@@ -49,26 +49,37 @@ test('code index can be opted out', () => {
   expect(snapshot['.github/workflows/codeindex.yml']).toBeUndefined();
 });
 
-test('sonar step is only added when sonarProjectKey is set', () => {
+test('sonar is opt-in via sonarHostUrl: sonar.yml is generated, and the Maven build never runs a sonar step', () => {
   const withSonar = synthSnapshot(
     new JavaLibraryProject({
       name: 'lib-test',
       groupId: 'com.example',
       artifactId: 'lib-test',
-      sonarProjectKey: 'com.example:lib-test',
+      sonarHostUrl: 'https://sonar.example.org',
     }),
-  )['.github/workflows/build.yml'];
+  );
   const withoutSonar = synthSnapshot(
     new JavaLibraryProject({
       name: 'lib-test',
       groupId: 'com.example',
       artifactId: 'lib-test',
     }),
-  )['.github/workflows/build.yml'];
+  );
 
-  const steps = JSON.stringify(withSonar.jobs.build.steps);
-  expect(steps).toContain('sonar:sonar');
-  expect(JSON.stringify(withoutSonar.jobs.build.steps)).not.toContain(
+  // Opted in: a standalone sonar.yml appears with the default projectKey.
+  expect(withSonar['.github/workflows/sonar.yml']).toBeDefined();
+  expect(JSON.stringify(withSonar['.github/workflows/sonar.yml'].jobs.sonar.steps)).toContain(
+    'sonar.projectKey=xpertss_lib-test',
+  );
+
+  // Opted out: no sonar.yml at all.
+  expect(withoutSonar['.github/workflows/sonar.yml']).toBeUndefined();
+
+  // The Maven build no longer carries a sonar:sonar step in either case.
+  expect(JSON.stringify(withSonar['.github/workflows/build.yml'].jobs.build.steps)).not.toContain(
+    'sonar:sonar',
+  );
+  expect(JSON.stringify(withoutSonar['.github/workflows/build.yml'].jobs.build.steps)).not.toContain(
     'sonar:sonar',
   );
 });

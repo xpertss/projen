@@ -36,6 +36,7 @@ All project types:
 - run a **drift check** in PR builds - a job that re-runs projen and fails if generated files were hand-edited. Edit `.projenrc.ts`, then run `npx projen`; never edit generated files directly.
 - use the GitHub secret `PROJEN_GITHUB_TOKEN` (a fine-grained PAT) for projen's automation. Override with `gheTokenSecret`.
 - make all publishing/deploying **manual** (workflow_dispatch) rather than on every merge.
+- offer an opt-in SonarCloud scan (`sonar.yml`) on any type via `sonarHostUrl` (see [SonarCloud (opt-in)](#sonarcloud-opt-in)).
 
 ## Getting started
 
@@ -60,9 +61,9 @@ installs dependencies. The type names `projen new` accepts are `cdk_infra`,
 `cdk_app`, `java_maven`, `java_library`, `java_app`, `java_spring_boot`,
 `java_service` and `git_hub_action`; pass a bogus one to have it list them.
 Required options become flags: `--name` for every type, plus
-`--group-id`/`--artifact-id` (Java) and `--sonar-host-url`
-(`git_hub_action`). Any other plainly-typed option can be passed the same
-way - `--java-version 1.8`, `--cdk-deploy-target-repo owner/repo`,
+`--group-id`/`--artifact-id` (Java). Any other plainly-typed option can be
+passed the same way - `--sonar-host-url` (opt-in Sonar, all types),
+`--java-version 1.8`, `--cdk-deploy-target-repo owner/repo`,
 `--docker-registry ghcr.io`, `--no-use-flyway`, and so on. Modules can't be
 passed on the command line; add them to `.projenrc.ts` afterwards (see
 [JavaMavenProject](#javamavenproject)).
@@ -329,7 +330,7 @@ You get:
   - **exact versions only**: a range such as `^1`, `~1.2` or `[1,2)` fails the synth
   - the compiler level, enforcer rule and JUnit line all follow `javaVersion`
 - one Maven run per build. `npx projen build` synthesizes, then runs `mvn -B verify`: compile, unit tests (surefire), package, and `*IT` integration tests (failsafe). There is no `mvn deploy` and no `dist/`.
-- `.github/workflows/build.yml`: a PR build that installs the pinned Node toolchain (`npm ci`) and the project's JDK (`actions/setup-java`, Maven cache), then runs `npx projen build`, plus a SonarQube step when `sonarProjectKey` is set. See [Adding CI jobs](#adding-ci-jobs-to-a-java-project).
+- `.github/workflows/build.yml`: a PR build that installs the pinned Node toolchain (`npm ci`) and the project's JDK (`actions/setup-java`, Maven cache), then runs `npx projen build`. The Maven build itself never runs a Sonar step - SonarCloud scanning is a separate, opt-in `sonar.yml` (set `sonarHostUrl`). See [Adding CI jobs](#adding-ci-jobs-to-a-java-project) and [SonarCloud (opt-in)](#sonarcloud-opt-in).
 - `.github/workflows/upgrade.yml`: a nightly (03:00 UTC) **report** of available dependency and plugin updates in the job summary. It changes nothing, because every version comes from `.projenrc.ts`; apply an update there. Turn it off with `upgradeWorkflow: false`. The same report runs locally with `npx projen upgrade`.
 - the projen drift check, `LICENSE` (MIT by default), `.editorconfig`, and a generated `package.json` that pins the projen toolchain exactly.
 - no sample code, unless `sample: true` on a single-module project.
@@ -353,7 +354,7 @@ const project = new JavaLibraryProject({
   groupId: 'org.xpertss',
   artifactId: 'common-utils',
   version: '1.0.0',
-  sonarProjectKey: 'org.xpertss:common-utils',
+  sonarHostUrl: 'https://sonarcloud.io',   // opt-in: adds sonar.yml (see SonarCloud)
   mavenCentralOidc: true,
 });
 
@@ -491,7 +492,7 @@ import { GitHubActionProject } from '@xpertss/projen-types';
 const project = new GitHubActionProject({
   name: 'auto-commit',
   description: 'Stage a folder and, only if it changed, commit and push it',
-  sonarHostUrl: 'https://sonarcloud.io',       // required, no default - your SonarCloud URL
+  sonarHostUrl: 'https://sonarcloud.io',       // optional - set it to add sonar.yml (see SonarCloud)
   sonarOrganization: 'xpertss',                 // default - your SonarCloud org key
   dogfood: {
     // Two scenario steps: the "changed" path and the "no-op" path are both
@@ -538,14 +539,14 @@ project.synth();
 You get:
 
 - `action.yml` and `auto-commit.sh` are hand-written - this type only lints their content via `build.yml`'s shellcheck/yamllint/actionlint checks.
-- `.github/workflows/build.yml` - lint gate: `apt`-installed shellcheck/yamllint plus a pinned, SHA-256-verified `actionlint` release binary. Gates `main` alongside `sonar.yml`.
+- `.github/workflows/build.yml` - lint gate: `apt`-installed shellcheck/yamllint plus a pinned, SHA-256-verified `actionlint` release binary. Gates `main` (alongside `sonar.yml` when Sonar is enabled).
 - `.github/workflows/test-dogfood.yml` - runs the `dogfood.scenario` steps above against this repo's own `action.yml` (via `uses: ./`), then the shared `cleanup`, on `workflow_dispatch`, every `pull_request`, and nightly. Omit `dogfood` and the workflow still exists, with one step that fails on every PR until you declare a scenario - AD-001 allows a dogfood to be missing loudly, never silently. A *partial* `dogfood` (a scenario with no cleanup) is a synth error.
-- `.github/workflows/sonar.yml` - SonarCloud scan via the Scanner CLI (the quality gate blocks the PR), scanning `action.yml`/`.github/workflows/**`/`**/*.sh` explicitly.
+- `.github/workflows/sonar.yml` - SonarCloud scan via the Scanner CLI (the quality gate blocks the PR), scanning `action.yml`/`.github/workflows/**`/`**/*.sh` explicitly. Opt-in: generated only when `sonarHostUrl` is set (see [SonarCloud (opt-in)](#sonarcloud-opt-in)).
 - `.github/workflows/release.yml` - `feat:`/`fix:` commits on `main` bump the version, tag `vX.Y.Z`, and create a GitHub Release.
 - `.github/workflows/projen-drift-check.yml` and `workflow-change-notice.yml` - drift detection and a change notice, always included.
 - `package.json` (**private**, version source only), `.yamllint`, `LICENSE` (MIT by default), and a `README.md` template - all regenerated by `npx projen`.
 
-Needs the same two secrets as everything else in this package: `PROJEN_GITHUB_TOKEN` (used for automated PR comments) and `SONAR_TOKEN` (the Sonar scan). Onboard a brand-new action repo by running the `projen new` command above first (see [Getting started](#getting-started)), then replace the generated `.projenrc.ts` with the one above and run `npx projen`, then hand-write `action.yml`/`auto-commit.sh`/`test/fixtures/`. If you wrote the `.projenrc.ts` before running `projen new`, see [Starting from an existing `.projenrc.ts`](#starting-from-an-existing-projenrcts).
+Needs `PROJEN_GITHUB_TOKEN` (used for automated PR comments), and `SONAR_TOKEN` only when Sonar is enabled (see [SonarCloud (opt-in)](#sonarcloud-opt-in)). Onboard a brand-new action repo by running the `projen new` command above first (see [Getting started](#getting-started)), then replace the generated `.projenrc.ts` with the one above and run `npx projen`, then hand-write `action.yml`/`auto-commit.sh`/`test/fixtures/`. If you wrote the `.projenrc.ts` before running `projen new`, see [Starting from an existing `.projenrc.ts`](#starting-from-an-existing-projenrcts).
 
 ## Java version support
 
@@ -640,7 +641,7 @@ Java project types (`JavaMavenProjectOptions` and everything built on it - `Java
 | `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
 | `editorconfig` | `true` | Write a projen-managed `.editorconfig` (also on the CDK and action types) |
 | `upgradeWorkflow` | `true` | Generate the nightly update report (`upgrade.yml`) |
-| `sonarProjectKey` | - | SonarQube project key; the sonar step is skipped when unset |
+| Sonar options | - | `sonarHostUrl`, `sonarOrganization`, `sonarTokenSecret`, `sonarPullRequestGate`, `sonarProjectKey` - SonarCloud is opt-in; see [SonarCloud (opt-in)](#sonarcloud-opt-in) |
 | `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
 | `springBootVersion` | newest Boot for `javaVersion` (Spring Boot types only) | Exact Spring Boot version: the BOM and `spring-boot-maven-plugin` |
 | `cdkDeployTargetRepo` | - (service only; `deploy-cdk.yml` fails until set) | Companion CDK repo (`owner/repo`) whose `deploy.yml` the deploy hook dispatches |
@@ -692,10 +693,7 @@ Plain strings (`'dev'`) are shorthand for `{ name: 'dev' }`.
 | --- | --- | --- |
 | `name` | - (required) | Project name |
 | `description` | - | One-line description; used in the default README template and recorded in the private `package.json` |
-| `sonarHostUrl` | - (required) | URL of your SonarCloud instance (e.g. `https://sonarcloud.io`); must be reachable from github.com-hosted runners |
-| `sonarOrganization` | `xpertss` | SonarCloud org key (`sonar.organization`); required by the Scanner CLI, not derived from the token |
-| `sonarTokenSecret` | `SONAR_TOKEN` | GitHub secret holding the Sonar token |
-| `sonarPullRequestGate` | `true` | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate |
+| Sonar options | - | `sonarHostUrl`, `sonarOrganization`, `sonarTokenSecret`, `sonarPullRequestGate`, `sonarProjectKey` - SonarCloud is opt-in; see [SonarCloud (opt-in)](#sonarcloud-opt-in) |
 | `dogfood` | - (a `test-dogfood.yml` that fails until you declare one) | `ActionDogfoodOptions` - the scenario that exercises the action end-to-end via `uses: ./` |
 | `license` | `MIT` | SPDX identifier for the generated `LICENSE` |
 | `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
@@ -720,12 +718,38 @@ interface ActionDogfoodStep {
 
 Most actions need exactly one `scenario` step. Actions with a re-run/no-op/idempotency behavior to verify (e.g. `auto-commit`'s no-op-on-no-change path, `create-pull-request`'s reuse-the-PR path) declare two - the second typically omits `fixtureSteps` so its invocation sees no new state, and its assertion checks the opposite outcome of the first. Reference an invocation's own outputs from a later assertion via `${{ steps.<id>.outputs.<name> }}`, using either the default slug or an explicit `id`.
 
+## SonarCloud (opt-in)
+
+SonarCloud is a shared, **opt-in** capability on every project type (CDK, Java, and GitHub Action). Set `sonarHostUrl` on any type and it generates a `.github/workflows/sonar.yml` that runs a pinned, SHA-256-verified Sonar Scanner CLI and blocks the PR on the quality gate. Omit it and no `sonar.yml` is generated. The Maven build itself never runs a Sonar step.
+
+Shared options (accepted by the CDK types, every Java type, and `GitHubActionProject`):
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `sonarHostUrl` | - (required to enable) | URL of your SonarCloud instance (e.g. `https://sonarcloud.io`); must be reachable from github.com-hosted runners |
+| `sonarOrganization` | `xpertss` | SonarCloud org key (`sonar.organization`); required by the Scanner CLI, not derived from the token |
+| `sonarProjectKey` | `${sonarOrganization}_${name}` | `sonar.projectKey` - the org + project key SonarCloud uses (e.g. `xpertss_create-pull-request`) |
+| `sonarTokenSecret` | `SONAR_TOKEN` | GitHub secret holding the Sonar token |
+| `sonarPullRequestGate` | `true` | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate |
+
+Inclusions differ by type: a `GitHubActionProject` scans `action.yml`/`.github/workflows/**`/`**/*.sh` explicitly (YAML and shell are not in Sonar's default-recognized set), while the CDK and Java types rely on Sonar's default inclusions for their languages.
+
+```typescript
+new CdkInfraProject({
+  name: 'my-infra',
+  environments: ['dev', 'prod'],
+  sonarHostUrl: 'https://sonarcloud.io',   // adds sonar.yml
+});
+```
+
+Requires the `SONAR_TOKEN` secret (rename it with `sonarTokenSecret`).
+
 ## Required GitHub secrets
 
 | Secret | Used by | Notes |
 | --- | --- | --- |
 | `PROJEN_GITHUB_TOKEN` | all types | PAT for projen's self-mutation/automation; override via `gheTokenSecret` |
-| `SONAR_TOKEN` | Java types with `sonarProjectKey`; `GitHubActionProject` | SonarQube scan step in `build.yml` / `sonar.yml`; override via `sonarTokenSecret` on `GitHubActionProject` |
+| `SONAR_TOKEN` | any type with `sonarHostUrl` set | SonarCloud scan in `sonar.yml`; override the secret name via `sonarTokenSecret` |
 | `DOCKER_USERNAME` / `DOCKER_PASSWORD` | `JavaServiceProject` | Docker image push |
 | `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE`, `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD` | `JavaLibraryProject` without `mavenCentralOidc` | Not needed with OIDC trusted publishing |
 
@@ -780,7 +804,7 @@ The project types are composed from smaller components you can also attach to yo
 | `CodeIndexWorkflow` | `JavaMavenProject` | Code index generation on push to `main` |
 | `ActionBuildWorkflow` | `GitHubProject` | The `lint` task (shellcheck/yamllint/pinned actionlint) + `build.yml` |
 | `ActionDogfoodWorkflow` | `GitHubProject` | `test-dogfood.yml` from an `ActionDogfoodOptions` scenario |
-| `ActionSonarWorkflow` | `GitHubProject` | `sonar.yml` (SonarCloud scan via the Scanner CLI) |
+| `SonarWorkflow` | `GitHubProject` | `sonar.yml` (SonarCloud scan via the Scanner CLI); opt-in, shared by every type via `sonarHostUrl` |
 
 Example - adding a Docker publish to a `JavaMavenProject` (`JavaServiceProject` is the packaged version of this, with Spring Boot):
 

@@ -7,13 +7,14 @@ import {
 } from 'projen';
 import { ActionBuildWorkflow } from './action-build-workflow';
 import { ActionDogfoodOptions, ActionDogfoodWorkflow } from './action-dogfood-workflow';
-import { ActionSonarWorkflow } from './action-sonar-workflow';
 import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { addEditorConfig } from '../common/editorconfig';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { addLicenseFile } from '../common/license-file';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
 import { attachTypeScriptProjenrc } from '../common/projenrc-ts';
+import { SonarScanOptions } from '../common/sonar-options';
+import { SonarWorkflow } from '../common/sonar-workflow';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
 import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
@@ -34,7 +35,8 @@ const PROJEN_TYPES_VERSION: string = require('../../package.json').version;
 const COMMIT_AND_TAG_VERSION = '13.2.1';
 
 export interface GitHubActionProjectOptions
-  extends github.GitHubProjectOptions {
+  extends github.GitHubProjectOptions,
+  SonarScanOptions {
   /**
    * One-line description of the action. Used in the default README
    * template and recorded in the private `package.json`.
@@ -50,29 +52,6 @@ export interface GitHubActionProjectOptions
    * @default "PROJEN_GITHUB_TOKEN"
    */
   readonly gheTokenSecret?: string;
-
-  /**
-   * URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`).
-   * MUST be reachable from github.com-hosted (public) runners (AD-001).
-   * Required, no default: a guessed server is worse than a loud failure.
-   */
-  readonly sonarHostUrl: string;
-
-  /**
-   * SonarCloud organization key (`sonar.organization`), required by the
-   * Scanner CLI on SonarCloud.
-   * @default "xpertss"
-   */
-  readonly sonarOrganization?: string;
-
-  /** @default "SONAR_TOKEN" */
-  readonly sonarTokenSecret?: string;
-
-  /**
-   * Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate.
-   * @default true
-   */
-  readonly sonarPullRequestGate?: boolean;
 
   /**
    * The dogfood scenario (AD-001). What fixture state, what to assert, and
@@ -155,13 +134,11 @@ hand-committed.
 export class GitHubActionProject extends github.GitHubProject {
   public readonly buildWorkflow: ActionBuildWorkflow;
   public readonly dogfoodWorkflow: ActionDogfoodWorkflow;
-  public readonly sonarWorkflow: ActionSonarWorkflow;
+  /** Set only when `sonarHostUrl` is provided. */
+  public readonly sonarWorkflow?: SonarWorkflow;
   public readonly release: release.Release;
 
   constructor(options: GitHubActionProjectOptions) {
-    if (!options.sonarHostUrl) {
-      throw new Error('GitHubActionProject requires sonarHostUrl');
-    }
     // A declared-but-incomplete dogfood is still an error - see
     // `ActionDogfoodWorkflow`, which owns that check (and the
     // no-dogfood-declared case).
@@ -241,12 +218,18 @@ export class GitHubActionProject extends github.GitHubProject {
 
     this.dogfoodWorkflow = new ActionDogfoodWorkflow(this, options.dogfood);
 
-    this.sonarWorkflow = new ActionSonarWorkflow(this, {
-      sonarHostUrl: options.sonarHostUrl,
-      sonarOrganization: options.sonarOrganization,
-      sonarTokenSecret: options.sonarTokenSecret,
-      sonarPullRequestGate: options.sonarPullRequestGate,
-    });
+    if (options.sonarHostUrl) {
+      this.sonarWorkflow = new SonarWorkflow(this, {
+        sonarHostUrl: options.sonarHostUrl,
+        sonarOrganization: options.sonarOrganization,
+        sonarTokenSecret: options.sonarTokenSecret,
+        sonarPullRequestGate: options.sonarPullRequestGate,
+        sonarProjectKey: options.sonarProjectKey,
+        // YAML / shell are not in Sonar's default-recognized set, so the
+        // action's `action.yml` and scripts need explicit inclusions.
+        sonarInclusions: '.github/workflows/**,action.yml,**/*.sh',
+      });
+    }
 
     // `githubRelease` defaults to true, which auto-wires
     // `publishToGitHubReleases` - its `gh release create ... --target

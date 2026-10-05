@@ -7,6 +7,7 @@ import { applyInternalActionOverrides } from '../common/internal-actions';
 import { addLicenseFile } from '../common/license-file';
 import { ManualDeployWorkflow } from '../common/manual-deploy-workflow';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
+import { SonarWorkflow } from '../common/sonar-workflow';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
 import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
@@ -28,6 +29,9 @@ export interface CdkTypescriptProjectOptions extends CommonCdkOptions {
  * `ManualDeployWorkflow` when `environments` is provided.
  */
 export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
+  /** Set only when `sonarHostUrl` is provided. */
+  public readonly sonarWorkflow?: SonarWorkflow;
+
   constructor(options: CdkTypescriptProjectOptions) {
     super({
       // Spread first, overrides after: forwarding the caller's options is
@@ -112,6 +116,16 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
       gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
     });
     new WorkflowChangeNoticeWorkflow(this);
+
+    if (options.sonarHostUrl) {
+      this.sonarWorkflow = new SonarWorkflow(this, {
+        sonarHostUrl: options.sonarHostUrl,
+        sonarOrganization: options.sonarOrganization,
+        sonarTokenSecret: options.sonarTokenSecret,
+        sonarPullRequestGate: options.sonarPullRequestGate,
+        sonarProjectKey: options.sonarProjectKey,
+      });
+    }
 
     // `build` is projen's built-in NodeProject workflow (enabled via
     // `buildWorkflowOptions` above), not one this package constructs -

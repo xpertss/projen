@@ -1,6 +1,7 @@
 import { EnvironmentOptions } from '../common/environment-options';
+import { SonarScanOptions } from '../common/sonar-options';
 
-export interface CommonJavaOptions {
+export interface CommonJavaOptions extends SonarScanOptions {
   readonly name: string;
   readonly groupId: string;
   readonly artifactId: string;
@@ -13,9 +14,6 @@ export interface CommonJavaOptions {
 
   /** Project URL, written to the root pom. @default - none */
   readonly url?: string;
-
-  /** SonarCloud project key. If unset, the sonar scan step is skipped. */
-  readonly sonarProjectKey?: string;
 
   /** @default "PROJEN_GITHUB_TOKEN" */
   readonly gheTokenSecret?: string;

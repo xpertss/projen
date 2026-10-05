@@ -356,10 +356,34 @@ test('gheTokenSecret overrides round-trip into F003/F009', () => {
   expect(JSON.stringify(drift)).toContain('CUSTOM_TOKEN');
 });
 
-test('sonarHostUrl is required', () => {
+test('no sonarHostUrl: sonar is opt-in, so sonar.yml is not generated', () => {
   const options = baseOptions();
   delete (options as any).sonarHostUrl;
-  expect(() => new GitHubActionProject(options as any)).toThrow(/sonarHostUrl/);
+  const snapshot = synthSnapshot(new GitHubActionProject(options as any));
+  expect(snapshot['.github/workflows/sonar.yml']).toBeUndefined();
+  // The build still synthesizes - sonar is not required.
+  expect(snapshot['.github/workflows/build.yml']).toBeDefined();
+});
+
+test('sonar.yml: sonar.projectKey defaults to `${sonarOrganization}_${name}` and honors an override', () => {
+  const defSteps = JSON.stringify(
+    synthSnapshot(new GitHubActionProject(baseOptions()))[
+      '.github/workflows/sonar.yml'
+    ].jobs.sonar.steps,
+  );
+  // org defaults to xpertss, name is the project key
+  expect(defSteps).toContain('sonar.projectKey=xpertss_create-pull-request');
+
+  const ovrSteps = JSON.stringify(
+    synthSnapshot(
+      new GitHubActionProject({
+        ...baseOptions(),
+        sonarOrganization: 'my-org',
+        sonarProjectKey: 'custom-key',
+      }),
+    )['.github/workflows/sonar.yml'].jobs.sonar.steps,
+  );
+  expect(ovrSteps).toContain('sonar.projectKey=custom-key');
 });
 
 test('a declared dogfood must be complete - scenario and cleanup both required', () => {

@@ -84,6 +84,34 @@ test('every generated workflow carries a purpose note (JavaServiceProject)', () 
   );
 });
 
+test('sonar.yml is opt-in via sonarHostUrl for every base type and carries a purpose note', () => {
+  const projects = [
+    new GitHubActionProject({
+      name: 'sonar-action',
+      sonarHostUrl: 'https://sonar.example.org',
+    }),
+    new CdkInfraProject({
+      name: 'sonar-infra',
+      sonarHostUrl: 'https://sonar.example.org',
+    }),
+    new JavaServiceProject({
+      name: 'sonar-svc',
+      groupId: 'com.example',
+      artifactId: 'sonar-svc',
+      cdkDeployTargetRepo: 'example-org/infra-repo',
+      sonarHostUrl: 'https://sonar.example.org',
+    }),
+  ];
+  for (const project of projects) {
+    // Single synth per project - projen forbids a second Testing.synth.
+    const workflows = rawWorkflows(project);
+    expect(Object.keys(workflows)).toContain('.github/workflows/sonar.yml');
+    for (const file of Object.keys(workflows)) {
+      expect(workflows[file]).toContain('# Purpose: ');
+    }
+  }
+});
+
 test('no PR-title lint workflow is generated (all base types)', () => {
   const projects = [
     new GitHubActionProject({

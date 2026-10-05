@@ -1,4 +1,5 @@
 import { EnvironmentOptions } from '../common/environment-options';
+import { SonarScanOptions } from '../common/sonar-options';
 
 export type EdgeResource =
   | 'cloudfront'
@@ -20,7 +21,7 @@ export interface EcrEcsOptions {
   readonly externalImageSource?: boolean;
 }
 
-export interface CommonCdkOptions {
+export interface CommonCdkOptions extends SonarScanOptions {
   readonly name: string;
 
   /** @default "2.189.1" */
