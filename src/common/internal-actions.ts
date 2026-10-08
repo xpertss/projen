@@ -14,7 +14,6 @@ const PLACEHOLDER_SHA = 'PLACEHOLDER_SHA';
 const ACTION_OVERRIDES: Record<string, string> = {
   'peter-evans/create-pull-request': `xpertss/create-pull-request@${PLACEHOLDER_SHA}`,
   'stefanzweifel/git-auto-commit-action': `xpertss/auto-commit@${PLACEHOLDER_SHA}`,
-  'amannn/action-semantic-pull-request': 'xpertss/semantic-pull-request@v0.1.0',
 };
 
 // Name (without ref) -> floating major ref, for the `actions/*` actions that
@@ -39,7 +38,7 @@ const BUILTIN_ACTION_REPIINS: Record<string, string> = {
  * ref of the action's current major line (see BUILTIN_ACTION_REPIINS). Call
  * once per `GitHubProject`. Because every generated `uses:` is resolved
  * through this map at synth time - including projen's built-in `upgrade-main`
- * / `pull-request-lint` / `release` workflows - this single call covers all
+ * / `release` workflows - this single call covers all
  * current call sites.
  */
 export function applyInternalActionOverrides(gh: github.GitHub): void {
