@@ -17,6 +17,7 @@ const project = new cdk.JsiiProject({
   packageManager: javascript.NodePackageManager.NPM,
   packageName: '@xpertss/projen-types',
   devDeps: ['yaml'],
+  githubOptions: { pullRequestLint: false },
   gitignore: ['.idea', '/spec/'],
   peerDeps: ['projen', 'constructs'],
   projenrcTs: true,

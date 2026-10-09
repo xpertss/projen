@@ -41,17 +41,24 @@ export class ActionBuildWorkflow extends Component {
     this.task.exec(
       'find . -path ./node_modules -prune -o -name "*.sh" -print0 | xargs -0 -r shellcheck',
     );
-    this.task.exec('yamllint -c .yamllint action.yml .github/workflows/*.yml');
+    // Hand-written YAML only: the workflows are projen-generated (and
+    // drift-checked), and their long lines would fail `line-length`.
+    this.task.exec('yamllint -c .yamllint action.yml');
     // One step, so the private `mktemp -d` dir carries from download through
     // execution - never the world-writable shared /tmp, where another local
     // user could plant the binary that gets run.
+    // Workflows only: actionlint parses every file argument as a workflow,
+    // so the composite `action.yml` is validated transitively via
+    // `uses: ./` instead. `-shellcheck=` disables its incidental shellcheck
+    // pass over generated `run:` scripts (e.g. projen's own `release.yml`);
+    // hand-written `*.sh` files are covered by the shellcheck step above.
     this.task.exec(
       [
         'TMP="$(mktemp -d)"',
         `curl -fsSL -o "$TMP/actionlint.tar.gz" "https://github.com/rhysd/actionlint/releases/download/v${ACTIONLINT_VERSION}/actionlint_${ACTIONLINT_VERSION}_linux_amd64.tar.gz"`,
         `echo "${ACTIONLINT_SHA256}  $TMP/actionlint.tar.gz" | sha256sum -c -`,
         'tar -xzf "$TMP/actionlint.tar.gz" -C "$TMP" actionlint',
-        '"$TMP/actionlint" action.yml .github/workflows/*.yml',
+        '"$TMP/actionlint" -shellcheck= .github/workflows/*.yml',
       ].join(' && '),
     );
 

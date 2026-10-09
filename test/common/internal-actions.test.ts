@@ -17,19 +17,18 @@ describe('applyInternalActionOverrides', () => {
       steps: [
         { name: 'a', uses: 'peter-evans/create-pull-request@v7' },
         { name: 'b', uses: 'stefanzweifel/git-auto-commit-action@v5' },
-        { name: 'c', uses: 'amannn/action-semantic-pull-request@v4' },
-        { name: 'd', uses: 'actions/checkout@v4' },
-        { name: 'e', uses: github.ActionRefs.ACTIONS_CHECKOUT },
+        { name: 'c', uses: 'actions/checkout@v4' },
+        { name: 'd', uses: github.ActionRefs.ACTIONS_CHECKOUT },
         {
-          name: 'f',
+          name: 'e',
           uses: github.ActionRefs.ACTIONS_UPLOAD_ARTIFACT,
         },
         {
-          name: 'g',
+          name: 'f',
           uses: github.ActionRefs.ACTIONS_DOWNLOAD_ARTIFACT,
         },
         {
-          name: 'h',
+          name: 'g',
           uses: github.ActionRefs.PETER_EVANS_CREATE_PULL_REQUEST,
         },
       ],
@@ -45,18 +44,17 @@ describe('applyInternalActionOverrides', () => {
       `xpertss/create-pull-request@${CREATE_PULL_REQUEST_VERSION}`,
     );
     expect(steps[1].uses).toBe(`xpertss/auto-commit@${AUTO_COMMIT_VERSION}`);
-    expect(steps[2].uses).toBe('xpertss/semantic-pull-request@v0.1.0');
     // this package's own actions/checkout literal is redirected to the
     // current major line
-    expect(steps[3].uses).toBe('actions/checkout@v7');
+    expect(steps[2].uses).toBe('actions/checkout@v7');
     // projen's built-in commit-SHA refs (the live ActionRefs constants) are
     // re-pinned to the floating major ref of the current major line
-    expect(steps[4].uses).toBe('actions/checkout@v7');
-    expect(steps[5].uses).toBe('actions/upload-artifact@v7');
-    expect(steps[6].uses).toBe('actions/download-artifact@v8');
+    expect(steps[3].uses).toBe('actions/checkout@v7');
+    expect(steps[4].uses).toBe('actions/upload-artifact@v7');
+    expect(steps[5].uses).toBe('actions/download-artifact@v8');
     // projen's built-in create-pull-request ref (ActionRefs) is redirected by
     // the same name-keyed entry as this package's own @v7 literal
-    expect(steps[7].uses).toBe(
+    expect(steps[6].uses).toBe(
       `xpertss/create-pull-request@${CREATE_PULL_REQUEST_VERSION}`,
     );
   });
