@@ -539,7 +539,7 @@ project.synth();
 You get:
 
 - `action.yml` and `auto-commit.sh` are hand-written - this type only lints their content via `build.yml`'s shellcheck/yamllint/actionlint checks.
-- `.github/workflows/build.yml` - lint gate: `apt`-installed shellcheck/yamllint plus a pinned, SHA-256-verified `actionlint` release binary. Gates `main` (alongside `sonar.yml` when Sonar is enabled).
+- `.github/workflows/build.yml` - lint gate: `apt`-installed shellcheck/yamllint plus a pinned, SHA-256-verified `actionlint` release binary. Runs on `pull_request` (and `workflow_dispatch`) only - the release path runs the same lint task inside its `release` job before tagging, so push-to-`main` runs would be a duplicate (alongside `sonar.yml` when Sonar is enabled).
 - `.github/workflows/test-dogfood.yml` - runs the `dogfood.scenario` steps above against this repo's own `action.yml` (via `uses: ./`), then the shared `cleanup`, on `workflow_dispatch`, every `pull_request`, and nightly. Omit `dogfood` and the workflow still exists, with one step that fails on every PR until you declare a scenario - AD-001 allows a dogfood to be missing loudly, never silently. A *partial* `dogfood` (a scenario with no cleanup) is a synth error.
 - `.github/workflows/sonar.yml` - SonarCloud scan via the Scanner CLI (the quality gate blocks the PR), scanning `action.yml`/`.github/workflows/**`/`**/*.sh` explicitly. Opt-in: generated only when `sonarHostUrl` is set (see [SonarCloud (opt-in)](#sonarcloud-opt-in)).
 - `.github/workflows/release.yml` - `feat:`/`fix:` commits on `main` bump the version, tag `vX.Y.Z`, and create a GitHub Release.

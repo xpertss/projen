@@ -15,8 +15,14 @@ const ACTIONLINT_SHA256 =
  * spawns the unrelated default/pre-compile/compile/post-compile/test/package
  * chain - including `default`, i.e. re-running `.projenrc.ts`, which is not
  * what this gate is for) and wraps it in a `TaskWorkflow` (`build.yml`)
- * triggered on push-to-`main` and `pull_request`. The same task is reused by
- * the release build job, so the lint commands exist in exactly one place.
+ * triggered on `pull_request` (plus `TaskWorkflow`'s automatic
+ * `workflow_dispatch`). `push: main` is deliberately not a trigger: the
+ * release path already runs this same `lint` task inside the `release` job
+ * (the `tasks` wiring in `GitHubActionProject`), before the tag and GitHub
+ * Release are created - so a push-to-`main` run here would execute the lint
+ * twice in parallel and gate nothing, because the release job never waits on
+ * `build.yml`. The lint commands exist in exactly one place: the `lint`
+ * task.
  */
 export class ActionBuildWorkflow extends Component {
   public readonly task: Task;
@@ -66,7 +72,7 @@ export class ActionBuildWorkflow extends Component {
       name: 'build',
       jobId: 'build',
       task: this.task,
-      triggers: { push: { branches: ['main'] }, pullRequest: {} },
+      triggers: { pullRequest: {} },
       permissions: { contents: github.workflows.JobPermission.READ },
       preBuildSteps: [{ name: 'Install dependencies', run: 'npm ci' }],
     });

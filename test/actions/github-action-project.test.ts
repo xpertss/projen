@@ -101,19 +101,39 @@ test('every uses: is actions/* (floating major, exact version, or SHA), or the l
   }
 });
 
-test('build.yml: triggers, permissions, npm ci preBuildStep', () => {
+test('build.yml: PR-only trigger - push-to-main is linted by the release path, not here', () => {
   const build = synthSnapshot(new GitHubActionProject(baseOptions()))[
     '.github/workflows/build.yml'
   ];
 
-  expect(build.on.push.branches).toEqual(['main']);
+  // No `push: main` trigger: a releasable push to main runs the same `lint`
+  // task inside the `release` job (see the guard below), so a parallel
+  // push-to-main lint run would be duplicated work gating nothing.
+  expect(build.on.push).toBeUndefined();
   expect(build.on.pull_request).toBeDefined();
+  expect(build.on.workflow_dispatch).toBeDefined();
   expect(build.jobs.build.permissions.contents).toBe('read');
 
   const steps = JSON.stringify(build.jobs.build.steps);
   expect(steps).toContain('npm ci');
   expect(steps).toContain('npx projen@');
   expect(steps).toContain(' lint');
+});
+
+test('release task spawns the lint task - push-to-main releases stay lint-gated', () => {
+  // `build.yml` is PR-only, so the direct-push-to-main path (the continuous
+  // release trigger) relies on the `release` task running the lint before
+  // the tag and GitHub Release exist. This guard keeps that wiring intact:
+  // if `GitHubActionProject` stops passing the lint task to `Release`, a
+  // broken push to main would no longer be caught anywhere.
+  const tasks = synthSnapshot(new GitHubActionProject(baseOptions()))[
+    '.projen/tasks.json'
+  ];
+
+  const spawns = tasks.tasks.release.steps
+    .map((s: { spawn?: string }) => s.spawn)
+    .filter((s): s is string => s !== undefined);
+  expect(spawns).toContain('lint');
 });
 
 test('lint task: shellcheck, yamllint, pinned actionlint', () => {
