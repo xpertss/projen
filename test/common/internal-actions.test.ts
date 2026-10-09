@@ -1,5 +1,9 @@
 import { github, typescript } from 'projen';
-import { applyInternalActionOverrides } from '../../src';
+import {
+  AUTO_COMMIT_VERSION,
+  CREATE_PULL_REQUEST_VERSION,
+  applyInternalActionOverrides,
+} from '../../src';
 import { synthSnapshot } from '../util';
 
 describe('applyInternalActionOverrides', () => {
@@ -24,14 +28,23 @@ describe('applyInternalActionOverrides', () => {
           name: 'g',
           uses: github.ActionRefs.ACTIONS_DOWNLOAD_ARTIFACT,
         },
+        {
+          name: 'h',
+          uses: github.ActionRefs.PETER_EVANS_CREATE_PULL_REQUEST,
+        },
       ],
     });
     applyInternalActionOverrides(project.github!);
     const snapshot = synthSnapshot(project);
 
     const steps = snapshot['.github/workflows/override-test.yml'].jobs.job.steps;
-    expect(steps[0].uses).toBe('xpertss/create-pull-request@PLACEHOLDER_SHA');
-    expect(steps[1].uses).toBe('xpertss/auto-commit@PLACEHOLDER_SHA');
+    // The internal pins are exact release versions, not placeholders or SHAs.
+    expect(CREATE_PULL_REQUEST_VERSION).toMatch(/^v\d+\.\d+\.\d+$/);
+    expect(AUTO_COMMIT_VERSION).toMatch(/^v\d+\.\d+\.\d+$/);
+    expect(steps[0].uses).toBe(
+      `xpertss/create-pull-request@${CREATE_PULL_REQUEST_VERSION}`,
+    );
+    expect(steps[1].uses).toBe(`xpertss/auto-commit@${AUTO_COMMIT_VERSION}`);
     expect(steps[2].uses).toBe('xpertss/semantic-pull-request@v0.1.0');
     // this package's own actions/checkout literal is redirected to the
     // current major line
@@ -41,5 +54,10 @@ describe('applyInternalActionOverrides', () => {
     expect(steps[4].uses).toBe('actions/checkout@v7');
     expect(steps[5].uses).toBe('actions/upload-artifact@v7');
     expect(steps[6].uses).toBe('actions/download-artifact@v8');
+    // projen's built-in create-pull-request ref (ActionRefs) is redirected by
+    // the same name-keyed entry as this package's own @v7 literal
+    expect(steps[7].uses).toBe(
+      `xpertss/create-pull-request@${CREATE_PULL_REQUEST_VERSION}`,
+    );
   });
 });

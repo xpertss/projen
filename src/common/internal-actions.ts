@@ -1,19 +1,20 @@
 import { github } from 'projen';
 
-// Placeholder ref for internal action repos that are not yet built and
-// released (AD-002 Phase 1, step 8). Entries resolve independently - a real
-// ref (a version tag) replaces the placeholder in each entry once that repo
-// is released. Landed with placeholders so the override mechanism is in place
-// while the untrusted workflows it retargets are non-gating (AD-002 Phase 0).
-const PLACEHOLDER_SHA = 'PLACEHOLDER_SHA';
+/** @internal - pinned release of `xpertss/create-pull-request`. */
+export const CREATE_PULL_REQUEST_VERSION = 'v0.0.2';
+
+/** @internal - pinned release of `xpertss/auto-commit`. */
+export const AUTO_COMMIT_VERSION = 'v0.0.0';
 
 // Name (without ref) -> ref override. Per projen's
 // GitHubActionsProvider.get() a name-keyed override redirects every ref
 // variant at once, so a single entry covers both this package's literals and
-// projen's built-in workflows (SHA refs) for the same action.
+// projen's built-in workflows (SHA refs) for the same action. Pins are exact
+// release versions (AD-001 consumer-pinning policy); upgrading a pin is a
+// one-line change here plus a re-synth.
 const ACTION_OVERRIDES: Record<string, string> = {
-  'peter-evans/create-pull-request': `xpertss/create-pull-request@${PLACEHOLDER_SHA}`,
-  'stefanzweifel/git-auto-commit-action': `xpertss/auto-commit@${PLACEHOLDER_SHA}`,
+  'peter-evans/create-pull-request': `xpertss/create-pull-request@${CREATE_PULL_REQUEST_VERSION}`,
+  'stefanzweifel/git-auto-commit-action': `xpertss/auto-commit@${AUTO_COMMIT_VERSION}`,
   'amannn/action-semantic-pull-request': 'xpertss/semantic-pull-request@v0.1.0',
 };
 

@@ -1,4 +1,4 @@
-import { JavaLibraryProject } from '../../src';
+import { AUTO_COMMIT_VERSION, JavaLibraryProject } from '../../src';
 import { synthSnapshot } from '../util';
 
 test('synthesizes pom.xml, build workflow, publish workflow, and code index by default', () => {
@@ -104,7 +104,8 @@ test('upgrade workflow is report-only; code index commit is redirected', () => {
   const commitStep = codeindex.jobs.codeindex.steps.find(
     (s: { name: string }) => s.name === 'Commit code index',
   );
-  expect(commitStep.uses).toBe('xpertss/auto-commit@PLACEHOLDER_SHA');
+  expect(commitStep.uses).toBe(`xpertss/auto-commit@${AUTO_COMMIT_VERSION}`);
+  expect(commitStep.with).toEqual({ commit_message: 'chore: update code index' });
 });
 
 test('attaches source and javadoc jars, single- and multi-module', () => {
