@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {
+  AUTO_COMMIT_VERSION,
   JavaAppProject,
   JavaLibraryProject,
   JavaMavenProject,
@@ -440,14 +441,65 @@ describe('workflows', () => {
     expect(JSON.stringify(upgrade)).not.toContain('pull-request');
   });
 
-  test('every uses: in Java output is a trusted actions/* ref', () => {
+  test('codeindex.yml indexes from the repo root into .xss/ and commits it straight to main', () => {
+    for (const project of [maven(), reactor()]) {
+      const snapshot = synthSnapshot(project);
+      expect(snapshot['.projen/tasks.json'].tasks.codeindex.steps).toEqual([
+        {
+          exec: "mkdir -p .xss && find . -path ./node_modules -prune -o -name target -prune -o -name '*.java' -print | sort > .xss/index.txt",
+        },
+      ]);
+
+      const codeindex = snapshot['.github/workflows/codeindex.yml'];
+      expect(codeindex.on.push).toEqual({ branches: ['main'] });
+      expect(codeindex.concurrency).toEqual({ 'group': 'codeindex', 'cancel-in-progress': true });
+      expect(codeindex.jobs.codeindex.permissions).toEqual({ contents: 'write' });
+
+      // F009 override: the third-party action is redirected to xpertss/*.
+      const commitStep = codeindex.jobs.codeindex.steps.find(
+        (s: { name: string }) => s.name === 'Commit code index',
+      );
+      expect(commitStep.uses).toBe(`xpertss/auto-commit@${AUTO_COMMIT_VERSION}`);
+      // A chore: commit of .xss/ only, losing a push race quietly; no token
+      // input, so the push uses GITHUB_TOKEN and starts no workflows.
+      expect(commitStep.with).toEqual({
+        commit_message: 'chore: update code index',
+        folder: '.xss',
+        if_behind: 'skip',
+      });
+      expect(commitStep.with.commit_message).toMatch(/^chore:/);
+      expect(JSON.stringify(codeindex)).not.toContain('PROJEN_GITHUB_TOKEN');
+    }
+  });
+
+  test('every Java type generates the code index; publishCodeIndex: false removes it', () => {
+    const types = [
+      (o: object) => new JavaMavenProject({ ...BASE, ...o }),
+      (o: object) => new JavaLibraryProject({ ...BASE, ...o }),
+      (o: object) => new JavaAppProject({ ...BASE, ...o }),
+      (o: object) => new JavaSpringBootProject({ ...BASE, ...o }),
+      (o: object) => new JavaServiceProject({ ...BASE, ...o }),
+    ];
+    for (const make of types) {
+      const on = synthSnapshot(make({}));
+      expect(on['.github/workflows/codeindex.yml']).toBeDefined();
+      expect(on['.projen/tasks.json'].tasks.codeindex).toBeDefined();
+
+      const off = synthSnapshot(make({ publishCodeIndex: false }));
+      expect(off['.github/workflows/codeindex.yml']).toBeUndefined();
+      expect(off['.projen/tasks.json'].tasks.codeindex).toBeUndefined();
+    }
+  });
+
+  test('every uses: in Java output is a trusted actions/* ref or a pinned first-party action', () => {
+    const firstParty = [`xpertss/auto-commit@${AUTO_COMMIT_VERSION}`];
     for (const project of [maven(), reactor(), new JavaSpringBootProject({ ...BASE })]) {
       const snapshot = synthSnapshot(project);
       for (const [file, content] of Object.entries(snapshot)) {
         if (file.startsWith('.github/workflows/')) {
           for (const job of Object.values((content as any).jobs) as any[]) {
             for (const step of job.steps ?? []) {
-              if (step.uses) {
+              if (step.uses && !firstParty.includes(step.uses)) {
                 expect(step.uses).toMatch(/^actions\/[a-z-]+@v\d+$/);
               }
             }

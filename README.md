@@ -10,24 +10,24 @@ Instead of hand-maintaining `pom.xml`, `cdk.json`, and GitHub workflows, you dec
 | --- | --- | --- | --- |
 | `CdkInfraProject` | Pure-infrastructure CDK stacks (CloudFront, Route53, SQS, API Gateway, Cognito, ECR/ECS for externally-built images) | - | `build` (PR checks), `deploy` (manual dispatch) |
 | `CdkAppProject` | Full TypeScript service behind API Gateway: infra + app source + database | - | `build`, `deploy`, `app-build` (PR checks) |
-| `JavaMavenProject` | Plain Maven project, single- or multi-module, no framework | - | `build`, `upgrade` (nightly report) |
-| `JavaLibraryProject` | Reusable Java library | Maven Central | `build`, `upgrade` (nightly report), `publish-maven-central`, `codeindex` |
-| `JavaAppProject` | GUI/TUI/CLI Java application | GitHub Packages | `build`, `upgrade` (nightly report), `publish-ghpackages` |
-| `JavaSpringBootProject` | Spring Boot on Maven, single- or multi-module, **no Docker** | - | `build`, `upgrade` (nightly report) |
-| `JavaServiceProject` | Spring Boot service deployed as a container | Docker Hub | `build`, `upgrade` (nightly report), `publish-docker`, `deploy-cdk` |
+| `JavaMavenProject` | Plain Maven project, single- or multi-module, no framework | - | `build`, `upgrade` (nightly report), `codeindex` |
+| `JavaLibraryProject` | Reusable Java library | Maven Central | `build`, `upgrade` (nightly report), `codeindex`, `publish-maven-central` |
+| `JavaAppProject` | GUI/TUI/CLI Java application | GitHub Packages | `build`, `upgrade` (nightly report), `codeindex`, `publish-ghpackages` |
+| `JavaSpringBootProject` | Spring Boot on Maven, single- or multi-module, **no Docker** | - | `build`, `upgrade` (nightly report), `codeindex` |
+| `JavaServiceProject` | Spring Boot service deployed as a container | Docker Hub | `build`, `upgrade` (nightly report), `codeindex`, `publish-docker`, `deploy-cdk` |
 | `GitHubActionProject` | Reusable GitHub Action or Workflow | GitHub Releases | `build`, `test-dogfood`, `sonar`, `release` |
 
 The Java types are layered, so pick the lowest layer that does what you need:
 
 ```text
 JavaMavenProject            java_maven         Maven only; single- or multi-module; any supported Java line
-├── JavaLibraryProject      java_library       + Maven Central publish, source/javadoc jars, code index
+├── JavaLibraryProject      java_library       + Maven Central publish, source/javadoc jars
 ├── JavaAppProject          java_app           + GitHub Packages publish
 └── JavaSpringBootProject   java_spring_boot   + Spring Boot BOM and executable-jar repackaging; no Docker/Flyway/CDK
     └── JavaServiceProject  java_service       + Docker publish, Flyway, CDK deploy hook (single-module)
 ```
 
-Every Java type targets a configurable Java line (`javaVersion`: `1.8`, `17`, `21` or `25`; see [Java version support](#java-version-support)), and every one except `JavaServiceProject` can be a multi-module Maven reactor (see [JavaMavenProject](#javamavenproject)).
+Every Java type targets a configurable Java line (`javaVersion`: `1.8`, `17`, `21` or `25`; see [Java version support](#java-version-support)), and every one except `JavaServiceProject` can be a multi-module Maven reactor (see [JavaMavenProject](#javamavenproject)). Every Java type also generates the code index (`codeindex.yml`).
 
 One foundation class is also exported for advanced use: `CdkTypescriptProject` (shared CDK + TypeScript base for the CDK types).
 
@@ -332,6 +332,7 @@ You get:
 - one Maven run per build. `npx projen build` synthesizes, then runs `mvn -B verify`: compile, unit tests (surefire), package, and `*IT` integration tests (failsafe). There is no `mvn deploy` and no `dist/`.
 - `.github/workflows/build.yml`: a PR build that installs the pinned Node toolchain (`npm ci`) and the project's JDK (`actions/setup-java`, Maven cache), then runs `npx projen build`. The Maven build itself never runs a Sonar step - SonarCloud scanning is a separate, opt-in `sonar.yml` (set `sonarHostUrl`). See [Adding CI jobs](#adding-ci-jobs-to-a-java-project) and [SonarCloud (opt-in)](#sonarcloud-opt-in).
 - `.github/workflows/upgrade.yml`: a nightly (03:00 UTC) **report** of available dependency and plugin updates in the job summary. It changes nothing, because every version comes from `.projenrc.ts`; apply an update there. Turn it off with `upgradeWorkflow: false`. The same report runs locally with `npx projen upgrade`.
+- `.github/workflows/codeindex.yml`: on push to `main`, regenerates `.xss/index.txt` (a sorted list of every `.java` file, across all modules) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no build, Sonar scan or release, but the workflow's bot must be allowed to push to `main`. A run that loses the push to a newer merge succeeds quietly, because the newer run regenerates the index. The same index builds locally with `npx projen codeindex`. Turn it off with `publishCodeIndex: false`.
 - the projen drift check, `LICENSE` (MIT by default), `.editorconfig`, and a generated `package.json` that pins the projen toolchain exactly.
 - no sample code, unless `sample: true` on a single-module project.
 
@@ -365,7 +366,6 @@ You get everything from [`JavaMavenProject`](#javamavenproject), so modules work
 
 - `maven-source-plugin` and `maven-javadoc-plugin`, attaching the `-sources`/`-javadoc` jars Maven Central requires. In a multi-module library every module attaches them.
 - `.github/workflows/publish-maven-central.yml` - manual dispatch running `mvn -B deploy -P release`. With `mavenCentralOidc: true` it uses Maven Central's OIDC trusted publishing (no GPG secrets needed); otherwise it expects the secrets `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE`, `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`.
-- `.github/workflows/codeindex.yml` - on push to `main`, generates a Java source index under `.cai/` covering every module (disable with `publishCodeIndex: false`).
 
 ### JavaSpringBootProject
 
@@ -641,6 +641,7 @@ Java project types (`JavaMavenProjectOptions` and everything built on it - `Java
 | `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
 | `editorconfig` | `true` | Write a projen-managed `.editorconfig` (also on the CDK and action types) |
 | `upgradeWorkflow` | `true` | Generate the nightly update report (`upgrade.yml`) |
+| `publishCodeIndex` | `true` | Generate the code index (`codeindex` task + `codeindex.yml`, committing `.xss/index.txt` to `main`); from `CommonCodeOptions` |
 | Sonar options | - | `sonarHostUrl`, `sonarOrganization`, `sonarTokenSecret`, `sonarPullRequestGate`, `sonarProjectKey` - SonarCloud is opt-in; see [SonarCloud (opt-in)](#sonarcloud-opt-in) |
 | `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
 | `springBootVersion` | newest Boot for `javaVersion` (Spring Boot types only) | Exact Spring Boot version: the BOM and `spring-boot-maven-plugin` |

@@ -1,3 +1,4 @@
+export * from './common/code-options';
 export * from './common/environment-options';
 export * from './common/projen-drift-check-workflow';
 export * from './common/sonar-options';

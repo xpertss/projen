@@ -1,7 +1,8 @@
+import { CommonCodeOptions } from '../common/code-options';
 import { EnvironmentOptions } from '../common/environment-options';
 import { SonarScanOptions } from '../common/sonar-options';
 
-export interface CommonJavaOptions extends SonarScanOptions {
+export interface CommonJavaOptions extends SonarScanOptions, CommonCodeOptions {
   readonly name: string;
   readonly groupId: string;
   readonly artifactId: string;
@@ -142,9 +143,6 @@ export interface JavaSpringBootProjectOptions extends CommonJavaOptions {
 export interface JavaLibraryProjectOptions extends CommonJavaOptions {
   /** Use Maven Central's OIDC trusted-publishing flow instead of secret-based GPG signing. */
   readonly mavenCentralOidc?: boolean;
-
-  /** @default true */
-  readonly publishCodeIndex?: boolean;
 }
 
 export interface CdkDeployHookOptions {

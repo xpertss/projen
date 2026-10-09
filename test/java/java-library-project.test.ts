@@ -1,4 +1,4 @@
-import { AUTO_COMMIT_VERSION, JavaLibraryProject } from '../../src';
+import { JavaLibraryProject } from '../../src';
 import { synthSnapshot } from '../util';
 
 test('synthesizes pom.xml, build workflow, publish workflow, and code index by default', () => {
@@ -36,19 +36,6 @@ test('default task re-runs the Node-side .projenrc.ts, not java.JavaProject\'s M
   expect(snapshot['pom.xml']).not.toContain('io.github.cdklabs');
 });
 
-test('code index can be opted out', () => {
-  const snapshot = synthSnapshot(
-    new JavaLibraryProject({
-      name: 'lib-test',
-      groupId: 'com.example',
-      artifactId: 'lib-test',
-      publishCodeIndex: false,
-    }),
-  );
-
-  expect(snapshot['.github/workflows/codeindex.yml']).toBeUndefined();
-});
-
 test('sonar is opt-in via sonarHostUrl: sonar.yml is generated, and the Maven build never runs a sonar step', () => {
   const withSonar = synthSnapshot(
     new JavaLibraryProject({
@@ -84,7 +71,7 @@ test('sonar is opt-in via sonarHostUrl: sonar.yml is generated, and the Maven bu
   );
 });
 
-test('upgrade workflow is report-only; code index commit is redirected', () => {
+test('upgrade workflow is report-only', () => {
   const snapshot = synthSnapshot(
     new JavaLibraryProject({
       name: 'lib-test',
@@ -98,14 +85,6 @@ test('upgrade workflow is report-only; code index commit is redirected', () => {
   const upgrade = snapshot['.github/workflows/upgrade.yml'];
   expect(upgrade.jobs.upgrade.permissions).toEqual({ contents: 'read' });
   expect(JSON.stringify(upgrade)).not.toContain('create-pull-request');
-
-  // F009 override: third-party actions are redirected to xpertss/*
-  const codeindex = snapshot['.github/workflows/codeindex.yml'];
-  const commitStep = codeindex.jobs.codeindex.steps.find(
-    (s: { name: string }) => s.name === 'Commit code index',
-  );
-  expect(commitStep.uses).toBe(`xpertss/auto-commit@${AUTO_COMMIT_VERSION}`);
-  expect(commitStep.with).toEqual({ commit_message: 'chore: update code index' });
 });
 
 test('attaches source and javadoc jars, single- and multi-module', () => {

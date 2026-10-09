@@ -1,5 +1,6 @@
 import { posix } from 'node:path';
 import { JsonFile, SampleDir, Task, github, java } from 'projen';
+import { CodeIndexWorkflow } from './components/code-index-workflow';
 import { MavenUpgradeReport } from './components/maven-upgrade-report';
 import {
   DEFAULT_MIN_MAVEN_VERSION,
@@ -52,8 +53,8 @@ const PROJEN_TYPES_VERSION: string = require('../../package.json').version;
  * - `npx projen build` synthesizes, then runs Maven once: `mvn -B verify`
  *   (unit tests via surefire, `*IT` tests via failsafe).
    * - CI: a PR build, the projen drift check, an optional SonarCloud scan
-   *   (`sonar.yml`, when `sonarHostUrl` is set), and a nightly report-only
-   *   update check.
+   *   (`sonar.yml`, when `sonarHostUrl` is set), a nightly report-only
+   *   update check, and the code index (`codeindex.yml`, on push to `main`).
  */
 export class JavaMavenProject extends github.GitHubProject {
   /** The root `pom.xml`. */
@@ -231,6 +232,10 @@ export class JavaMavenProject extends github.GitHubProject {
         task: this.upgradeTask,
         setupSteps: this.ciSetupSteps,
       });
+    }
+
+    if (options.publishCodeIndex ?? true) {
+      new CodeIndexWorkflow(this);
     }
   }
 

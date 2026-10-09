@@ -1,4 +1,3 @@
-import { CodeIndexWorkflow } from './components/code-index-workflow';
 import { MavenCentralPublish } from './components/maven-central-publish';
 import { JavaMavenProject } from './java-maven-base';
 import { MAVEN_JAVADOC_PLUGIN, MAVEN_SOURCE_PLUGIN } from './java-versions';
@@ -21,9 +20,5 @@ export class JavaLibraryProject extends JavaMavenProject {
     });
 
     new MavenCentralPublish(this, { mavenCentralOidc: options.mavenCentralOidc });
-
-    if (options.publishCodeIndex ?? true) {
-      new CodeIndexWorkflow(this);
-    }
   }
 }
