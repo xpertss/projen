@@ -1,7 +1,7 @@
 import { github } from 'projen';
 
 /** @internal - pinned release of `xpertss/create-pull-request`. */
-export const CREATE_PULL_REQUEST_VERSION = 'v0.0.3';
+export const CREATE_PULL_REQUEST_VERSION = 'v0.0.4';
 
 /** @internal - pinned release of `xpertss/auto-commit`. */
 export const AUTO_COMMIT_VERSION = 'v0.0.1';
