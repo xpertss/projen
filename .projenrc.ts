@@ -6,7 +6,7 @@ import {
 } from './src';
 const project = new cdk.JsiiProject({
   author: 'Chris Floersch',
-  authorAddress: 'cfloersch@xpertss.org',
+  authorAddress: 'product@xpertss.org',
   authorOrganization: false,
   description: 'Projen project types for CDK/TypeScript and Java/Maven projects',
   jsiiVersion: '~6.0.0',
