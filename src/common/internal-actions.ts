@@ -1,10 +1,10 @@
 import { github } from 'projen';
 
 /** @internal - pinned release of `xpertss/create-pull-request`. */
-export const CREATE_PULL_REQUEST_VERSION = 'v0.0.4';
+export const CREATE_PULL_REQUEST_VERSION = 'v0.0.5';
 
 /** @internal - pinned release of `xpertss/auto-commit`. */
-export const AUTO_COMMIT_VERSION = 'v0.0.1';
+export const AUTO_COMMIT_VERSION = 'v0.0.3';
 
 // Name (without ref) -> ref override. Per projen's
 // GitHubActionsProvider.get() a name-keyed override redirects every ref
