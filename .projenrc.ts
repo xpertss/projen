@@ -1,4 +1,4 @@
-import { cdk, javascript, ReleasableCommits } from 'projen';
+import { cdk, github, javascript, ReleasableCommits } from 'projen';
 import {
   ProjenDriftCheckWorkflow,
   WorkflowChangeNoticeWorkflow,
@@ -20,6 +20,11 @@ const project = new cdk.JsiiProject({
   githubOptions: { pullRequestLint: false },
   gitignore: ['.idea', '/spec/'],
   peerDeps: ['projen', 'constructs'],
+  // Authenticate core projen's own automation (self-mutation push, dependency-
+  // upgrade PR) with the org's `builder` GitHub App instead of a long-lived
+  // PAT (F020). Tokens are minted per-run and expire after an hour; commits
+  // and PRs are attributed to `builder[bot]`.
+  projenCredentials: github.GithubCredentials.fromApp(),
   projenrcTs: true,
   projenVersion: '0.103.25',
   releasableCommits: ReleasableCommits.featuresAndFixes(),

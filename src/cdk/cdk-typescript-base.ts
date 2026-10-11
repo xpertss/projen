@@ -1,6 +1,5 @@
 import { awscdk, github, javascript } from 'projen';
 import { CommonCdkOptions } from './options';
-import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { addEditorConfig } from '../common/editorconfig';
 import { EnvironmentOptions } from '../common/environment-options';
 import { applyInternalActionOverrides } from '../common/internal-actions';
@@ -73,9 +72,11 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
       packageManager: javascript.NodePackageManager.NPM,
       // Fail PR checks on drift instead of auto-committing projen's output.
       buildWorkflowOptions: { mutableBuild: false },
-      projenCredentials: github.GithubCredentials.fromPersonalAccessToken({
-        secret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
-      }),
+      // How core projen's own automation (the dependency-upgrade PR in
+      // `upgrade.yml`) authenticates. Defaults to the org's `builder`
+      // GitHub App; a consumer can override with a different App or a PAT.
+      projenCredentials:
+        options.projenCredentials ?? github.GithubCredentials.fromApp(),
     });
 
     // `.projenrc.ts` imports this package, so the generated repo has to

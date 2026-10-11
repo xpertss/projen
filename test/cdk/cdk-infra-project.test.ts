@@ -1,3 +1,4 @@
+import { github } from 'projen';
 import { CREATE_PULL_REQUEST_VERSION, CdkInfraProject } from '../../src';
 import { synthSnapshot } from '../util';
 
@@ -104,30 +105,72 @@ test('gitignore excludes JetBrains IDE state and /spec/', () => {
   expect(snapshot['.gitignore']).toContain('/spec/');
 });
 
-test('the deps-upgrade workflow opens the PR with the pinned internal action and the PAT', () => {
-  const defaultSecret = synthSnapshot(
+test('the deps-upgrade workflow mints a GitHub App token (default) and opens the PR with it', () => {
+  const snapshot = synthSnapshot(
     new CdkInfraProject({ name: 'infra-test', environments: [] }),
   );
-  const prStep = defaultSecret['.github/workflows/upgrade.yml'].jobs.pr.steps.find(
+  const prSteps = snapshot['.github/workflows/upgrade.yml'].jobs.pr.steps;
+
+  // Core projen emits a "Generate token" step (from the default
+  // `GithubCredentials.fromApp()`) at the top of the `pr` job; the Create
+  // Pull Request step consumes its output instead of reading a PAT secret.
+  const genToken = prSteps.find(
+    (s: { name: string }) => s.name === 'Generate token',
+  );
+  expect(genToken).toBeDefined();
+  expect(genToken.id).toBe('generate_token');
+  expect(genToken.with['app-id']).toBe('${{ secrets.PROJEN_APP_ID }}');
+  expect(genToken.with['private-key']).toBe('${{ secrets.PROJEN_APP_PRIVATE_KEY }}');
+
+  const prStep = prSteps.find(
     (s: { name: string }) => s.name === 'Create Pull Request',
   );
   expect(prStep.uses).toBe(
     `xpertss/create-pull-request@${CREATE_PULL_REQUEST_VERSION}`,
   );
-  expect(prStep.with.token).toBe('${{ secrets.PROJEN_GITHUB_TOKEN }}');
+  expect(prStep.with.token).toBe('${{ steps.generate_token.outputs.token }}');
+});
 
-  const overriddenSecret = synthSnapshot(
+test('projenCredentials: a custom App uses its own secret names; a PAT reverts to the PAT secret', () => {
+  const customApp = synthSnapshot(
     new CdkInfraProject({
       name: 'infra-test',
       environments: [],
-      gheTokenSecret: 'MY_GHE_TOKEN',
+      projenCredentials: github.GithubCredentials.fromApp({
+        appIdSecret: 'MY_APP_ID',
+        privateKeySecret: 'MY_APP_PRIVATE_KEY',
+      }),
     }),
   );
-  const overriddenStep =
-    overriddenSecret['.github/workflows/upgrade.yml'].jobs.pr.steps.find(
-      (s: { name: string }) => s.name === 'Create Pull Request',
-    );
-  expect(overriddenStep.with.token).toBe('${{ secrets.MY_GHE_TOKEN }}');
+  const customPrSteps = customApp['.github/workflows/upgrade.yml'].jobs.pr.steps;
+  const genToken = customPrSteps.find(
+    (s: { name: string }) => s.name === 'Generate token',
+  );
+  expect(genToken.with['app-id']).toBe('${{ secrets.MY_APP_ID }}');
+  expect(genToken.with['private-key']).toBe('${{ secrets.MY_APP_PRIVATE_KEY }}');
+  const prStep = customPrSteps.find(
+    (s: { name: string }) => s.name === 'Create Pull Request',
+  );
+  expect(prStep.with.token).toBe('${{ steps.generate_token.outputs.token }}');
+
+  // PAT fallback: no Generate token step; the token is the secret directly.
+  const pat = synthSnapshot(
+    new CdkInfraProject({
+      name: 'infra-test',
+      environments: [],
+      projenCredentials: github.GithubCredentials.fromPersonalAccessToken({
+        secret: 'MY_GHE_TOKEN',
+      }),
+    }),
+  );
+  const patPrSteps = pat['.github/workflows/upgrade.yml'].jobs.pr.steps;
+  expect(
+    patPrSteps.find((s: { name: string }) => s.name === 'Generate token'),
+  ).toBeUndefined();
+  const patPrStep = patPrSteps.find(
+    (s: { name: string }) => s.name === 'Create Pull Request',
+  );
+  expect(patPrStep.with.token).toBe('${{ secrets.MY_GHE_TOKEN }}');
 });
 
 test('.editorconfig is written by default and can be turned off', () => {

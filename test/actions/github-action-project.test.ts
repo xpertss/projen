@@ -15,7 +15,7 @@ function baseOptions() {
           name: 'Create PR (fresh)',
           fixtureSteps: ['echo "$(date -u +%Y%m%dT%H%M%SZ)" >> test/fixtures/dogfood-state.txt'],
           inputs: {
-            token: '${{ secrets.PROJEN_GITHUB_TOKEN }}',
+            token: '${{ steps.generate_token.outputs.token }}',
             branch: 'test/dogfood',
           },
           assertions: [
@@ -25,7 +25,7 @@ function baseOptions() {
         {
           name: 'Create PR (re-run, reuse)',
           inputs: {
-            token: '${{ secrets.PROJEN_GITHUB_TOKEN }}',
+            token: '${{ steps.generate_token.outputs.token }}',
             branch: 'test/dogfood',
           },
           assertions: [
@@ -203,7 +203,7 @@ test('test-dogfood.yml: scenario steps round-trip in order, cleanup always runs'
   const first = steps.find((s: any) => s.name === 'Create PR (fresh): run the action');
   expect(first.uses).toBe('./');
   expect(first.with).toEqual({
-    token: '${{ secrets.PROJEN_GITHUB_TOKEN }}',
+    token: '${{ steps.generate_token.outputs.token }}',
     branch: 'test/dogfood',
   });
   expect(first.id).toBe('create-pr-fresh-0');

@@ -1,3 +1,4 @@
+import { github } from 'projen';
 import { CommonCodeOptions } from '../common/code-options';
 import { EnvironmentOptions } from '../common/environment-options';
 import { SonarScanOptions } from '../common/sonar-options';
@@ -17,13 +18,12 @@ export interface CommonJavaOptions extends SonarScanOptions, CommonCodeOptions {
   readonly url?: string;
 
   /**
-   * Name of the secret holding the PAT that core projen's own automation
-   * uses (self-mutation push in `build.yml`, dependency-upgrade PR in
-   * `upgrade-main.yml`). The drift-check's PR comment no longer uses a
-   * secret - it runs on the default `GITHUB_TOKEN`.
-   * @default "PROJEN_GITHUB_TOKEN"
+   * How projen-generated workflows authenticate to the GitHub API.
+   *
+   * @default - GitHub App using the `PROJEN_APP_ID` and
+   *            `PROJEN_APP_PRIVATE_KEY` secrets
    */
-  readonly gheTokenSecret?: string;
+  readonly projenCredentials?: github.GithubCredentials;
 
   /**
    * Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.

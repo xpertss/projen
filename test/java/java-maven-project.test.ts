@@ -468,7 +468,6 @@ describe('workflows', () => {
         if_behind: 'skip',
       });
       expect(commitStep.with.commit_message).toMatch(/^chore:/);
-      expect(JSON.stringify(codeindex)).not.toContain('PROJEN_GITHUB_TOKEN');
     }
   });
 

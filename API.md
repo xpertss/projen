@@ -15594,9 +15594,9 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
@@ -15727,19 +15727,6 @@ Write a projen-managed `.editorconfig`.
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.CdkAppProjectOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CdkAppProjectOptions.property.license"></a>
 
 ```typescript
@@ -15763,6 +15750,19 @@ public readonly licensed: boolean;
 - *Default:* true
 
 Write a `LICENSE`.
+
+---
+
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.CdkAppProjectOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
 
 ---
 
@@ -15881,9 +15881,9 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
@@ -16012,19 +16012,6 @@ Write a projen-managed `.editorconfig`.
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.CdkInfraProjectOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CdkInfraProjectOptions.property.license"></a>
 
 ```typescript
@@ -16048,6 +16035,19 @@ public readonly licensed: boolean;
 - *Default:* true
 
 Write a `LICENSE`.
+
+---
+
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.CdkInfraProjectOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
 
 ---
 
@@ -16114,9 +16114,9 @@ const cdkTypescriptProjectOptions: CdkTypescriptProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | *No description.* |
 
 ---
@@ -16243,19 +16243,6 @@ Write a projen-managed `.editorconfig`.
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.license"></a>
 
 ```typescript
@@ -16279,6 +16266,19 @@ public readonly licensed: boolean;
 - *Default:* true
 
 Write a `LICENSE`.
+
+---
+
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
 
 ---
 
@@ -16316,9 +16316,9 @@ const commonCdkOptions: CommonCdkOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 
 ---
 
@@ -16444,19 +16444,6 @@ Write a projen-managed `.editorconfig`.
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.CommonCdkOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CommonCdkOptions.property.license"></a>
 
 ```typescript
@@ -16480,6 +16467,19 @@ public readonly licensed: boolean;
 - *Default:* true
 
 Write a `LICENSE`.
+
+---
+
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.CommonCdkOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
 
 ---
 
@@ -16544,7 +16544,6 @@ const commonJavaOptions: CommonJavaOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -16552,6 +16551,7 @@ const commonJavaOptions: CommonJavaOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
@@ -16732,19 +16732,6 @@ Its Java rule always follows
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.CommonJavaOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.CommonJavaOptions.property.javaDistribution"></a>
 
 ```typescript
@@ -16845,6 +16832,19 @@ public readonly pluginVersions: {[ key: string ]: string};
 - *Default:* the defaults for `javaVersion`
 
 Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions.
+
+---
+
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.CommonJavaOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
 
 ---
 
@@ -17718,7 +17718,6 @@ const javaAppProjectOptions: JavaAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -17726,6 +17725,7 @@ const javaAppProjectOptions: JavaAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
@@ -17907,19 +17907,6 @@ Its Java rule always follows
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaAppProjectOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaAppProjectOptions.property.javaDistribution"></a>
 
 ```typescript
@@ -18023,6 +18010,19 @@ Overrides for the plugin/BOM versions this package pins by default, keyed by `gr
 
 ---
 
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.JavaAppProjectOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
+
+---
+
 ##### `sample`<sup>Optional</sup> <a name="sample" id="@xpertss/projen-types.JavaAppProjectOptions.property.sample"></a>
 
 ```typescript
@@ -18114,7 +18114,6 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -18122,6 +18121,7 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
@@ -18303,19 +18303,6 @@ Its Java rule always follows
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.javaDistribution"></a>
 
 ```typescript
@@ -18419,6 +18406,19 @@ Overrides for the plugin/BOM versions this package pins by default, keyed by `gr
 
 ---
 
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
+
+---
+
 ##### `sample`<sup>Optional</sup> <a name="sample" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.sample"></a>
 
 ```typescript
@@ -18513,7 +18513,6 @@ const javaMavenProjectOptions: JavaMavenProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -18521,6 +18520,7 @@ const javaMavenProjectOptions: JavaMavenProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
@@ -18701,19 +18701,6 @@ Its Java rule always follows
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaMavenProjectOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaMavenProjectOptions.property.javaDistribution"></a>
 
 ```typescript
@@ -18817,6 +18804,19 @@ Overrides for the plugin/BOM versions this package pins by default, keyed by `gr
 
 ---
 
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.JavaMavenProjectOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
+
+---
+
 ##### `sample`<sup>Optional</sup> <a name="sample" id="@xpertss/projen-types.JavaMavenProjectOptions.property.sample"></a>
 
 ```typescript
@@ -18897,7 +18897,6 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -18905,6 +18904,7 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
@@ -19091,19 +19091,6 @@ Its Java rule always follows
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaServiceProjectOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaServiceProjectOptions.property.javaDistribution"></a>
 
 ```typescript
@@ -19204,6 +19191,19 @@ public readonly pluginVersions: {[ key: string ]: string};
 - *Default:* the defaults for `javaVersion`
 
 Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions.
+
+---
+
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.JavaServiceProjectOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
 
 ---
 
@@ -19370,7 +19370,6 @@ const javaSpringBootProjectOptions: JavaSpringBootProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -19378,6 +19377,7 @@ const javaSpringBootProjectOptions: JavaSpringBootProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.packaging">packaging</a></code> | <code>string</code> | Maven packaging of the root pom while the project has no modules. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.pluginVersions">pluginVersions</a></code> | <code>{[ key: string ]: string}</code> | Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sample">sample</a></code> | <code>boolean</code> | Write a starter `Main` class and test under the `groupId` package, if `src/` does not exist yet. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
@@ -19559,19 +19559,6 @@ Its Java rule always follows
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
-
----
-
 ##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaDistribution"></a>
 
 ```typescript
@@ -19672,6 +19659,19 @@ public readonly pluginVersions: {[ key: string ]: string};
 - *Default:* the defaults for `javaVersion`
 
 Overrides for the plugin/BOM versions this package pins by default, keyed by `groupId/artifactId`, e.g. `{ 'org.apache.maven.plugins/maven-surefire-plugin': '3.5.6' }`. Values must be exact versions.
+
+---
+
+##### `projenCredentials`<sup>Optional</sup> <a name="projenCredentials" id="@xpertss/projen-types.JavaSpringBootProjectOptions.property.projenCredentials"></a>
+
+```typescript
+public readonly projenCredentials: GithubCredentials;
+```
+
+- *Type:* projen.github.GithubCredentials
+- *Default:* GitHub App using the `PROJEN_APP_ID` and   `PROJEN_APP_PRIVATE_KEY` secrets
+
+How projen-generated workflows authenticate to the GitHub API.
 
 ---
 

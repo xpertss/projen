@@ -1,3 +1,4 @@
+import { github } from 'projen';
 import { EnvironmentOptions } from '../common/environment-options';
 import { SonarScanOptions } from '../common/sonar-options';
 
@@ -28,13 +29,12 @@ export interface CommonCdkOptions extends SonarScanOptions {
   readonly cdkVersion?: string;
 
   /**
-   * Name of the secret holding the PAT that core projen's own automation
-   * uses (self-mutation push in `build.yml`, dependency-upgrade PR in
-   * `upgrade-main.yml`). The drift-check's PR comment no longer uses a
-   * secret - it runs on the default `GITHUB_TOKEN`.
-   * @default "PROJEN_GITHUB_TOKEN"
+   * How projen-generated workflows authenticate to the GitHub API.
+   *
+   * @default - GitHub App using the `PROJEN_APP_ID` and
+   *            `PROJEN_APP_PRIVATE_KEY` secrets
    */
-  readonly gheTokenSecret?: string;
+  readonly projenCredentials?: github.GithubCredentials;
 
   /**
    * Write a `LICENSE`.

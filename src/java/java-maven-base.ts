@@ -18,7 +18,6 @@ import { MavenModule } from './maven/maven-module';
 import { MavenPom, assertExactVersion } from './maven/maven-pom';
 import { JavaMavenProjectOptions, MavenModuleOptions } from './options';
 import { NPM_CI_STEP, SETUP_NODE_STEP } from '../common/ci-steps';
-import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { addEditorConfig } from '../common/editorconfig';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { addLicenseFile } from '../common/license-file';
@@ -103,9 +102,11 @@ export class JavaMavenProject extends github.GitHubProject {
       // conventional-commit PR-title lint is added by the `GitHub` component
       // unless `githubOptions.pullRequestLint` is `false` (it defaults true).
       githubOptions: { pullRequestLint: false },
-      projenCredentials: github.GithubCredentials.fromPersonalAccessToken({
-        secret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
-      }),
+      // How core projen's own automation authenticates to the GitHub API.
+      // Defaults to the org's `builder` GitHub App; a consumer can override
+      // with a different App or a PAT.
+      projenCredentials:
+        options.projenCredentials ?? github.GithubCredentials.fromApp(),
     });
 
     for (const version of Object.values(options.pluginVersions ?? {})) {
