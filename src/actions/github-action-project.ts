@@ -7,7 +7,6 @@ import {
 } from 'projen';
 import { ActionBuildWorkflow } from './action-build-workflow';
 import { ActionDogfoodOptions, ActionDogfoodWorkflow } from './action-dogfood-workflow';
-import { DEFAULT_GHE_TOKEN_SECRET } from '../common/constants';
 import { addEditorConfig } from '../common/editorconfig';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { addLicenseFile } from '../common/license-file';
@@ -42,16 +41,6 @@ export interface GitHubActionProjectOptions
    * template and recorded in the private `package.json`.
    */
   readonly description?: string;
-
-  /**
-   * Name of the GitHub Actions secret holding the PAT used for
-   * projen-automation PR comments (F003) and the drift-check's PR comments.
-   * It is **not** wired into the dogfood automatically: a dogfood that invokes
-   * an action with a `token` input must reference this secret in the step's
-   * `inputs` (e.g. `token: '${{ secrets.PROJEN_GITHUB_TOKEN }}'`).
-   * @default "PROJEN_GITHUB_TOKEN"
-   */
-  readonly gheTokenSecret?: string;
 
   /**
    * The dogfood scenario (AD-001). What fixture state, what to assert, and
@@ -171,9 +160,7 @@ export class GitHubActionProject extends github.GitHubProject {
       addEditorConfig(this);
     }
 
-    new ProjenDriftCheckWorkflow(this, {
-      gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
-    });
+    new ProjenDriftCheckWorkflow(this);
     new WorkflowChangeNoticeWorkflow(this);
 
     addLicenseFile(this, {

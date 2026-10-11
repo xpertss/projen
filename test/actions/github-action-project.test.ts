@@ -376,16 +376,14 @@ test('license defaults to MIT and honors override', () => {
   expect(apache).toContain('Apache License');
 });
 
-test('gheTokenSecret overrides round-trip into F003/F009', () => {
-  const snapshot = synthSnapshot(
-    new GitHubActionProject({
-      ...baseOptions(),
-      gheTokenSecret: 'CUSTOM_TOKEN',
-    }),
-  );
+test('F003 drift-check needs no secret: it runs on the default job token', () => {
+  const snapshot = synthSnapshot(new GitHubActionProject(baseOptions()));
 
   const drift = snapshot['.github/workflows/projen-drift-check.yml'];
-  expect(JSON.stringify(drift)).toContain('CUSTOM_TOKEN');
+  expect(drift.jobs.check.env.GH_TOKEN).toBe('${{ github.token }}');
+  expect(drift.jobs.check.permissions['pull-requests']).toBe('write');
+  // No secret reference anywhere in the workflow - nothing to provision.
+  expect(JSON.stringify(drift)).not.toContain('secrets.');
 });
 
 test('no sonarHostUrl: sonar is opt-in, so sonar.yml is not generated', () => {

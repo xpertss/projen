@@ -15,6 +15,11 @@ import { noteWorkflowPurpose } from './workflow-purpose';
  * disable it within their own PR. That residual exposure is bounded by
  * `WorkflowChangeNoticeWorkflow` (Check 2), which is tamper-proof and flags
  * any touch to `.github/workflows/**`. See the F003 spec's Security section.
+ *
+ * The check itself needs no token. The best-effort drift report comment runs
+ * on the default `GITHUB_TOKEN` (job permission `pull-requests: write`), so
+ * no secret is required; fork PRs get a read-only token and simply miss the
+ * comment while the check itself still fails with `::error::` annotations.
  */
 export interface ProjenDriftCheckWorkflowOptions {
   /**
@@ -24,15 +29,6 @@ export interface ProjenDriftCheckWorkflowOptions {
    * @default "./node_modules/.bin/projen"
    */
   readonly projenCommand?: string;
-
-  /**
-   * GitHub secret holding a token with permission to comment on PRs, used
-   * for the best-effort drift report comment. The check still fails (and
-   * emits `::error::` annotations) without it, so fork PRs - which get no
-   * secrets - are only missing the extra comment.
-   * @default "PROJEN_GITHUB_TOKEN"
-   */
-  readonly gheTokenSecret?: string;
 
   /** @default "projen-drift-check" */
   readonly workflowName?: string;
@@ -55,7 +51,6 @@ export class ProjenDriftCheckWorkflow extends Component {
     }
 
     const projenCommand = options.projenCommand ?? './node_modules/.bin/projen';
-    const gheTokenSecret = options.gheTokenSecret ?? 'PROJEN_GITHUB_TOKEN';
 
     this.workflow = new github.GithubWorkflow(
       gh,
@@ -69,8 +64,11 @@ export class ProjenDriftCheckWorkflow extends Component {
     this.workflow.addJob('check', {
       name: 'Projen drift check',
       runsOn: ['ubuntu-latest'],
-      permissions: { contents: github.workflows.JobPermission.READ },
-      env: { GH_TOKEN: `\${{ secrets.${gheTokenSecret} }}` },
+      permissions: {
+        contents: github.workflows.JobPermission.READ,
+        pullRequests: github.workflows.JobPermission.WRITE,
+      },
+      env: { GH_TOKEN: '${{ github.token }}' },
       steps: [
         {
           name: 'Checkout',
@@ -102,7 +100,7 @@ if [ -n "$drifted" ]; then
         while IFS= read -r f; do echo "  - $f"; done <<< "$drifted"
         echo ""
         echo "To fix: revert the direct edits above, make the equivalent change in .projenrc.ts, then run npx projen and commit the regenerated output."
-      } | gh pr comment "$pr_number" --body-file - || echo "::warning::could not post PR comment (fork PR or missing token)"
+      } | gh pr comment "$pr_number" --body-file - || echo "::warning::could not post PR comment (fork PRs get a read-only token)"
     fi
   fi
   exit 1

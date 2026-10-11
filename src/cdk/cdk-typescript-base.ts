@@ -112,9 +112,7 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
     }
     applyInternalActionOverrides(gh);
 
-    new ProjenDriftCheckWorkflow(this, {
-      gheTokenSecret: options.gheTokenSecret ?? DEFAULT_GHE_TOKEN_SECRET,
-    });
+    new ProjenDriftCheckWorkflow(this);
     new WorkflowChangeNoticeWorkflow(this);
 
     if (options.sonarHostUrl) {

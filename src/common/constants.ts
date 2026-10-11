@@ -1,6 +1,7 @@
 /**
- * Default GitHub secret name used for projen's self-mutation/automation token,
- * unless a project overrides it via `gheTokenSecret`.
+ * Default GitHub secret name for core projen's own automation token
+ * (self-mutation push, dependency-upgrade PR), unless a project overrides it
+ * via `gheTokenSecret`. The drift-check's PR comment does not use a secret.
  */
 export const DEFAULT_GHE_TOKEN_SECRET = 'PROJEN_GITHUB_TOKEN';
 

@@ -15594,7 +15594,7 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
@@ -15735,6 +15735,8 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
 
 ---
 
@@ -15879,7 +15881,7 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
@@ -16019,6 +16021,8 @@ public readonly gheTokenSecret: string;
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
 
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
+
 ---
 
 ##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CdkInfraProjectOptions.property.license"></a>
@@ -16110,7 +16114,7 @@ const cdkTypescriptProjectOptions: CdkTypescriptProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | *No description.* |
@@ -16248,6 +16252,8 @@ public readonly gheTokenSecret: string;
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
 
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
+
 ---
 
 ##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.license"></a>
@@ -16310,7 +16316,7 @@ const commonCdkOptions: CommonCdkOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 
@@ -16447,6 +16453,8 @@ public readonly gheTokenSecret: string;
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
 
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
+
 ---
 
 ##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.CommonCdkOptions.property.license"></a>
@@ -16536,7 +16544,7 @@ const commonJavaOptions: CommonJavaOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -16732,6 +16740,8 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
 
 ---
 
@@ -17126,7 +17136,6 @@ const gitHubActionProjectOptions: GitHubActionProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.description">description</a></code> | <code>string</code> | One-line description of the action. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.dogfood">dogfood</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a></code> | The dogfood scenario (AD-001). |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
-| <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003) and the drift-check's PR comments. |
 | <code><a href="#@xpertss/projen-types.GitHubActionProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 
 ---
@@ -17639,23 +17648,6 @@ Write a projen-managed `.editorconfig`.
 
 ---
 
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.GitHubActionProjectOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-Name of the GitHub Actions secret holding the PAT used for projen-automation PR comments (F003) and the drift-check's PR comments.
-
-It is **not** wired into the dogfood automatically: a dogfood that invokes
-an action with a `token` input must reference this secret in the step's
-`inputs` (e.g. `token: '${{ secrets.PROJEN_GITHUB_TOKEN }}'`).
-
----
-
 ##### `license`<sup>Optional</sup> <a name="license" id="@xpertss/projen-types.GitHubActionProjectOptions.property.license"></a>
 
 ```typescript
@@ -17726,7 +17718,7 @@ const javaAppProjectOptions: JavaAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -17924,6 +17916,8 @@ public readonly gheTokenSecret: string;
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
 
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
+
 ---
 
 ##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaAppProjectOptions.property.javaDistribution"></a>
@@ -18120,7 +18114,7 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -18317,6 +18311,8 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
 
 ---
 
@@ -18517,7 +18513,7 @@ const javaMavenProjectOptions: JavaMavenProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -18714,6 +18710,8 @@ public readonly gheTokenSecret: string;
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
 
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
+
 ---
 
 ##### `javaDistribution`<sup>Optional</sup> <a name="javaDistribution" id="@xpertss/projen-types.JavaMavenProjectOptions.property.javaDistribution"></a>
@@ -18899,7 +18897,7 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -19101,6 +19099,8 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
 
 ---
 
@@ -19370,7 +19370,7 @@ const javaSpringBootProjectOptions: JavaSpringBootProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.description">description</a></code> | <code>string</code> | Project description, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
-| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
@@ -19567,6 +19567,8 @@ public readonly gheTokenSecret: string;
 
 - *Type:* string
 - *Default:* "PROJEN_GITHUB_TOKEN"
+
+Name of the secret holding the PAT that core projen's own automation uses (self-mutation push in `build.yml`, dependency-upgrade PR in `upgrade-main.yml`). The drift-check's PR comment no longer uses a secret - it runs on the default `GITHUB_TOKEN`.
 
 ---
 
@@ -20096,6 +20098,11 @@ disable it within their own PR. That residual exposure is bounded by
 `WorkflowChangeNoticeWorkflow` (Check 2), which is tamper-proof and flags
 any touch to `.github/workflows/**`. See the F003 spec's Security section.
 
+The check itself needs no token. The best-effort drift report comment runs
+on the default `GITHUB_TOKEN` (job permission `pull-requests: write`), so
+no secret is required; fork PRs get a read-only token and simply miss the
+comment while the check itself still fails with `::error::` annotations.
+
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.Initializer"></a>
 
 ```typescript
@@ -20108,26 +20115,8 @@ const projenDriftCheckWorkflowOptions: ProjenDriftCheckWorkflowOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.gheTokenSecret">gheTokenSecret</a></code> | <code>string</code> | GitHub secret holding a token with permission to comment on PRs, used for the best-effort drift report comment. |
 | <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.projenCommand">projenCommand</a></code> | <code>string</code> | The command that regenerates the project from `.projenrc.ts`. The default runs the projen that `npm ci` just installed (exact version from `package-lock.json`) rather than `npx`, which can install on demand. |
 | <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.workflowName">workflowName</a></code> | <code>string</code> | *No description.* |
-
----
-
-##### `gheTokenSecret`<sup>Optional</sup> <a name="gheTokenSecret" id="@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.gheTokenSecret"></a>
-
-```typescript
-public readonly gheTokenSecret: string;
-```
-
-- *Type:* string
-- *Default:* "PROJEN_GITHUB_TOKEN"
-
-GitHub secret holding a token with permission to comment on PRs, used for the best-effort drift report comment.
-
-The check still fails (and
-emits `::error::` annotations) without it, so fork PRs - which get no
-secrets - are only missing the extra comment.
 
 ---
 

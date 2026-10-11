@@ -13,6 +13,10 @@ describe('ProjenDriftCheckWorkflow', () => {
     expect(wf.on.pull_request).toBeDefined();
     expect(wf.jobs.check.name).toBe('Projen drift check');
     expect(wf.jobs.check.permissions.contents).toBe('read');
+    // The best-effort drift comment runs on the job token, so no secret is
+    // required; pull-requests write is what lets the comment through.
+    expect(wf.jobs.check.permissions['pull-requests']).toBe('write');
+    expect(wf.jobs.check.env.GH_TOKEN).toBe('${{ github.token }}');
 
     const step = wf.jobs.check.steps.find(
       (s: { name: string }) => s.name === 'Check for projen drift',
@@ -22,18 +26,18 @@ describe('ProjenDriftCheckWorkflow', () => {
     expect(step.run).toContain('git diff --name-only');
   });
 
-  test('honors custom projenCommand, token secret, and workflowName', () => {
+  test('honors custom projenCommand and workflowName', () => {
     const project = new typescript.TypeScriptProject({ name: 'drift-test' });
     new ProjenDriftCheckWorkflow(project, {
       projenCommand: 'npx projen synth',
-      gheTokenSecret: 'MY_TOKEN',
       workflowName: 'drift',
     });
     const snapshot = synthSnapshot(project);
 
     const wf = snapshot['.github/workflows/drift.yml'];
     expect(wf).toBeDefined();
-    expect(wf.jobs.check.env.GH_TOKEN).toBe('${{ secrets.MY_TOKEN }}');
+    // Always the job token - there is no secret option anymore.
+    expect(wf.jobs.check.env.GH_TOKEN).toBe('${{ github.token }}');
     const step = wf.jobs.check.steps.find(
       (s: { name: string }) => s.name === 'Check for projen drift',
     );

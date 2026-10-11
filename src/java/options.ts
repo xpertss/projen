@@ -16,7 +16,13 @@ export interface CommonJavaOptions extends SonarScanOptions, CommonCodeOptions {
   /** Project URL, written to the root pom. @default - none */
   readonly url?: string;
 
-  /** @default "PROJEN_GITHUB_TOKEN" */
+  /**
+   * Name of the secret holding the PAT that core projen's own automation
+   * uses (self-mutation push in `build.yml`, dependency-upgrade PR in
+   * `upgrade-main.yml`). The drift-check's PR comment no longer uses a
+   * secret - it runs on the default `GITHUB_TOKEN`.
+   * @default "PROJEN_GITHUB_TOKEN"
+   */
   readonly gheTokenSecret?: string;
 
   /**

@@ -34,7 +34,7 @@ One foundation class is also exported for advanced use: `CdkTypescriptProject` (
 All project types:
 
 - run a **drift check** in PR builds - a job that re-runs projen and fails if generated files were hand-edited. Edit `.projenrc.ts`, then run `npx projen`; never edit generated files directly.
-- use the GitHub secret `PROJEN_GITHUB_TOKEN` (a fine-grained PAT) for projen's automation. Override with `gheTokenSecret`.
+- use a fine-grained PAT stored in the GitHub secret `PROJEN_GITHUB_TOKEN` for core projen's own automation (self-mutation push, dependency-upgrade PRs) where a type generates those workflows. Override the secret name with `gheTokenSecret`. Nothing else - including the drift check's PR comment and the dogfood - needs a secret.
 - make all publishing/deploying **manual** (workflow_dispatch) rather than on every merge.
 - offer an opt-in SonarCloud scan (`sonar.yml`) on any type via `sonarHostUrl` (see [SonarCloud (opt-in)](#sonarcloud-opt-in)).
 
@@ -610,7 +610,7 @@ CDK project types (`CdkInfraProjectOptions` / `CdkAppProjectOptions`):
 | --- | --- | --- |
 | `name` | - (required) | Project name; must match `package.json` |
 | `cdkVersion` | `2.189.1` | AWS CDK version |
-| `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
+| `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | Name of the secret holding the PAT core projen's own automation uses (self-mutation, dependency-upgrade PR) |
 | `licensed` | `true` | Write a `LICENSE` |
 | `license` | `MIT` | SPDX identifier for the `LICENSE` |
 | `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
@@ -643,7 +643,7 @@ Java project types (`JavaMavenProjectOptions` and everything built on it - `Java
 | `upgradeWorkflow` | `true` | Generate the nightly update report (`upgrade.yml`) |
 | `publishCodeIndex` | `true` | Generate the code index (`codeindex` task + `codeindex.yml`, committing `.xss/index.txt` to `main`); from `CommonCodeOptions` |
 | Sonar options | - | `sonarHostUrl`, `sonarOrganization`, `sonarTokenSecret`, `sonarPullRequestGate`, `sonarProjectKey` - SonarCloud is opt-in; see [SonarCloud (opt-in)](#sonarcloud-opt-in) |
-| `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT |
+| `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | Name of the secret holding the PAT core projen's own automation uses (self-mutation, dependency-upgrade PR) |
 | `springBootVersion` | newest Boot for `javaVersion` (Spring Boot types only) | Exact Spring Boot version: the BOM and `spring-boot-maven-plugin` |
 | `cdkDeployTargetRepo` | - (service only; `deploy-cdk.yml` fails until set) | Companion CDK repo (`owner/repo`) whose `deploy.yml` the deploy hook dispatches |
 | `cdkDeployHook` | `true` (service only) | Whether to generate `deploy-cdk.yml` at all |
@@ -698,7 +698,6 @@ Plain strings (`'dev'`) are shorthand for `{ name: 'dev' }`.
 | `dogfood` | - (a `test-dogfood.yml` that fails until you declare one) | `ActionDogfoodOptions` - the scenario that exercises the action end-to-end via `uses: ./` |
 | `license` | `MIT` | SPDX identifier for the generated `LICENSE` |
 | `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
-| `gheTokenSecret` | `PROJEN_GITHUB_TOKEN` | GitHub secret holding projen's PAT (drift-check PR comments); a dogfood that passes a `token` input must reference this secret in the step's `inputs` |
 
 `ActionDogfoodOptions`/`ActionDogfoodStep` - the dogfood scenario (`test-dogfood.yml`):
 
@@ -749,7 +748,7 @@ Requires the `SONAR_TOKEN` secret (rename it with `sonarTokenSecret`).
 
 | Secret | Used by | Notes |
 | --- | --- | --- |
-| `PROJEN_GITHUB_TOKEN` | all types | PAT for projen's self-mutation/automation; override via `gheTokenSecret` |
+| `PROJEN_GITHUB_TOKEN` | CDK/Java types (not the action types) | PAT for core projen's self-mutation and dependency-upgrade PRs; override via `gheTokenSecret` |
 | `SONAR_TOKEN` | any type with `sonarHostUrl` set | SonarCloud scan in `sonar.yml`; override the secret name via `sonarTokenSecret` |
 | `DOCKER_USERNAME` / `DOCKER_PASSWORD` | `JavaServiceProject` | Docker image push |
 | `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE`, `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD` | `JavaLibraryProject` without `mavenCentralOidc` | Not needed with OIDC trusted publishing |
