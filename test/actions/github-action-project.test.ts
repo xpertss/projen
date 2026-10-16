@@ -258,6 +258,63 @@ test('dogfood step id: explicit id overrides the default slug, so assertions can
   expect(step.id).toBe('committed-check');
 });
 
+test('appToken: the job mints a short-lived GitHub App token and authenticates every shell step via GH_TOKEN', () => {
+  const options = baseOptions();
+  (options.dogfood as any).appToken = {};
+
+  const dogfood = synthSnapshot(new GitHubActionProject(options))[
+    '.github/workflows/test-dogfood.yml'
+  ];
+  const steps = dogfood.jobs.dogfood.steps;
+
+  const mint = steps.find((s: any) => s.name === 'Generate GitHub App token');
+  expect(mint).toBeDefined();
+  // Minted right after checkout, before the first scenario step
+  expect(steps[0].name).toBe('Checkout');
+  expect(steps[1]).toBe(mint);
+  expect(mint.id).toBe('token');
+  expect(mint.uses).toBe('actions/create-github-app-token@v1');
+  expect(mint.with).toEqual({
+    'app-id': '${{ secrets.PROJEN_APP_ID }}',
+    'private-key': '${{ secrets.PROJEN_APP_PRIVATE_KEY }}',
+  });
+
+  // Every shell step (fixture, assert, cleanup) gets the token via GH_TOKEN
+  const shellSteps = steps.filter((s: any) => s.run);
+  expect(shellSteps.length).toBeGreaterThan(0);
+  for (const s of shellSteps) {
+    expect(s.env.GH_TOKEN).toBe('${{ steps.token.outputs.token }}');
+  }
+  // The `uses: ./` invocation steps are untouched - the action's inputs
+  // reference the mint step's output explicitly
+  const usesSteps = steps.filter((st: any) => st.uses);
+  for (const st of usesSteps) {
+    expect(st.env).toBeUndefined();
+  }
+});
+
+test('appToken: custom secrets and step id round-trip', () => {
+  const options = baseOptions();
+  (options.dogfood as any).appToken = {
+    appIdSecret: 'MY_APP_ID',
+    privateKeySecret: 'MY_APP_KEY',
+    stepId: 'builder',
+  };
+
+  const dogfood = synthSnapshot(new GitHubActionProject(options))[
+    '.github/workflows/test-dogfood.yml'
+  ];
+  const steps = dogfood.jobs.dogfood.steps;
+  const mint = steps.find((s: any) => s.name === 'Generate GitHub App token');
+  expect(mint.id).toBe('builder');
+  expect(mint.with).toEqual({
+    'app-id': '${{ secrets.MY_APP_ID }}',
+    'private-key': '${{ secrets.MY_APP_KEY }}',
+  });
+  const assertStep = steps.find((s: any) => s.name.includes(': assert'));
+  expect(assertStep.env.GH_TOKEN).toBe('${{ steps.builder.outputs.token }}');
+});
+
 test('sonar.yml: no marketplace action, explicit inclusions, quality gate wait, pull_request toggle', () => {
   const withGate = synthSnapshot(new GitHubActionProject(baseOptions()))[
     '.github/workflows/sonar.yml'

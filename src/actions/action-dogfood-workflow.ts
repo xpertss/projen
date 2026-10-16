@@ -58,6 +58,45 @@ function slug(name: string, index: number): string {
   return `${base || 'step'}-${index}`;
 }
 
+/**
+ * Mint a short-lived GitHub App token at the start of the dogfood job (via
+ * `actions/create-github-app-token`) instead of running on the built-in
+ * `github.token`. Required for any scenario whose load-bearing behavior the
+ * Actions app cannot perform: the GitHub Actions app is platform-forbidden
+ * from creating or approving pull requests
+ * (`GraphQL: GitHub Actions is not permitted to create or approve pull
+ * requests`), so a `uses: ./` call that creates a PR must run under a
+ * different identity. It is also the org's standing credential for machine
+ * automation (F020 builder-app-migration): a short-lived, revocable app
+ * token instead of a long-lived PAT.
+ *
+ * The minted token is passed to the action explicitly, e.g.
+ * `token: ${{ steps.token.outputs.token }}`, and exposed to every shell step
+ * in the job (fixture, assert, cleanup) as `GH_TOKEN`: the org's runners do
+ * not inject the `GITHUB_TOKEN` environment variable, so any `gh` call in a
+ * shell step would be unauthenticated without it.
+ */
+export interface ActionDogfoodAppTokenOptions {
+  /**
+   * Name of the org-level secret holding the GitHub App's ID.
+   * @default "PROJEN_APP_ID"
+   */
+  readonly appIdSecret?: string;
+
+  /**
+   * Name of the org-level secret holding the GitHub App's private key.
+   * @default "PROJEN_APP_PRIVATE_KEY"
+   */
+  readonly privateKeySecret?: string;
+
+  /**
+   * Step id of the mint step, so scenario `inputs` can reference the token
+   * via `${{ steps.<stepId>.outputs.token }}`.
+   * @default "token"
+   */
+  readonly stepId?: string;
+}
+
 export interface ActionDogfoodOptions {
   /** One or more scenario steps, run in order, in the dogfood job. */
   readonly scenario: ActionDogfoodStep[];
@@ -69,6 +108,16 @@ export interface ActionDogfoodOptions {
    * deleted ref) does not fail the job.
    */
   readonly cleanup: string[];
+
+  /**
+   * Mint a short-lived GitHub App token for the job (see
+   * `ActionDogfoodAppTokenOptions`) - needed when the scenario's action must
+   * act under an identity other than the Actions app (e.g. create pull
+   * requests) or authenticate `gh` calls in the shell steps.
+   *
+   * @default - the job runs on the workflow's built-in `github.token`
+   */
+  readonly appToken?: ActionDogfoodAppTokenOptions;
 }
 
 // The stand-in scenario used when a project declares no `dogfood` at all
@@ -92,6 +141,11 @@ const UNCONFIGURED_STEPS: string[] = [
  * Omitting `options` generates the workflow with a single failing step (see
  * `UNCONFIGURED_STEPS`). A *partially* declared dogfood is still a synth
  * error: if you wrote a scenario by hand, you can write its cleanup too.
+ *
+ * With `appToken` (see `ActionDogfoodAppTokenOptions`), the job mints a
+ * short-lived GitHub App token first: the Actions app token cannot create or
+ * approve pull requests, and the org's runners do not inject the
+ * `GITHUB_TOKEN` env var, so shell steps authenticate `gh` via `GH_TOKEN`.
  */
 export class ActionDogfoodWorkflow extends Component {
   public readonly workflow: github.GithubWorkflow;
@@ -117,6 +171,17 @@ export class ActionDogfoodWorkflow extends Component {
       );
     }
 
+    // When a GitHub App token is minted, every shell step authenticates `gh`
+    // with it via GH_TOKEN - the org's runners do not inject the
+    // GITHUB_TOKEN env var, so without this the gh CLI would be
+    // unauthenticated. The `uses: ./` invocation gets the token explicitly
+    // through its inputs (the caller references the mint step's output).
+    const appToken = options?.appToken;
+    const tokenStepId = appToken ? (appToken.stepId ?? 'token') : undefined;
+    const ghTokenEnv = tokenStepId
+      ? { GH_TOKEN: `\${{ steps.${tokenStepId}.outputs.token }}` }
+      : undefined;
+
     const steps: github.workflows.JobStep[] = options
       ? [github.WorkflowSteps.checkout()]
       : [
@@ -126,11 +191,24 @@ export class ActionDogfoodWorkflow extends Component {
         },
       ];
 
+    if (appToken) {
+      steps.push({
+        name: 'Generate GitHub App token',
+        id: tokenStepId,
+        uses: 'actions/create-github-app-token@v1',
+        with: {
+          'app-id': `\${{ secrets.${appToken.appIdSecret ?? 'PROJEN_APP_ID'} }}`,
+          'private-key': `\${{ secrets.${appToken.privateKeySecret ?? 'PROJEN_APP_PRIVATE_KEY'} }}`,
+        },
+      });
+    }
+
     (options?.scenario ?? []).forEach((step, index) => {
       if (step.fixtureSteps && step.fixtureSteps.length > 0) {
         steps.push({
           name: `${step.name}: fixture`,
           run: step.fixtureSteps.join('\n'),
+          ...(ghTokenEnv ? { env: ghTokenEnv } : {}),
         });
       }
 
@@ -145,6 +223,7 @@ export class ActionDogfoodWorkflow extends Component {
       steps.push({
         name: `${step.name}: assert`,
         run: ['set -euo pipefail', ...step.assertions].join('\n'),
+        ...(ghTokenEnv ? { env: ghTokenEnv } : {}),
       });
     });
 
@@ -153,6 +232,7 @@ export class ActionDogfoodWorkflow extends Component {
         name: 'Cleanup',
         if: 'always()',
         run: options.cleanup.join('\n'),
+        ...(ghTokenEnv ? { env: ghTokenEnv } : {}),
       });
     }
 

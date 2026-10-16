@@ -268,6 +268,11 @@ Omitting `options` generates the workflow with a single failing step (see
 `UNCONFIGURED_STEPS`). A *partially* declared dogfood is still a synth
 error: if you wrote a scenario by hand, you can write its cleanup too.
 
+With `appToken` (see `ActionDogfoodAppTokenOptions`), the job mints a
+short-lived GitHub App token first: the Actions app token cannot create or
+approve pull requests, and the org's runners do not inject the
+`GITHUB_TOKEN` env var, so shell steps authenticate `gh` via `GH_TOKEN`.
+
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionDogfoodWorkflow.Initializer"></a>
 
 ```typescript
@@ -15432,6 +15437,73 @@ public readonly workflow: GithubWorkflow;
 
 ## Structs <a name="Structs" id="Structs"></a>
 
+### ActionDogfoodAppTokenOptions <a name="ActionDogfoodAppTokenOptions" id="@xpertss/projen-types.ActionDogfoodAppTokenOptions"></a>
+
+Mint a short-lived GitHub App token at the start of the dogfood job (via `actions/create-github-app-token`) instead of running on the built-in `github.token`. Required for any scenario whose load-bearing behavior the Actions app cannot perform: the GitHub Actions app is platform-forbidden from creating or approving pull requests (`GraphQL: GitHub Actions is not permitted to create or approve pull requests`), so a `uses: ./` call that creates a PR must run under a different identity. It is also the org's standing credential for machine automation (F020 builder-app-migration): a short-lived, revocable app token instead of a long-lived PAT.
+
+The minted token is passed to the action explicitly, e.g.
+`token: ${{ steps.token.outputs.token }}`, and exposed to every shell step
+in the job (fixture, assert, cleanup) as `GH_TOKEN`: the org's runners do
+not inject the `GITHUB_TOKEN` environment variable, so any `gh` call in a
+shell step would be unauthenticated without it.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.ActionDogfoodAppTokenOptions.Initializer"></a>
+
+```typescript
+import { ActionDogfoodAppTokenOptions } from '@xpertss/projen-types'
+
+const actionDogfoodAppTokenOptions: ActionDogfoodAppTokenOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodAppTokenOptions.property.appIdSecret">appIdSecret</a></code> | <code>string</code> | Name of the org-level secret holding the GitHub App's ID. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodAppTokenOptions.property.privateKeySecret">privateKeySecret</a></code> | <code>string</code> | Name of the org-level secret holding the GitHub App's private key. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodAppTokenOptions.property.stepId">stepId</a></code> | <code>string</code> | Step id of the mint step, so scenario `inputs` can reference the token via `${{ steps.<stepId>.outputs.token }}`. |
+
+---
+
+##### `appIdSecret`<sup>Optional</sup> <a name="appIdSecret" id="@xpertss/projen-types.ActionDogfoodAppTokenOptions.property.appIdSecret"></a>
+
+```typescript
+public readonly appIdSecret: string;
+```
+
+- *Type:* string
+- *Default:* "PROJEN_APP_ID"
+
+Name of the org-level secret holding the GitHub App's ID.
+
+---
+
+##### `privateKeySecret`<sup>Optional</sup> <a name="privateKeySecret" id="@xpertss/projen-types.ActionDogfoodAppTokenOptions.property.privateKeySecret"></a>
+
+```typescript
+public readonly privateKeySecret: string;
+```
+
+- *Type:* string
+- *Default:* "PROJEN_APP_PRIVATE_KEY"
+
+Name of the org-level secret holding the GitHub App's private key.
+
+---
+
+##### `stepId`<sup>Optional</sup> <a name="stepId" id="@xpertss/projen-types.ActionDogfoodAppTokenOptions.property.stepId"></a>
+
+```typescript
+public readonly stepId: string;
+```
+
+- *Type:* string
+- *Default:* "token"
+
+Step id of the mint step, so scenario `inputs` can reference the token via `${{ steps.<stepId>.outputs.token }}`.
+
+---
+
 ### ActionDogfoodOptions <a name="ActionDogfoodOptions" id="@xpertss/projen-types.ActionDogfoodOptions"></a>
 
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.ActionDogfoodOptions.Initializer"></a>
@@ -15448,6 +15520,7 @@ const actionDogfoodOptions: ActionDogfoodOptions = { ... }
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions.property.cleanup">cleanup</a></code> | <code>string[]</code> | Shell cleanup, run once at the end with `if: always()` so repeated runs start clean. |
 | <code><a href="#@xpertss/projen-types.ActionDogfoodOptions.property.scenario">scenario</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodStep">ActionDogfoodStep</a>[]</code> | One or more scenario steps, run in order, in the dogfood job. |
+| <code><a href="#@xpertss/projen-types.ActionDogfoodOptions.property.appToken">appToken</a></code> | <code><a href="#@xpertss/projen-types.ActionDogfoodAppTokenOptions">ActionDogfoodAppTokenOptions</a></code> | Mint a short-lived GitHub App token for the job (see `ActionDogfoodAppTokenOptions`) - needed when the scenario's action must act under an identity other than the Actions app (e.g. create pull requests) or authenticate `gh` calls in the shell steps. |
 
 ---
 
@@ -15476,6 +15549,19 @@ public readonly scenario: ActionDogfoodStep[];
 - *Type:* <a href="#@xpertss/projen-types.ActionDogfoodStep">ActionDogfoodStep</a>[]
 
 One or more scenario steps, run in order, in the dogfood job.
+
+---
+
+##### `appToken`<sup>Optional</sup> <a name="appToken" id="@xpertss/projen-types.ActionDogfoodOptions.property.appToken"></a>
+
+```typescript
+public readonly appToken: ActionDogfoodAppTokenOptions;
+```
+
+- *Type:* <a href="#@xpertss/projen-types.ActionDogfoodAppTokenOptions">ActionDogfoodAppTokenOptions</a>
+- *Default:* the job runs on the workflow's built-in `github.token`
+
+Mint a short-lived GitHub App token for the job (see `ActionDogfoodAppTokenOptions`) - needed when the scenario's action must act under an identity other than the Actions app (e.g. create pull requests) or authenticate `gh` calls in the shell steps.
 
 ---
 
