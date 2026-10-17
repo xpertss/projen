@@ -248,8 +248,33 @@ export class ActionDogfoodWorkflow extends Component {
       // a cron that always fails is just a daily notification nobody reads.
       ...(options ? { schedule: [{ cron: NIGHTLY_DOGFOOD_SCHEDULE }] } : {}),
     });
+
+    // Self-trigger guard: a scenario whose action pushes a dedicated test
+    // branch and opens a PR against `main` would otherwise re-trigger this
+    // workflow on its own PR (`opened`, then `synchronize` on every
+    // re-push) - and since every run pushes a fresh fixture commit, the
+    // chain never terminates. `github.head_ref` is only populated on
+    // pull_request events, so the first disjunct keeps dispatch and cron
+    // runs (head_ref empty) unaffected. Branch values that are expressions
+    // cannot be compared statically, so they are excluded from the guard.
+    const selfTriggerBranches = [
+      ...new Set(
+        (options?.scenario ?? []).flatMap((s) => {
+          const branch = s.inputs?.branch;
+          return branch && !branch.includes('${{') ? [branch] : [];
+        }),
+      ),
+    ];
+    const selfTriggerGuard =
+      selfTriggerBranches.length === 1
+        ? `github.event_name != 'pull_request' || github.head_ref != '${selfTriggerBranches[0]}'`
+        : selfTriggerBranches.length > 1
+          ? `github.event_name != 'pull_request' || !contains(fromJSON('${JSON.stringify(selfTriggerBranches)}'), github.head_ref)`
+          : undefined;
+
     this.workflow.addJob('dogfood', {
       runsOn: ['ubuntu-latest'],
+      ...(selfTriggerGuard ? { if: selfTriggerGuard } : {}),
       permissions: options
         ? {
           contents: github.workflows.JobPermission.WRITE,

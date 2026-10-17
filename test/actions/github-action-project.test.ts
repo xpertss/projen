@@ -221,6 +221,64 @@ test('test-dogfood.yml: scenario steps round-trip in order, cleanup always runs'
   expect(cleanup.run).toContain('gh pr close');
 });
 
+test('test-dogfood.yml: the job skips pull_requests from its own test branch, so the dogfood PR cannot re-trigger the dogfood run', () => {
+  const dogfood = synthSnapshot(new GitHubActionProject(baseOptions()))[
+    '.github/workflows/test-dogfood.yml'
+  ];
+
+  // The scenario pushes to `test/dogfood` and opens a PR against `main` -
+  // exactly what the pull_request trigger watches. Without the guard, the
+  // dogfood run's own PR re-triggers the workflow (opened, then
+  // synchronize on every re-push), and since every run pushes a fresh
+  // fixture commit the chain never terminates. The guard must still let
+  // dispatch/cron (head_ref empty) and foreign PRs run: the expression is
+  // a disjunction on event name, not a blanket branch filter.
+  expect(dogfood.jobs.dogfood.if).toBe(
+    "github.event_name != 'pull_request' || github.head_ref != 'test/dogfood'",
+  );
+});
+
+test('test-dogfood.yml: several distinct test branches guard with contains()', () => {
+  const options = baseOptions();
+  (options.dogfood.scenario[0] as any).inputs.branch = 'test/one';
+  (options.dogfood.scenario[1] as any).inputs.branch = 'test/two';
+
+  const dogfood = synthSnapshot(new GitHubActionProject(options))[
+    '.github/workflows/test-dogfood.yml'
+  ];
+  expect(dogfood.jobs.dogfood.if).toBe(
+    "github.event_name != 'pull_request' || !contains(fromJSON('[\"test/one\",\"test/two\"]'), github.head_ref)",
+  );
+});
+
+test('test-dogfood.yml: a branch input that is an expression cannot be guarded statically and is skipped', () => {
+  const options = baseOptions();
+  (options.dogfood.scenario[0] as any).inputs.branch = 'test/${{ github.run_id }}';
+  (options.dogfood.scenario[1] as any).inputs.branch = 'test/fixed';
+
+  const dogfood = synthSnapshot(new GitHubActionProject(options))[
+    '.github/workflows/test-dogfood.yml'
+  ];
+  // Only the static branch remains in the guard.
+  expect(dogfood.jobs.dogfood.if).toBe(
+    "github.event_name != 'pull_request' || github.head_ref != 'test/fixed'",
+  );
+});
+
+test('test-dogfood.yml: no static branch input - no self-trigger guard', () => {
+  const options = {
+    name: 'create-pull-request',
+    dogfood: {
+      scenario: [{ name: 'Run', assertions: ['true'] }],
+      cleanup: ['true'],
+    },
+  };
+  const dogfood = synthSnapshot(new GitHubActionProject(options as any))[
+    '.github/workflows/test-dogfood.yml'
+  ];
+  expect(dogfood.jobs.dogfood.if).toBeUndefined();
+});
+
 test('dogfood assert step runs under set -euo pipefail so a failing assertion is not masked; cleanup stays best-effort', () => {
   const options = {
     name: 'create-pull-request',
