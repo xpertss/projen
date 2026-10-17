@@ -38,30 +38,30 @@
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2",
     "@types/jest": "^30.0.0",
-    "@types/node": "^26.5.1",
+    "@types/node": "^26.6.5",
     "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^8",
     "commit-and-tag-version": "^13",
-    "constructs": "^10.0.0",
+    "constructs": "^10.8.1",
     "eslint": "^9",
     "eslint-import-resolver-typescript": "^4.4.5",
     "eslint-plugin-import": "^2.32.0",
-    "jest": "^30.5.1",
+    "jest": "^30.5.2",
     "jest-junit": "^17",
     "jsii": "~6.0.0",
-    "jsii-diff": "^1.140.0",
+    "jsii-diff": "^1.141.0",
     "jsii-docgen": "^10.5.0",
-    "jsii-pacmak": "^1.140.0",
+    "jsii-pacmak": "^1.141.0",
     "jsii-rosetta": "~6.0.0",
-    "projen": "^0.103.22",
-    "ts-jest": "^29.4.12",
+    "projen": "^0.104.8",
+    "ts-jest": "^29.4.15",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
-    "yaml": "^2.9.0"
+    "yaml": "^2.9.1"
   },
   "peerDependencies": {
     "constructs": "^10.8.1",
-    "projen": "^0.103.22"
+    "projen": "^0.104.8"
   },
   "keywords": [
     "aws",
