@@ -38,8 +38,8 @@ const JAVA_BASE = {
 
 /** [label, make] */
 const TYPES: Array<[string, () => any]> = [
-  ['CdkInfraProject', () => new CdkInfraProject({ name: 'cdk-creds', environments: [] })],
-  ['CdkAppProject', () => new CdkAppProject({ name: 'cdk-app-creds', environments: [] })],
+  ['CdkInfraProject', () => new CdkInfraProject({ name: 'cdk-creds' })],
+  ['CdkAppProject', () => new CdkAppProject({ name: 'cdk-app-creds' })],
   ['JavaMavenProject', () => new JavaMavenProject(JAVA_BASE)],
   ['JavaSpringBootProject', () => new JavaSpringBootProject(JAVA_BASE)],
   ['JavaServiceProject', () => new JavaServiceProject(JAVA_BASE)],
@@ -70,8 +70,8 @@ test('every project type: no generated file references the old PROJEN_GITHUB_TOK
 // types emit no such PR, so this assertion applies to the CDK types alone.
 test('CDK types: the core-projen upgrade PR is minted with a GitHub App token', () => {
   for (const make of [
-    () => new CdkInfraProject({ name: 'cdk-creds', environments: [] }),
-    () => new CdkAppProject({ name: 'cdk-app-creds', environments: [] }),
+    () => new CdkInfraProject({ name: 'cdk-creds' }),
+    () => new CdkAppProject({ name: 'cdk-app-creds' }),
   ]) {
     const upgrade = synthSnapshot(make())['.github/workflows/upgrade.yml'];
     const prSteps = upgrade.jobs.pr.steps;

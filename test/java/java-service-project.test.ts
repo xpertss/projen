@@ -54,6 +54,23 @@ test('no cdkDeployTargetRepo still synthesizes - deploy-cdk.yml fails loudly whe
   expect(run).not.toContain('createWorkflowDispatch');
 });
 
+test('deploy-cdk.yml dispatches the companion deploy.yml on main with no inputs', () => {
+  const deploy = synthSnapshot(
+    new JavaServiceProject({
+      name: 'svc-test',
+      groupId: 'com.example',
+      artifactId: 'svc-test',
+      cdkDeployTargetRepo: 'example-org/infra-repo',
+    }),
+  )['.github/workflows/deploy-cdk.yml'];
+
+  const script = deploy.jobs['deploy-prod'].steps[1].with.script;
+  expect(script).toContain('workflow_id: "deploy.yml"');
+  expect(script).toContain('ref: "main"');
+  // The CDK deploy.yml declares no inputs; GitHub rejects undeclared ones.
+  expect(script).not.toContain('inputs');
+});
+
 test('gitignore excludes JetBrains IDE state and /spec/', () => {
   const snapshot = synthSnapshot(
     new JavaServiceProject({

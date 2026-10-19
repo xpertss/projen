@@ -6,12 +6,10 @@ import {
 import { noteWorkflowPurpose } from './workflow-purpose';
 
 /**
- * Shared, environment-parameterized manual-dispatch deploy workflow.
- *
- * This is the one "trigger a deploy" contract used by both the CDK project
- * types (deploying their own stacks) and the Java `CdkDeployHook` component
- * (dispatching a deploy in a companion CDK repo) - see the "Open Questions"
- * sections of the two specs.
+ * Environment-parameterized manual-dispatch deploy workflow, used by the Java
+ * `CdkDeployHook` component (dispatching a deploy in a companion CDK repo).
+ * The CDK project types deploy their own stacks with the push-to-`main`
+ * workflow in `cdk/cdk-deploy-workflow.ts` instead.
  *
  * @internal - not part of the jsii-exported API (its `deploySteps` callback
  * isn't representable across jsii languages); consumed directly by other

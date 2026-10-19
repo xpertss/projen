@@ -1,10 +1,9 @@
 import { awscdk, github, javascript } from 'projen';
+import { addCdkDeployWorkflow } from './cdk-deploy-workflow';
 import { CommonCdkOptions } from './options';
 import { addEditorConfig } from '../common/editorconfig';
-import { EnvironmentOptions } from '../common/environment-options';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { addLicenseFile } from '../common/license-file';
-import { ManualDeployWorkflow } from '../common/manual-deploy-workflow';
 import { ProjenDriftCheckWorkflow } from '../common/projen-drift-check-workflow';
 import { SonarWorkflow } from '../common/sonar-workflow';
 import { WorkflowChangeNoticeWorkflow } from '../common/workflow-change-notice-workflow';
@@ -16,16 +15,14 @@ import { noteWorkflowPurpose } from '../common/workflow-purpose';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const PROJEN_TYPES_VERSION: string = require('../../package.json').version;
 
-export interface CdkTypescriptProjectOptions extends CommonCdkOptions {
-  readonly environments?: (string | EnvironmentOptions)[];
-}
+export interface CdkTypescriptProjectOptions extends CommonCdkOptions {}
 
 /**
  * Shared CDK + TypeScript foundation for `CdkInfraProject` and
  * `CdkAppProject`: standard app structure (via `AwsCdkTypeScriptApp`,
  * `cdk.json`, `cdk synth`/`cdk diff` tasks), a PR-check build that hard-fails
- * on projen drift (rather than self-mutating), and an optional
- * `ManualDeployWorkflow` when `environments` is provided.
+ * on projen drift (rather than self-mutating), and the push-to-`main`
+ * `deploy` workflow (OIDC into the org-wide `gha-cdk-deploy` role).
  */
 export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
   /** Set only when `sonarHostUrl` is provided. */
@@ -41,7 +38,7 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
       // and `projen new` scaffolds a repo with no projenrc at all.
       ...options,
       name: options.name,
-      cdkVersion: options.cdkVersion ?? '2.189.1',
+      cdkVersion: options.cdkVersion ?? '2.273.0',
       // We write LICENSE ourselves (with a human-readable header);
       // suppress projen's built-in License component.
       licensed: false,
@@ -145,24 +142,6 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
         );
       }
     }
-    if (options.environments && options.environments.length > 0) {
-      new ManualDeployWorkflow(this, {
-        environments: options.environments,
-        deploySteps: (env) => [
-          {
-            name: 'Install',
-            run: 'npm ci',
-          },
-          {
-            name: `cdk deploy (${env.name})`,
-            run: `npx cdk deploy --all --require-approval never --context environment=${env.name}`,
-            env: {
-              ...(env.accountId ? { CDK_DEFAULT_ACCOUNT: env.accountId } : {}),
-              ...(env.region ? { CDK_DEFAULT_REGION: env.region } : {}),
-            },
-          },
-        ],
-      });
-    }
+    addCdkDeployWorkflow(gh);
   }
 }

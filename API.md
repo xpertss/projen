@@ -2462,7 +2462,7 @@ public readonly DEFAULT_TS_JEST_TRANFORM_PATTERN: string;
 
 ### CdkDeployHook <a name="CdkDeployHook" id="@xpertss/projen-types.CdkDeployHook"></a>
 
-Manual-dispatch workflow that invokes a downstream CDK deploy in a companion `CdkInfraProject`/`CdkAppProject` repo, using the same `ManualDeployWorkflow` contract those project types use for their own deploys - see the CDK spec's open question about sharing this contract.
+Manual-dispatch workflow that invokes a downstream CDK deploy in a companion `CdkInfraProject`/`CdkAppProject` repo by dispatching its `deploy.yml` on `main`. That workflow takes no inputs (it deploys every stack of the app), so none are sent - GitHub rejects a dispatch carrying inputs the target workflow doesn't declare.
 
 With no `targetRepo` the workflow is still generated, but every job's
 only step fails with instructions. Synthesizing is not the place to
@@ -4176,7 +4176,7 @@ public readonly DEFAULT_TS_JEST_TRANFORM_PATTERN: string;
 
 ### CdkTypescriptProject <a name="CdkTypescriptProject" id="@xpertss/projen-types.CdkTypescriptProject"></a>
 
-Shared CDK + TypeScript foundation for `CdkInfraProject` and `CdkAppProject`: standard app structure (via `AwsCdkTypeScriptApp`, `cdk.json`, `cdk synth`/`cdk diff` tasks), a PR-check build that hard-fails on projen drift (rather than self-mutating), and an optional `ManualDeployWorkflow` when `environments` is provided.
+Shared CDK + TypeScript foundation for `CdkInfraProject` and `CdkAppProject`: standard app structure (via `AwsCdkTypeScriptApp`, `cdk.json`, `cdk synth`/`cdk diff` tasks), a PR-check build that hard-fails on projen drift (rather than self-mutating), and the push-to-`main` `deploy` workflow (OIDC into the org-wide `gha-cdk-deploy` role).
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.CdkTypescriptProject.Initializer"></a>
 
@@ -15677,15 +15677,18 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersionPinning">cdkVersionPinning</a></code> | <code>boolean</code> | Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`. |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.context">context</a></code> | <code>{[ key: string ]: any}</code> | Additional context written to `cdk.json`, read by the app with `node.tryGetContext()`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.deps">deps</a></code> | <code>string[]</code> | Runtime dependencies, as `name@version` (use an exact version to pin). |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.devDeps">devDeps</a></code> | <code>string[]</code> | Build dependencies, as `name@version` (use an exact version to pin). |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.appEntryPoint">appEntryPoint</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.database">database</a></code> | <code><a href="#@xpertss/projen-types.DatabaseOptions">DatabaseOptions</a></code> | *No description.* |
 
@@ -15770,7 +15773,33 @@ public readonly cdkVersion: string;
 ```
 
 - *Type:* string
-- *Default:* "2.189.1"
+- *Default:* "2.273.0"
+
+---
+
+##### `cdkVersionPinning`<sup>Optional</sup> <a name="cdkVersionPinning" id="@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersionPinning"></a>
+
+```typescript
+public readonly cdkVersionPinning: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`.
+
+---
+
+##### `context`<sup>Optional</sup> <a name="context" id="@xpertss/projen-types.CdkAppProjectOptions.property.context"></a>
+
+```typescript
+public readonly context: {[ key: string ]: any};
+```
+
+- *Type:* {[ key: string ]: any}
+- *Default:* no additional context
+
+Additional context written to `cdk.json`, read by the app with `node.tryGetContext()`.
 
 ---
 
@@ -15797,6 +15826,32 @@ public readonly copyrightPeriod: string;
 - *Default:* the current year
 
 Copyright period named in the `LICENSE`.
+
+---
+
+##### `deps`<sup>Optional</sup> <a name="deps" id="@xpertss/projen-types.CdkAppProjectOptions.property.deps"></a>
+
+```typescript
+public readonly deps: string[];
+```
+
+- *Type:* string[]
+- *Default:* []
+
+Runtime dependencies, as `name@version` (use an exact version to pin).
+
+---
+
+##### `devDeps`<sup>Optional</sup> <a name="devDeps" id="@xpertss/projen-types.CdkAppProjectOptions.property.devDeps"></a>
+
+```typescript
+public readonly devDeps: string[];
+```
+
+- *Type:* string[]
+- *Default:* []
+
+Build dependencies, as `name@version` (use an exact version to pin).
 
 ---
 
@@ -15869,25 +15924,6 @@ public readonly edgeResources: string[];
 ```
 
 - *Type:* string[]
-
----
-
-##### `environments`<sup>Optional</sup> <a name="environments" id="@xpertss/projen-types.CdkAppProjectOptions.property.environments"></a>
-
-```typescript
-public readonly environments: (string | EnvironmentOptions)[];
-```
-
-- *Type:* string | <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]
-- *Default:* no deploy workflow
-
-Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted.
-
-Optional rather than required so that `projen new --from` can scaffold
-the repo: its union type (`string | EnvironmentOptions`) is not
-"JSON-like", so projen's CLI cannot render a value for it into the
-initial `.projenrc.ts` - and a *required* option it cannot render leaves
-behind a projenrc that does not type-check.
 
 ---
 
@@ -15964,15 +16000,18 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersionPinning">cdkVersionPinning</a></code> | <code>boolean</code> | Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`. |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.context">context</a></code> | <code>{[ key: string ]: any}</code> | Additional context written to `cdk.json`, read by the app with `node.tryGetContext()`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.deps">deps</a></code> | <code>string[]</code> | Runtime dependencies, as `name@version` (use an exact version to pin). |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.devDeps">devDeps</a></code> | <code>string[]</code> | Build dependencies, as `name@version` (use an exact version to pin). |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.ecrEcs">ecrEcs</a></code> | <code><a href="#@xpertss/projen-types.EcrEcsOptions">EcrEcsOptions</a></code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.edgeResources">edgeResources</a></code> | <code>string[]</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted. |
 
 ---
 
@@ -16055,7 +16094,33 @@ public readonly cdkVersion: string;
 ```
 
 - *Type:* string
-- *Default:* "2.189.1"
+- *Default:* "2.273.0"
+
+---
+
+##### `cdkVersionPinning`<sup>Optional</sup> <a name="cdkVersionPinning" id="@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersionPinning"></a>
+
+```typescript
+public readonly cdkVersionPinning: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`.
+
+---
+
+##### `context`<sup>Optional</sup> <a name="context" id="@xpertss/projen-types.CdkInfraProjectOptions.property.context"></a>
+
+```typescript
+public readonly context: {[ key: string ]: any};
+```
+
+- *Type:* {[ key: string ]: any}
+- *Default:* no additional context
+
+Additional context written to `cdk.json`, read by the app with `node.tryGetContext()`.
 
 ---
 
@@ -16082,6 +16147,32 @@ public readonly copyrightPeriod: string;
 - *Default:* the current year
 
 Copyright period named in the `LICENSE`.
+
+---
+
+##### `deps`<sup>Optional</sup> <a name="deps" id="@xpertss/projen-types.CdkInfraProjectOptions.property.deps"></a>
+
+```typescript
+public readonly deps: string[];
+```
+
+- *Type:* string[]
+- *Default:* []
+
+Runtime dependencies, as `name@version` (use an exact version to pin).
+
+---
+
+##### `devDeps`<sup>Optional</sup> <a name="devDeps" id="@xpertss/projen-types.CdkInfraProjectOptions.property.devDeps"></a>
+
+```typescript
+public readonly devDeps: string[];
+```
+
+- *Type:* string[]
+- *Default:* []
+
+Build dependencies, as `name@version` (use an exact version to pin).
 
 ---
 
@@ -16157,25 +16248,6 @@ public readonly edgeResources: string[];
 
 ---
 
-##### `environments`<sup>Optional</sup> <a name="environments" id="@xpertss/projen-types.CdkInfraProjectOptions.property.environments"></a>
-
-```typescript
-public readonly environments: (string | EnvironmentOptions)[];
-```
-
-- *Type:* string | <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]
-- *Default:* no deploy workflow
-
-Deploy targets for the manual-dispatch deploy workflow, e.g. ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is empty or omitted.
-
-Optional rather than required so that `projen new --from` can scaffold
-the repo: its union type (`string | EnvironmentOptions`) is not
-"JSON-like", so projen's CLI cannot render a value for it into the
-initial `.projenrc.ts` - and a *required* option it cannot render leaves
-behind a projenrc that does not type-check.
-
----
-
 ### CdkTypescriptProjectOptions <a name="CdkTypescriptProjectOptions" id="@xpertss/projen-types.CdkTypescriptProjectOptions"></a>
 
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.CdkTypescriptProjectOptions.Initializer"></a>
@@ -16197,13 +16269,16 @@ const cdkTypescriptProjectOptions: CdkTypescriptProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.cdkVersionPinning">cdkVersionPinning</a></code> | <code>boolean</code> | Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`. |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.context">context</a></code> | <code>{[ key: string ]: any}</code> | Additional context written to `cdk.json`, read by the app with `node.tryGetContext()`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.deps">deps</a></code> | <code>string[]</code> | Runtime dependencies, as `name@version` (use an exact version to pin). |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.devDeps">devDeps</a></code> | <code>string[]</code> | Build dependencies, as `name@version` (use an exact version to pin). |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.projenCredentials">projenCredentials</a></code> | <code>projen.github.GithubCredentials</code> | How projen-generated workflows authenticate to the GitHub API. |
-| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.environments">environments</a></code> | <code>string \| <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]</code> | *No description.* |
 
 ---
 
@@ -16286,7 +16361,33 @@ public readonly cdkVersion: string;
 ```
 
 - *Type:* string
-- *Default:* "2.189.1"
+- *Default:* "2.273.0"
+
+---
+
+##### `cdkVersionPinning`<sup>Optional</sup> <a name="cdkVersionPinning" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.cdkVersionPinning"></a>
+
+```typescript
+public readonly cdkVersionPinning: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`.
+
+---
+
+##### `context`<sup>Optional</sup> <a name="context" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.context"></a>
+
+```typescript
+public readonly context: {[ key: string ]: any};
+```
+
+- *Type:* {[ key: string ]: any}
+- *Default:* no additional context
+
+Additional context written to `cdk.json`, read by the app with `node.tryGetContext()`.
 
 ---
 
@@ -16313,6 +16414,32 @@ public readonly copyrightPeriod: string;
 - *Default:* the current year
 
 Copyright period named in the `LICENSE`.
+
+---
+
+##### `deps`<sup>Optional</sup> <a name="deps" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.deps"></a>
+
+```typescript
+public readonly deps: string[];
+```
+
+- *Type:* string[]
+- *Default:* []
+
+Runtime dependencies, as `name@version` (use an exact version to pin).
+
+---
+
+##### `devDeps`<sup>Optional</sup> <a name="devDeps" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.devDeps"></a>
+
+```typescript
+public readonly devDeps: string[];
+```
+
+- *Type:* string[]
+- *Default:* []
+
+Build dependencies, as `name@version` (use an exact version to pin).
 
 ---
 
@@ -16368,16 +16495,6 @@ How projen-generated workflows authenticate to the GitHub API.
 
 ---
 
-##### `environments`<sup>Optional</sup> <a name="environments" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.environments"></a>
-
-```typescript
-public readonly environments: (string | EnvironmentOptions)[];
-```
-
-- *Type:* string | <a href="#@xpertss/projen-types.EnvironmentOptions">EnvironmentOptions</a>[]
-
----
-
 ### CommonCdkOptions <a name="CommonCdkOptions" id="@xpertss/projen-types.CommonCdkOptions"></a>
 
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.CommonCdkOptions.Initializer"></a>
@@ -16399,8 +16516,12 @@ const commonCdkOptions: CommonCdkOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.cdkVersionPinning">cdkVersionPinning</a></code> | <code>boolean</code> | Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`. |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.context">context</a></code> | <code>{[ key: string ]: any}</code> | Additional context written to `cdk.json`, read by the app with `node.tryGetContext()`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.copyrightOwner">copyrightOwner</a></code> | <code>string</code> | Copyright owner named in the `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.copyrightPeriod">copyrightPeriod</a></code> | <code>string</code> | Copyright period named in the `LICENSE`. |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.deps">deps</a></code> | <code>string[]</code> | Runtime dependencies, as `name@version` (use an exact version to pin). |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.devDeps">devDeps</a></code> | <code>string[]</code> | Build dependencies, as `name@version` (use an exact version to pin). |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE`. |
@@ -16487,7 +16608,33 @@ public readonly cdkVersion: string;
 ```
 
 - *Type:* string
-- *Default:* "2.189.1"
+- *Default:* "2.273.0"
+
+---
+
+##### `cdkVersionPinning`<sup>Optional</sup> <a name="cdkVersionPinning" id="@xpertss/projen-types.CommonCdkOptions.property.cdkVersionPinning"></a>
+
+```typescript
+public readonly cdkVersionPinning: boolean;
+```
+
+- *Type:* boolean
+- *Default:* false
+
+Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`.
+
+---
+
+##### `context`<sup>Optional</sup> <a name="context" id="@xpertss/projen-types.CommonCdkOptions.property.context"></a>
+
+```typescript
+public readonly context: {[ key: string ]: any};
+```
+
+- *Type:* {[ key: string ]: any}
+- *Default:* no additional context
+
+Additional context written to `cdk.json`, read by the app with `node.tryGetContext()`.
 
 ---
 
@@ -16514,6 +16661,32 @@ public readonly copyrightPeriod: string;
 - *Default:* the current year
 
 Copyright period named in the `LICENSE`.
+
+---
+
+##### `deps`<sup>Optional</sup> <a name="deps" id="@xpertss/projen-types.CommonCdkOptions.property.deps"></a>
+
+```typescript
+public readonly deps: string[];
+```
+
+- *Type:* string[]
+- *Default:* []
+
+Runtime dependencies, as `name@version` (use an exact version to pin).
+
+---
+
+##### `devDeps`<sup>Optional</sup> <a name="devDeps" id="@xpertss/projen-types.CommonCdkOptions.property.devDeps"></a>
+
+```typescript
+public readonly devDeps: string[];
+```
+
+- *Type:* string[]
+- *Default:* []
+
+Build dependencies, as `name@version` (use an exact version to pin).
 
 ---
 

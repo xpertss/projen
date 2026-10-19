@@ -5,7 +5,6 @@ test('adds app runtime scaffold, database construct, and app-build workflow', ()
   const snapshot = synthSnapshot(
     new CdkAppProject({
       name: 'app-test',
-      environments: ['prod'],
       database: { engine: 'postgres' },
     }),
   );
@@ -20,7 +19,6 @@ test('dynamodb engine generates a dynamodb-flavored construct', () => {
   const snapshot = synthSnapshot(
     new CdkAppProject({
       name: 'app-test',
-      environments: [],
       database: { engine: 'dynamodb', migrationTool: 'some-migration-tool' },
     }),
   );
@@ -33,7 +31,7 @@ test('dynamodb engine generates a dynamodb-flavored construct', () => {
 
 test('gitignore excludes JetBrains IDE state and /spec/', () => {
   const snapshot = synthSnapshot(
-    new CdkAppProject({ name: 'app-test', environments: [] }),
+    new CdkAppProject({ name: 'app-test' }),
   );
   expect(snapshot['.gitignore']).toContain('/.idea/*');
   expect(snapshot['.gitignore']).toContain('/spec/');
@@ -41,7 +39,7 @@ test('gitignore excludes JetBrains IDE state and /spec/', () => {
 
 test('the deps-upgrade workflow mints a GitHub App token and opens the PR with it', () => {
   const snapshot = synthSnapshot(
-    new CdkAppProject({ name: 'app-test', environments: [] }),
+    new CdkAppProject({ name: 'app-test' }),
   );
   const prSteps = snapshot['.github/workflows/upgrade.yml'].jobs.pr.steps;
 

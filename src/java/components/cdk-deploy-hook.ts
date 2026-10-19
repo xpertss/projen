@@ -6,9 +6,10 @@ import { CdkDeployHookOptions } from '../options';
 
 /**
  * Manual-dispatch workflow that invokes a downstream CDK deploy in a
- * companion `CdkInfraProject`/`CdkAppProject` repo, using the same
- * `ManualDeployWorkflow` contract those project types use for their own
- * deploys - see the CDK spec's open question about sharing this contract.
+ * companion `CdkInfraProject`/`CdkAppProject` repo by dispatching its
+ * `deploy.yml` on `main`. That workflow takes no inputs (it deploys every
+ * stack of the app), so none are sent - GitHub rejects a dispatch carrying
+ * inputs the target workflow doesn't declare.
  *
  * With no `targetRepo` the workflow is still generated, but every job's
  * only step fails with instructions. Synthesizing is not the place to
@@ -59,7 +60,6 @@ export class CdkDeployHook extends Component {
               `  repo: "${targetRepo.split('/')[1]}",`,
               '  workflow_id: "deploy.yml",',
               '  ref: "main",',
-              `  inputs: { environment: "${env.name}" },`,
               '});',
             ].join('\n'),
           },

@@ -8,8 +8,8 @@ Instead of hand-maintaining `pom.xml`, `cdk.json`, and GitHub workflows, you dec
 
 | Type | What it is | Publishes to | Generated workflows |
 | --- | --- | --- | --- |
-| `CdkInfraProject` | Pure-infrastructure CDK stacks (CloudFront, Route53, SQS, API Gateway, Cognito, ECR/ECS for externally-built images) | - | `build` (PR checks), `deploy` (manual dispatch) |
-| `CdkAppProject` | Full TypeScript service behind API Gateway: infra + app source + database | - | `build`, `deploy`, `app-build` (PR checks) |
+| `CdkInfraProject` | Pure-infrastructure CDK stacks (CloudFront, Route53, SQS, API Gateway, Cognito, ECR/ECS for externally-built images) | - | `build` (PR checks), `deploy` (push to `main`, OIDC into AWS) |
+| `CdkAppProject` | Full TypeScript service behind API Gateway: infra + app source + database | - | `build`, `deploy` (push to `main`), `app-build` (PR checks) |
 | `JavaMavenProject` | Plain Maven project, single- or multi-module, no framework | - | `build`, `upgrade` (nightly report), `codeindex` |
 | `JavaLibraryProject` | Reusable Java library | Maven Central | `build`, `upgrade` (nightly report), `codeindex`, `publish-maven-central` |
 | `JavaAppProject` | GUI/TUI/CLI Java application | GitHub Packages | `build`, `upgrade` (nightly report), `codeindex`, `publish-ghpackages` |
@@ -35,7 +35,7 @@ All project types:
 
 - run a **drift check** in PR builds - a job that re-runs projen and fails if generated files were hand-edited. Edit `.projenrc.ts`, then run `npx projen`; never edit generated files directly.
 - authenticate core projen's own automation (self-mutation push, dependency-upgrade PRs) where a type generates those workflows with the org's **`builder` GitHub App** by default - a token is minted per-run and expires after an hour, so no long-lived PAT is required. Commits and PRs are attributed to `builder[bot]`. Switch to a different App (or custom secret names) or back to a PAT with the `projenCredentials` option. Nothing else - including the drift check's PR comment and the dogfood - needs a secret.
-- make all publishing/deploying **manual** (workflow_dispatch) rather than on every merge.
+- make all publishing **manual** (workflow_dispatch) rather than on every merge. The exception is the CDK types' `deploy`, which deploys the stacks on every push to `main` through the org-wide `gha-cdk-deploy` OIDC role (see [Deploying the CDK app](#deploying-the-cdk-app)).
 - offer an opt-in SonarCloud scan (`sonar.yml`) on any type via `sonarHostUrl` (see [SonarCloud (opt-in)](#sonarcloud-opt-in)).
 
 ## Getting started
@@ -95,11 +95,10 @@ npx projen
 ```
 
 Every type scaffolds from that one command; no option is *required* that
-`projen new` cannot pass. The structured options - `environments` and
-`GitHubActionProject`'s `dogfood` - are ones projen's CLI cannot render
-into a projenrc, so they are added afterwards by editing `.projenrc.ts` and
-re-running `npx projen`. Leaving `environments` out simply generates no
-deploy workflow; leaving `dogfood` out (or a service's
+`projen new` cannot pass. The structured options - `JavaServiceProject`'s
+`environments` and `GitHubActionProject`'s `dogfood` - are ones projen's CLI
+cannot render into a projenrc, so they are added afterwards by editing
+`.projenrc.ts` and re-running `npx projen`. Leaving `dogfood` out (or a service's
 `cdkDeployTargetRepo`) still generates the workflow, with one step that
 fails and tells you what to add - a gate this package considers load-bearing
 is allowed to be missing loudly, never silently.
@@ -198,11 +197,6 @@ import { CdkInfraProject } from '@xpertss/projen-types';
 
 const project = new CdkInfraProject({
   name: 'media-edge-infra',
-  environments: [
-    'dev',
-    { name: 'stage', accountId: '111111111111', region: 'eu-central-1' },
-    { name: 'prod', accountId: '222222222222', region: 'eu-central-1', requiresApproval: true },
-  ],
   edgeResources: ['cloudfront', 'route53', 'sqs'],
   ecrEcs: { enabled: true, externalImageSource: true },
 });
@@ -212,12 +206,29 @@ project.synth();
 
 You get:
 
-- `cdk.json`, `cdk synth` / `cdk diff` / `cdk deploy` tasks, and the standard `AwsCdkTypeScriptApp` layout (CDK 2.189.1 by default).
+- `cdk.json`, `cdk synth` / `cdk diff` / `cdk deploy` tasks, and the standard `AwsCdkTypeScriptApp` layout (CDK 2.273.0 by default).
 - `.github/workflows/build.yml` - PR build that hard-fails on projen drift.
-- `.github/workflows/deploy.yml` - manual dispatch with one `deploy-<env>` job per environment (runs `cdk deploy --all` with `--context environment=<env>`); `requiresApproval` environments get a GitHub Environment approval gate.
+- `.github/workflows/deploy.yml` - deploys every stack on push to `main` (see [Deploying the CDK app](#deploying-the-cdk-app)).
 - `LICENSE` (MIT by default), `.editorconfig`, and the projen drift check.
 - `src/constructs/edge-networking.ts` - helper constructs only for the requested `edgeResources` (`cloudfront`, `route53`, `apigateway`, `cognito`, `sqs`).
 - `src/constructs/ecr-ecs.ts` when `ecrEcs.enabled` - ECR repo + Fargate service; `externalImageSource: true` (default) means the service pulls an image built outside this repo.
+
+#### Deploying the CDK app
+
+Every CDK project (`CdkInfraProject` and `CdkAppProject`) gets one
+`.github/workflows/deploy.yml`. It deploys into AWS through GitHub OIDC, with
+no long-lived credentials:
+
+- runs on `push` to `main` and on `workflow_dispatch`, with permissions exactly `id-token: write` and `contents: read`, and no GitHub Environment
+- assumes `arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/gha-cdk-deploy` in `us-east-2` with `aws-actions/configure-aws-credentials`, sets up Node, then runs `npm ci` and `npx cdk deploy --all --require-approval never`
+
+The account id comes only from the per-repo secret `AWS_ACCOUNT_ID`, so it never appears in the file. Public repos can't read org-level secrets, so set it on each repo:
+
+```bash
+gh secret set AWS_ACCOUNT_ID --body <account-id> -R <owner>/<repo>
+```
+
+The gate is the role's trust policy, which admits only the `main` branch of `xpertss` repos; protect `main` with a branch ruleset. A GitHub Environment on the job would change the OIDC `sub` away from the branch, so there is none - and no per-environment deploy matrix. The stacks name their own `env` in `src/main.ts`; anything that varies per stage belongs in the app, not the workflow.
 
 ### CdkAppProject
 
@@ -235,7 +246,6 @@ import { CdkAppProject } from '@xpertss/projen-types';
 
 const project = new CdkAppProject({
   name: 'video-api',
-  environments: ['dev', 'prod'],
   edgeResources: ['apigateway'],
   database: { engine: 'postgres', migrationTool: 'flyway' },
   appEntryPoint: 'src/app.ts',
@@ -447,7 +457,7 @@ You get everything from [`JavaSpringBootProject`](#javaspringbootproject) (and s
 - `spring-boot-starter-web` added to the pom (versionless; Boot's BOM manages it).
 - `.github/workflows/publish-docker.yml` - manual dispatch: `mvn -B package && docker build -t <registry>/<name>:<sha>`, logged in with the `DOCKER_USERNAME` / `DOCKER_PASSWORD` secrets. `dockerRegistry` defaults to `docker.io`.
 - Flyway wiring when `useFlyway` (default `true`): `flyway-core` (versionless, so it matches what Boot's Flyway auto-configuration expects), `flyway-maven-plugin` pinned for the Java line, and `src/main/resources/db/migration/V1__init.sql`.
-- `.github/workflows/deploy-cdk.yml` (the `CdkDeployHook`, generated by default) - manual dispatch with an environment selector; each job sends a `workflow_dispatch` to `deploy.yml` in the companion `cdkDeployTargetRepo` (a `CdkInfraProject`/`CdkAppProject` repo). With no `cdkDeployTargetRepo` set, the workflow is still generated but each job's only step fails with instructions - it is dispatch-only, so that lands on whoever tries to deploy rather than on every PR. Turn the workflow off entirely with `cdkDeployHook: false`. `environments` defaults to `['prod']`.
+- `.github/workflows/deploy-cdk.yml` (the `CdkDeployHook`, generated by default) - manual dispatch with an environment selector; each job sends a `workflow_dispatch` to `deploy.yml` on `main` in the companion `cdkDeployTargetRepo` (a `CdkInfraProject`/`CdkAppProject` repo). It sends no inputs: that workflow deploys every stack, so the selected environment only picks which `requiresApproval` gate guards the dispatch on this side. With no `cdkDeployTargetRepo` set, the workflow is still generated but each job's only step fails with instructions - it is dispatch-only, so that lands on whoever tries to deploy rather than on every PR. Turn the workflow off entirely with `cdkDeployHook: false`. `environments` defaults to `['prod']`.
 
 ### JavaAppProject
 
@@ -609,12 +619,14 @@ CDK project types (`CdkInfraProjectOptions` / `CdkAppProjectOptions`):
 | Option | Default | Description |
 | --- | --- | --- |
 | `name` | - (required) | Project name; must match `package.json` |
-| `cdkVersion` | `2.189.1` | AWS CDK version |
+| `cdkVersion` | `2.273.0` | AWS CDK version |
+| `cdkVersionPinning` | `false` | Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion` |
+| `deps` / `devDeps` | - | Runtime / build dependencies as `name@version`; give an exact version to pin |
+| `context` | - | Extra `cdk.json` context, read with `node.tryGetContext()` |
 | `projenCredentials` | `builder` GitHub App (secrets `PROJEN_APP_ID` / `PROJEN_APP_PRIVATE_KEY`) | How core projen's own automation (dependency-upgrade PR) authenticates to GitHub; pass a different App or a PAT to override |
 | `licensed` | `true` | Write a `LICENSE` |
 | `license` | `MIT` | SPDX identifier for the `LICENSE` |
 | `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
-| `environments` | - (no `deploy` workflow) | Deploy targets for the `deploy` workflow; strings or `EnvironmentOptions` |
 | `ecrEcs` | - | `EcrEcsOptions` - `enabled`, `externalImageSource` (default `true`) |
 | `edgeResources` | - | Subset of `cloudfront`, `route53`, `apigateway`, `cognito`, `sqs` |
 | `database` | - (app only) | `DatabaseOptions` - `engine` (`postgres`/`mysql`/`dynamodb`, default `postgres`), `migrationTool` |
@@ -675,13 +687,13 @@ new JavaMavenProject({
 });
 ```
 
-`EnvironmentOptions` for deploy targets:
+`EnvironmentOptions` for `JavaServiceProject`'s `deploy-cdk.yml` environment selector:
 
 ```text
 interface EnvironmentOptions {
   readonly name: string;              // e.g. "dev", "stage", "prod"
-  readonly accountId?: string;        // AWS account id (CDK deploys)
-  readonly region?: string;           // AWS region (CDK deploys)
+  readonly accountId?: string;        // not used by the generated workflows
+  readonly region?: string;           // not used by the generated workflows
   readonly requiresApproval?: boolean; // GitHub Environment approval gate (default false)
 }
 ```
@@ -737,7 +749,6 @@ Inclusions differ by type: a `GitHubActionProject` scans `action.yml`/`.github/w
 ```typescript
 new CdkInfraProject({
   name: 'my-infra',
-  environments: ['dev', 'prod'],
   sonarHostUrl: 'https://sonarcloud.io',   // adds sonar.yml
 });
 ```
@@ -748,6 +759,7 @@ Requires the `SONAR_TOKEN` secret (rename it with `sonarTokenSecret`).
 
 | Secret | Used by | Notes |
 | --- | --- | --- |
+| `AWS_ACCOUNT_ID` | CDK types | Account the `deploy` workflow assumes `gha-cdk-deploy` in; per-repo (public repos can't read org secrets) |
 | `PROJEN_APP_ID` / `PROJEN_APP_PRIVATE_KEY` | CDK/Java types (not the action types) | The `builder` GitHub App used by core projen's self-mutation and dependency-upgrade PRs; a short-lived token is minted per run. Override via `projenCredentials` |
 | `SONAR_TOKEN` | any type with `sonarHostUrl` set | SonarCloud scan in `sonar.yml`; override the secret name via `sonarTokenSecret` |
 | `DOCKER_USERNAME` / `DOCKER_PASSWORD` | `JavaServiceProject` | Docker image push |

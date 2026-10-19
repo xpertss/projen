@@ -56,7 +56,7 @@ test('every generated workflow carries a purpose note (GitHubActionProject)', ()
 
 test('every generated workflow carries a purpose note (CdkInfraProject)', () => {
   const files = expectEveryWorkflowHasPurpose(
-    new CdkInfraProject({ name: 'infra-test', environments: ['dev', 'prod'] }),
+    new CdkInfraProject({ name: 'infra-test' }),
   );
   expect(files).toEqual(
     expect.arrayContaining(['.github/workflows/build.yml', '.github/workflows/deploy.yml']),
@@ -67,7 +67,6 @@ test('every generated workflow carries a purpose note (CdkAppProject)', () => {
   expectEveryWorkflowHasPurpose(
     new CdkAppProject({
       name: 'app-test',
-      environments: ['prod'],
       database: { engine: 'postgres' },
     }),
   );

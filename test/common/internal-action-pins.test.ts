@@ -15,8 +15,8 @@ const JAVA_BASE = { name: 'maven-test', groupId: 'com.example', artifactId: 'mav
 // Every `uses:` this package generates must resolve: no placeholder refs and
 // no third-party action left unredirected, in any project type.
 const TYPES: Record<string, () => any> = {
-  CdkInfraProject: () => new CdkInfraProject({ name: 'infra-test', environments: [] }),
-  CdkAppProject: () => new CdkAppProject({ name: 'app-test', environments: [] }),
+  CdkInfraProject: () => new CdkInfraProject({ name: 'infra-test' }),
+  CdkAppProject: () => new CdkAppProject({ name: 'app-test' }),
   JavaMavenProject: () => new JavaMavenProject(JAVA_BASE),
   JavaServiceProject: () => new JavaServiceProject(JAVA_BASE),
   JavaAppProject: () => new JavaAppProject(JAVA_BASE),

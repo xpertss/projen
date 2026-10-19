@@ -1,5 +1,4 @@
 import { github } from 'projen';
-import { EnvironmentOptions } from '../common/environment-options';
 import { SonarScanOptions } from '../common/sonar-options';
 
 export type EdgeResource =
@@ -25,8 +24,37 @@ export interface EcrEcsOptions {
 export interface CommonCdkOptions extends SonarScanOptions {
   readonly name: string;
 
-  /** @default "2.189.1" */
+  /** @default "2.273.0" */
   readonly cdkVersion?: string;
+
+  /**
+   * Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`.
+   *
+   * @default false
+   */
+  readonly cdkVersionPinning?: boolean;
+
+  /**
+   * Runtime dependencies, as `name@version` (use an exact version to pin).
+   *
+   * @default []
+   */
+  readonly deps?: string[];
+
+  /**
+   * Build dependencies, as `name@version` (use an exact version to pin).
+   *
+   * @default []
+   */
+  readonly devDeps?: string[];
+
+  /**
+   * Additional context written to `cdk.json`, read by the app with
+   * `node.tryGetContext()`.
+   *
+   * @default - no additional context
+   */
+  readonly context?: { [key: string]: any };
 
   /**
    * How projen-generated workflows authenticate to the GitHub API.
@@ -68,21 +96,6 @@ export interface CommonCdkOptions extends SonarScanOptions {
 }
 
 export interface CdkInfraProjectOptions extends CommonCdkOptions {
-  /**
-   * Deploy targets for the manual-dispatch deploy workflow, e.g.
-   * ["dev", "stage", "prod"]. No `deploy` workflow is generated when this is
-   * empty or omitted.
-   *
-   * Optional rather than required so that `projen new --from` can scaffold
-   * the repo: its union type (`string | EnvironmentOptions`) is not
-   * "JSON-like", so projen's CLI cannot render a value for it into the
-   * initial `.projenrc.ts` - and a *required* option it cannot render leaves
-   * behind a projenrc that does not type-check.
-   *
-   * @default - no deploy workflow
-   */
-  readonly environments?: (string | EnvironmentOptions)[];
-
   readonly ecrEcs?: EcrEcsOptions;
 
   readonly edgeResources?: EdgeResource[];
