@@ -4,39 +4,30 @@
 
 ### ActionBuildWorkflow <a name="ActionBuildWorkflow" id="@xpertss/projen-types.ActionBuildWorkflow"></a>
 
-The AD-001 Layer-1 lint gate for a composite-action repo: shellcheck, yamllint, and a pinned `actionlint` release binary (verified by SHA-256, never a marketplace action - org policy).
-
-Creates a dedicated `lint` task
-(named to avoid colliding with projen's own reserved `build` task, which
-spawns the unrelated default/pre-compile/compile/post-compile/test/package
-chain - including `default`, i.e. re-running `.projenrc.ts`, which is not
-what this gate is for) and wraps it in a `TaskWorkflow` (`build.yml`)
-triggered on `pull_request` (plus `TaskWorkflow`'s automatic
-`workflow_dispatch`). `push: main` is deliberately not a trigger: the
-release path already runs this same `lint` task inside the `release` job
-(the `tasks` wiring in `GitHubActionProject`), before the tag and GitHub
-Release are created - so a push-to-`main` run here would execute the lint
-twice in parallel and gate nothing, because the release job never waits on
-`build.yml`. The lint commands exist in exactly one place: the `lint`
-task.
-
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionBuildWorkflow.Initializer"></a>
 
 ```typescript
 import { ActionBuildWorkflow } from '@xpertss/projen-types'
 
-new ActionBuildWorkflow(scope: GitHubProject)
+new ActionBuildWorkflow(scope: GitHubProject, options?: ActionBuildWorkflowOptions)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.Initializer.parameter.scope">scope</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflow.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.ActionBuildWorkflowOptions">ActionBuildWorkflowOptions</a></code> | *No description.* |
 
 ---
 
 ##### `scope`<sup>Required</sup> <a name="scope" id="@xpertss/projen-types.ActionBuildWorkflow.Initializer.parameter.scope"></a>
 
 - *Type:* projen.github.GitHubProject
+
+---
+
+##### `options`<sup>Optional</sup> <a name="options" id="@xpertss/projen-types.ActionBuildWorkflow.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.ActionBuildWorkflowOptions">ActionBuildWorkflowOptions</a>
 
 ---
 
@@ -15437,6 +15428,56 @@ public readonly workflow: GithubWorkflow;
 
 ## Structs <a name="Structs" id="Structs"></a>
 
+### ActionBuildWorkflowOptions <a name="ActionBuildWorkflowOptions" id="@xpertss/projen-types.ActionBuildWorkflowOptions"></a>
+
+The AD-001 Layer-1 lint gate for a composite-action repo: shellcheck, yamllint, and a pinned `actionlint` release binary (verified by SHA-256, never a marketplace action - org policy).
+
+Creates a dedicated `lint` task
+(named to avoid colliding with projen's own reserved `build` task, which
+spawns the unrelated default/pre-compile/compile/post-compile/test/package
+chain - including `default`, i.e. re-running `.projenrc.ts`, which is not
+what this gate is for) and wraps it in a `TaskWorkflow` (`build.yml`)
+triggered on `pull_request` (plus `TaskWorkflow`'s automatic
+`workflow_dispatch`). `push: main` is deliberately not a trigger: the
+release path already runs this same `lint` task inside the `release` job
+(the `tasks` wiring in `GitHubActionProject`), before the tag and GitHub
+Release are created - so a push-to-`main` run here would execute the lint
+twice in parallel and gate nothing, because the release job never waits on
+`build.yml`. The lint commands exist in exactly one place: the `lint`
+task.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.ActionBuildWorkflowOptions.Initializer"></a>
+
+```typescript
+import { ActionBuildWorkflowOptions } from '@xpertss/projen-types'
+
+const actionBuildWorkflowOptions: ActionBuildWorkflowOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ActionBuildWorkflowOptions.property.condition">condition</a></code> | <code>string</code> | Job-level `if` condition. |
+
+---
+
+##### `condition`<sup>Optional</sup> <a name="condition" id="@xpertss/projen-types.ActionBuildWorkflowOptions.property.condition"></a>
+
+```typescript
+public readonly condition: string;
+```
+
+- *Type:* string
+- *Default:* the job always runs
+
+Job-level `if` condition.
+
+`GitHubActionProject` uses it to skip the
+dogfood scenario's own throwaway PR.
+
+---
+
 ### ActionDogfoodAppTokenOptions <a name="ActionDogfoodAppTokenOptions" id="@xpertss/projen-types.ActionDogfoodAppTokenOptions"></a>
 
 Mint a short-lived GitHub App token at the start of the dogfood job (via `actions/create-github-app-token`) instead of running on the built-in `github.token`. Required for any scenario whose load-bearing behavior the Actions app cannot perform: the GitHub Actions app is platform-forbidden from creating or approving pull requests (`GraphQL: GitHub Actions is not permitted to create or approve pull requests`), so a `uses: ./` call that creates a PR must run under a different identity. It is also the org's standing credential for machine automation (F020 builder-app-migration): a short-lived, revocable app token instead of a long-lived PAT.
@@ -17877,7 +17918,7 @@ public readonly dogfood: ActionDogfoodOptions;
 ```
 
 - *Type:* <a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a>
-- *Default:* `test-dogfood.yml` runs one failing step that tells you to declare a scenario
+- *Default:* `test-dogfood.yml` runs one failing step that tells you to declare a scenario
 
 The dogfood scenario (AD-001).
 
@@ -20374,8 +20415,25 @@ const projenDriftCheckWorkflowOptions: ProjenDriftCheckWorkflowOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.condition">condition</a></code> | <code>string</code> | Job-level `if` condition. |
 | <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.projenCommand">projenCommand</a></code> | <code>string</code> | The command that regenerates the project from `.projenrc.ts`. The default runs the projen that `npm ci` just installed (exact version from `package-lock.json`) rather than `npx`, which can install on demand. |
 | <code><a href="#@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.workflowName">workflowName</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `condition`<sup>Optional</sup> <a name="condition" id="@xpertss/projen-types.ProjenDriftCheckWorkflowOptions.property.condition"></a>
+
+```typescript
+public readonly condition: string;
+```
+
+- *Type:* string
+- *Default:* the job always runs
+
+Job-level `if` condition.
+
+`GitHubActionProject` uses it to skip the
+dogfood scenario's own throwaway PR.
 
 ---
 
@@ -20502,6 +20560,7 @@ const sonarWorkflowOptions: SonarWorkflowOptions = { ... }
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
 | <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarHostUrl">sonarHostUrl</a></code> | <code>string</code> | URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure. |
+| <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.condition">condition</a></code> | <code>string</code> | Job-level `if` condition. |
 | <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarInclusions">sonarInclusions</a></code> | <code>string</code> | `sonar.inclusions` glob, only needed for files Sonar's default inclusions skip - e.g. a composite action's `action.yml` and `*.sh` scripts, which live outside the defaults. Omit it for default-recognized languages (Java, TypeScript, ...). |
 | <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarOrganization">sonarOrganization</a></code> | <code>string</code> | SonarCloud organization key (`sonar.organization`). Mandatory for the Scanner CLI on SonarCloud - it is not derived from the token, so a scan without it always fails. |
 | <code><a href="#@xpertss/projen-types.SonarWorkflowOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
@@ -20519,6 +20578,22 @@ public readonly sonarHostUrl: string;
 - *Type:* string
 
 URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`). Required, no default - a guessed server is worse than a loud failure.
+
+---
+
+##### `condition`<sup>Optional</sup> <a name="condition" id="@xpertss/projen-types.SonarWorkflowOptions.property.condition"></a>
+
+```typescript
+public readonly condition: string;
+```
+
+- *Type:* string
+- *Default:* the job always runs
+
+Job-level `if` condition.
+
+`GitHubActionProject` uses it to skip the
+dogfood scenario's own throwaway PR.
 
 ---
 
@@ -20555,7 +20630,7 @@ public readonly sonarProjectKey: string;
 ```
 
 - *Type:* string
-- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
 
 `sonar.projectKey`.
 
@@ -20614,8 +20689,25 @@ const workflowChangeNoticeWorkflowOptions: WorkflowChangeNoticeWorkflowOptions =
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions.property.condition">condition</a></code> | <code>string</code> | Job-level `if` condition. |
 | <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions.property.watchPaths">watchPaths</a></code> | <code>string[]</code> | Glob patterns (bash `[[ string == pattern ]]` semantics, where `*` also matches `/`) that trigger the notice when a changed PR file matches any of them. |
 | <code><a href="#@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions.property.workflowName">workflowName</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `condition`<sup>Optional</sup> <a name="condition" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflowOptions.property.condition"></a>
+
+```typescript
+public readonly condition: string;
+```
+
+- *Type:* string
+- *Default:* the job always runs
+
+Job-level `if` condition.
+
+`GitHubActionProject` uses it to skip the
+dogfood scenario's own throwaway PR.
 
 ---
 
