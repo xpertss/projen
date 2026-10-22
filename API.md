@@ -17917,7 +17917,7 @@ public readonly dogfood: ActionDogfoodOptions;
 ```
 
 - *Type:* <a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a>
-- *Default:* `test-dogfood.yml` runs one failing step that tells you to declare a scenario
+- *Default:* `test-dogfood.yml` runs one failing step that tells you to declare a scenario
 
 The dogfood scenario (AD-001).
 
@@ -20620,7 +20620,7 @@ public readonly sonarProjectKey: string;
 ```
 
 - *Type:* string
-- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
 
 `sonar.projectKey`.
 
