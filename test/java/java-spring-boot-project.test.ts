@@ -73,18 +73,6 @@ describe('multi-module', () => {
 });
 
 describe('Spring Boot and the Java line', () => {
-  test('javaVersion 1.8 defaults to the Spring Boot 2.7 line and JUnit from its BOM', () => {
-    const pom = synthSnapshot(new JavaSpringBootProject({ ...BASE, javaVersion: '1.8' }))['pom.xml'];
-    expect(pom).toMatch(/spring-boot-dependencies<\/artifactId>\s*<version>2\.7\.18</);
-    expect(pom).toContain('<maven.compiler.source>1.8</maven.compiler.source>');
-  });
-
-  test('Spring Boot 3+ on javaVersion 1.8 fails with the conflict named', () => {
-    expect(
-      () => new JavaSpringBootProject({ ...BASE, javaVersion: '1.8', springBootVersion: '3.5.16' }),
-    ).toThrow(/Spring Boot 3\.5\.16 does not run on javaVersion 1\.8/);
-  });
-
   test('an explicit springBootVersion overrides the default; ranges fail', () => {
     const pom = synthSnapshot(new JavaSpringBootProject({ ...BASE, springBootVersion: '3.5.16' }))['pom.xml'];
     expect(pom).toMatch(/spring-boot-dependencies<\/artifactId>\s*<version>3\.5\.16</);
@@ -103,11 +91,6 @@ describe('JavaServiceProject on top of JavaSpringBootProject', () => {
     expect(pom).toMatch(/flyway-core<\/artifactId>\s*<\/dependency>/);
     expect(pom).toMatch(/flyway-maven-plugin<\/artifactId>\s*<version>13\.9\.0</);
     expect(snapshot['.github/workflows/publish-docker.yml']).toBeDefined();
-  });
-
-  test('Flyway plugin follows the Java line', () => {
-    const pom = synthSnapshot(new JavaServiceProject({ ...BASE, javaVersion: '1.8' }))['pom.xml'];
-    expect(pom).toMatch(/flyway-maven-plugin<\/artifactId>\s*<version>9\.22\.3</);
   });
 
   test('is single-module: addModule fails and points to JavaSpringBootProject', () => {

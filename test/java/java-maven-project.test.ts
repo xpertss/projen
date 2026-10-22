@@ -116,8 +116,6 @@ describe('single-module defaults', () => {
 
 describe('javaVersion', () => {
   test.each([
-    ['1.8', '8'],
-    ['8', '8'],
     ['17', '17'],
     ['21', '21'],
     ['25', '25'],
@@ -130,26 +128,16 @@ describe('javaVersion', () => {
       );
       expect(setupJavaStep.with['java-version']).toBe(setupJava);
 
-      if (setupJava === '8') {
-        expect(project.javaVersion).toBe('1.8');
-        expect(pom).toContain('<maven.compiler.source>1.8</maven.compiler.source>');
-        expect(pom).toContain('<maven.compiler.target>1.8</maven.compiler.target>');
-        expect(pom).not.toContain('maven.compiler.release');
-        expect(pom).toMatch(/<requireJavaVersion>\s*<version>\[1\.8,\)</);
-        // JUnit 6 needs Java 17, so the 1.8 line stays on JUnit 5.
-        expect(pom).toMatch(/junit-bom<\/artifactId>\s*<version>5\./);
-      } else {
-        expect(pom).toContain(`<maven.compiler.release>${javaVersion}</maven.compiler.release>`);
-        expect(pom).not.toContain('maven.compiler.source');
-        expect(pom).toMatch(new RegExp(`<requireJavaVersion>\\s*<version>\\[${javaVersion},\\)<`));
-        expect(pom).toMatch(/junit-bom<\/artifactId>\s*<version>6\./);
-      }
+      expect(pom).toContain(`<maven.compiler.release>${javaVersion}</maven.compiler.release>`);
+      expect(pom).not.toContain('maven.compiler.source');
+      expect(pom).toMatch(new RegExp(`<requireJavaVersion>\\s*<version>\\[${javaVersion},\\)<`));
+      expect(pom).toMatch(/junit-bom<\/artifactId>\s*<version>6\./);
     }
   });
 
-  test('an unsupported line fails and lists the supported ones', () => {
-    expect(() => maven({ javaVersion: '11' })).toThrow(
-      'Unsupported javaVersion "11". Supported: 1.8, 17, 21, 25.',
+  test.each(['11', '1.8', '8'])('an unsupported line (%s) fails and lists the supported ones', (javaVersion) => {
+    expect(() => maven({ javaVersion })).toThrow(
+      `Unsupported javaVersion "${javaVersion}". Supported: 17, 21, 25.`,
     );
   });
 
@@ -344,7 +332,6 @@ describe('exact versions only', () => {
       new JavaAppProject({ ...BASE }),
       new JavaSpringBootProject({ ...BASE }),
       new JavaServiceProject({ ...BASE }),
-      new JavaServiceProject({ ...BASE, javaVersion: '1.8' }),
     ];
     for (const project of types) {
       const snapshot = synthSnapshot(project);
@@ -510,9 +497,9 @@ describe('workflows', () => {
 });
 
 describe('projen new', () => {
-  test('numeric CLI values (--java-version 1.8) become the strings .projenrc.ts is rendered from', () => {
-    // yargs hands `--java-version 1.8` to the type as the number 1.8.
-    const args = { ...BASE, javaVersion: 1.8 as any };
+  test('numeric CLI values (--java-version 21) become the strings .projenrc.ts is rendered from', () => {
+    // yargs hands `--java-version 21` to the type as the number 21.
+    const args = { ...BASE, javaVersion: 21 as any };
     const options: any = {
       ...args,
       __new__: { fqn: '@xpertss/projen-types.JavaMavenProject', args, comments: 0, synth: false, post: false },
@@ -524,10 +511,10 @@ describe('projen new', () => {
       // outside a real `projen new` the fqn may not resolve; the
       // normalization has already run by then
     }
-    expect(options.javaVersion).toBe('1.8');
-    expect(options.__new__.args.javaVersion).toBe('1.8');
+    expect(options.javaVersion).toBe('21');
+    expect(options.__new__.args.javaVersion).toBe('21');
     if (project) {
-      expect(project.javaVersion).toBe('1.8');
+      expect(project.javaVersion).toBe('21');
     }
   });
 });

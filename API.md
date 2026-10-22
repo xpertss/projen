@@ -8629,7 +8629,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
-| <code><a href="#@xpertss/projen-types.JavaAppProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaAppProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`17`, `21`, `25`). |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
@@ -9036,7 +9036,7 @@ public readonly javaVersion: string;
 
 - *Type:* string
 
-The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+The canonical Java line the build targets (`17`, `21`, `25`).
 
 ---
 
@@ -9655,7 +9655,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`17`, `21`, `25`). |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
@@ -10062,7 +10062,7 @@ public readonly javaVersion: string;
 
 - *Type:* string
 
-The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+The canonical Java line the build targets (`17`, `21`, `25`).
 
 ---
 
@@ -10694,7 +10694,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaMavenProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`17`, `21`, `25`). |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
@@ -11101,7 +11101,7 @@ public readonly javaVersion: string;
 
 - *Type:* string
 
-The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+The canonical Java line the build targets (`17`, `21`, `25`).
 
 ---
 
@@ -11735,7 +11735,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaServiceProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`17`, `21`, `25`). |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
@@ -12143,7 +12143,7 @@ public readonly javaVersion: string;
 
 - *Type:* string
 
-The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+The canonical Java line the build targets (`17`, `21`, `25`).
 
 ---
 
@@ -12796,7 +12796,7 @@ When given a project, this it the project itself.
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.vscode">vscode</a></code> | <code>projen.vscode.VsCode</code> | Access all VSCode components. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.buildVerifyWorkflow">buildVerifyWorkflow</a></code> | <code>projen.github.TaskWorkflow</code> | The PR build workflow (`build.yml`). Add jobs to it with `buildVerifyWorkflow.addJob(id, job)`; use `ciSetupSteps` for a job that needs Node, the projen toolchain, and the JDK. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.ciSetupSteps">ciSetupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install Node (pinned), `npm ci`, and the project's JDK with a Maven cache - the setup every Maven CI job in this repo needs. |
-| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.javaVersion">javaVersion</a></code> | <code>string</code> | The canonical Java line the build targets (`17`, `21`, `25`). |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.modules">modules</a></code> | <code><a href="#@xpertss/projen-types.MavenModule">MavenModule</a>[]</code> | The modules added with `addModule()`, in order. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.pom">pom</a></code> | <code><a href="#@xpertss/projen-types.MavenPom">MavenPom</a></code> | The root `pom.xml`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProject.property.upgradeTask">upgradeTask</a></code> | <code>projen.Task</code> | Prints available dependency/plugin updates (`npx projen upgrade`). |
@@ -13204,7 +13204,7 @@ public readonly javaVersion: string;
 
 - *Type:* string
 
-The canonical Java line the build targets (`1.8`, `17`, `21`, `25`).
+The canonical Java line the build targets (`17`, `21`, `25`).
 
 ---
 
@@ -16845,7 +16845,7 @@ const commonJavaOptions: CommonJavaOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
-| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
@@ -17054,11 +17054,10 @@ public readonly javaVersion: string;
 - *Type:* string
 - *Default:* "21"
 
-Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+Java line the build targets: `17`, `21`, or `25`.
 
 Drives every Java-dependent part of the generated build: the compiler
-level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
-no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+level (`maven.compiler.release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
 the default Spring Boot line, and the JDK CI installs. Any other value
 fails at synth and lists the supported lines.
 
@@ -17918,7 +17917,7 @@ public readonly dogfood: ActionDogfoodOptions;
 ```
 
 - *Type:* <a href="#@xpertss/projen-types.ActionDogfoodOptions">ActionDogfoodOptions</a>
-- *Default:* `test-dogfood.yml` runs one failing step that tells you to declare a scenario
+- *Default:* `test-dogfood.yml` runs one failing step that tells you to declare a scenario
 
 The dogfood scenario (AD-001).
 
@@ -18019,7 +18018,7 @@ const javaAppProjectOptions: JavaAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
-| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
@@ -18229,11 +18228,10 @@ public readonly javaVersion: string;
 - *Type:* string
 - *Default:* "21"
 
-Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+Java line the build targets: `17`, `21`, or `25`.
 
 Drives every Java-dependent part of the generated build: the compiler
-level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
-no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+level (`maven.compiler.release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
 the default Spring Boot line, and the JDK CI installs. Any other value
 fails at synth and lists the supported lines.
 
@@ -18415,7 +18413,7 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
@@ -18625,11 +18623,10 @@ public readonly javaVersion: string;
 - *Type:* string
 - *Default:* "21"
 
-Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+Java line the build targets: `17`, `21`, or `25`.
 
 Drives every Java-dependent part of the generated build: the compiler
-level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
-no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+level (`maven.compiler.release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
 the default Spring Boot line, and the JDK CI installs. Any other value
 fails at synth and lists the supported lines.
 
@@ -18814,7 +18811,7 @@ const javaMavenProjectOptions: JavaMavenProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
-| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
@@ -19023,11 +19020,10 @@ public readonly javaVersion: string;
 - *Type:* string
 - *Default:* "21"
 
-Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+Java line the build targets: `17`, `21`, or `25`.
 
 Drives every Java-dependent part of the generated build: the compiler
-level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
-no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+level (`maven.compiler.release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
 the default Spring Boot line, and the JDK CI installs. Any other value
 fails at synth and lists the supported lines.
 
@@ -19198,7 +19194,7 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
-| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
@@ -19413,11 +19409,10 @@ public readonly javaVersion: string;
 - *Type:* string
 - *Default:* "21"
 
-Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+Java line the build targets: `17`, `21`, or `25`.
 
 Drives every Java-dependent part of the generated build: the compiler
-level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
-no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+level (`maven.compiler.release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
 the default Spring Boot line, and the JDK CI installs. Any other value
 fails at synth and lists the supported lines.
 
@@ -19566,13 +19561,11 @@ public readonly springBootVersion: string;
 ```
 
 - *Type:* string
-- *Default:* the newest release of the line supporting `javaVersion` (2.7.x for 1.8, otherwise the current major)
+- *Default:* the current major
 
 Spring Boot version: imports `spring-boot-dependencies` as the first BOM, and versions `spring-boot-maven-plugin`.
 
 Must be an exact version.
-Spring Boot 3 and later need Java 17+, so with `javaVersion: '1.8'` only
-a 2.x version is accepted.
 
 ---
 
@@ -19671,7 +19664,7 @@ const javaSpringBootProjectOptions: JavaSpringBootProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.editorconfig">editorconfig</a></code> | <code>boolean</code> | Write a projen-managed `.editorconfig`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.enforcer">enforcer</a></code> | <code>boolean</code> | Add `maven-enforcer-plugin`, which fails the build up front when the JDK or Maven running it is older than the project needs (rather than later, with confusing compiler errors). |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaDistribution">javaDistribution</a></code> | <code>string</code> | `actions/setup-java` distribution CI installs the JDK from. |
-| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.javaVersion">javaVersion</a></code> | <code>string</code> | Java line the build targets: `17`, `21`, or `25`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.license">license</a></code> | <code>string</code> | SPDX identifier for the generated `LICENSE`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.licensed">licensed</a></code> | <code>boolean</code> | Write a `LICENSE` file. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.minMavenVersion">minMavenVersion</a></code> | <code>string</code> | Lowest Maven version the enforcer accepts (`requireMavenVersion [<this>,)`). |
@@ -19881,11 +19874,10 @@ public readonly javaVersion: string;
 - *Type:* string
 - *Default:* "21"
 
-Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+Java line the build targets: `17`, `21`, or `25`.
 
 Drives every Java-dependent part of the generated build: the compiler
-level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
-no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+level (`maven.compiler.release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
 the default Spring Boot line, and the JDK CI installs. Any other value
 fails at synth and lists the supported lines.
 
@@ -20034,13 +20026,11 @@ public readonly springBootVersion: string;
 ```
 
 - *Type:* string
-- *Default:* the newest release of the line supporting `javaVersion` (2.7.x for 1.8, otherwise the current major)
+- *Default:* the current major
 
 Spring Boot version: imports `spring-boot-dependencies` as the first BOM, and versions `spring-boot-maven-plugin`.
 
 Must be an exact version.
-Spring Boot 3 and later need Java 17+, so with `javaVersion: '1.8'` only
-a 2.x version is accepted.
 
 ---
 
@@ -20630,7 +20620,7 @@ public readonly sonarProjectKey: string;
 ```
 
 - *Type:* string
-- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
+- *Default:* `${sonarOrganization}_${name}` (the org + project key SonarCloud uses, e.g. `xpertss_create-pull-request`)
 
 `sonar.projectKey`.
 

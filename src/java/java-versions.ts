@@ -25,8 +25,8 @@ export const DEFAULT_JAVA_VERSION = '21';
 /** The minimum Maven version the enforcer requires by default. */
 export const DEFAULT_MIN_MAVEN_VERSION = '3.9';
 
-// Maven plugins that run on every supported JDK (all of them require only
-// Java 8 at runtime), so they are shared by every line.
+// Maven plugins that run on every supported JDK, so they are shared by every
+// line.
 const SHARED_PLUGIN_VERSIONS: Record<string, string> = {
   [MAVEN_COMPILER_PLUGIN]: '3.16.0',
   [MAVEN_SUREFIRE_PLUGIN]: '3.6.0',
@@ -39,7 +39,7 @@ const SHARED_PLUGIN_VERSIONS: Record<string, string> = {
 };
 
 // Libraries whose current major needs Java 17: JUnit 6, Spring Boot 3+/4,
-// Flyway 10+. The Java 8 line stays on the last major that supports it.
+// Flyway 10+.
 const MODERN_VERSIONS: Record<string, string> = {
   ...SHARED_PLUGIN_VERSIONS,
   [JUNIT_BOM]: '6.1.3',
@@ -49,7 +49,7 @@ const MODERN_VERSIONS: Record<string, string> = {
 
 /** Everything a generated build derives from its Java line. */
 export interface JavaLineProfile {
-  /** Canonical line id, as written in `javaVersion` (`1.8`, `17`, ...). */
+  /** Canonical line id, as written in `javaVersion` (`17`, `21`, ...). */
   readonly line: string;
   /** `<properties>` that set the compiler level. */
   readonly compilerProperties: Record<string, string>;
@@ -59,29 +59,9 @@ export interface JavaLineProfile {
   readonly setupJavaVersion: string;
   /** Default exact versions, keyed by `groupId/artifactId`. */
   readonly versions: Record<string, string>;
-  /** Newest Spring Boot major that runs on this line, if it is capped. */
-  readonly maxSpringBootMajor?: number;
 }
 
 const JAVA_LINES: Record<string, JavaLineProfile> = {
-  1.8: {
-    line: '1.8',
-    // javac 8 has no --release flag; source/target is the only option.
-    compilerProperties: {
-      'maven.compiler.source': '1.8',
-      'maven.compiler.target': '1.8',
-    },
-    enforcerJavaRange: '[1.8,)',
-    setupJavaVersion: '8',
-    // Spring Boot 3+ needs Java 17.
-    maxSpringBootMajor: 2,
-    versions: {
-      ...SHARED_PLUGIN_VERSIONS,
-      [JUNIT_BOM]: '5.14.4',
-      [SPRING_BOOT_BOM]: '2.7.18',
-      [FLYWAY_MAVEN_PLUGIN]: '9.22.3',
-    },
-  },
   ...modernLine('17'),
   ...modernLine('21'),
   ...modernLine('25'),
@@ -99,11 +79,8 @@ function modernLine(line: string): Record<string, JavaLineProfile> {
   };
 }
 
-const ALIASES: Record<string, string> = { 8: '1.8' };
-
 /** The Java lines `javaVersion` accepts, in ascending order. */
 export function supportedJavaVersions(): string[] {
-  // Integer-like keys ('17') enumerate before '1.8', so sort explicitly.
   return Object.keys(JAVA_LINES).sort((a, b) => Number.parseFloat(a) - Number.parseFloat(b));
 }
 
@@ -117,8 +94,7 @@ export function resolveJavaLine(
   versionOverrides: Record<string, string> = {},
 ): JavaLineProfile {
   const requested = javaVersion ?? DEFAULT_JAVA_VERSION;
-  const key = ALIASES[requested] ?? requested;
-  const profile = JAVA_LINES[key];
+  const profile = JAVA_LINES[requested];
   if (!profile) {
     throw new Error(
       `Unsupported javaVersion "${requested}". Supported: ${supportedJavaVersions().join(', ')}.`,

@@ -59,7 +59,7 @@ export class JavaMavenProject extends github.GitHubProject {
   /** The root `pom.xml`. */
   public readonly pom: MavenPom;
 
-  /** The canonical Java line the build targets (`1.8`, `17`, `21`, `25`). */
+  /** The canonical Java line the build targets (`17`, `21`, `25`). */
   public readonly javaVersion: string;
 
   /** Prints available dependency/plugin updates (`npx projen upgrade`). */
@@ -337,14 +337,6 @@ export class JavaMavenProject extends github.GitHubProject {
     return version;
   }
 
-  /**
-   * The newest Spring Boot major version `javaVersion` supports, or
-   * undefined when this package knows of no cap.
-   */
-  protected maxSpringBootMajor(): number | undefined {
-    return this.javaLine.maxSpringBootMajor;
-  }
-
   private configureBuild(options: JavaMavenProjectOptions): void {
     this.pom.addProperty('project.build.sourceEncoding', 'UTF-8');
     for (const [name, value] of Object.entries(this.javaLine.compilerProperties)) {
@@ -427,7 +419,7 @@ export class JavaMavenProject extends github.GitHubProject {
 }
 
 /**
- * `projen new ... --java-version 21` (or `1.8`, or `--min-maven-version 3.9`)
+ * `projen new ... --java-version 21` (or `--min-maven-version 3.9`)
  * reaches the options as a *number*: yargs parses numeric-looking flags, and
  * projen passes string-typed options through unchanged. The initial
  * `.projenrc.ts` is rendered from the same args, so it would read

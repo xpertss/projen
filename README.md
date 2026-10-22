@@ -27,7 +27,7 @@ JavaMavenProject            java_maven         Maven only; single- or multi-modu
     └── JavaServiceProject  java_service       + Docker publish, Flyway, CDK deploy hook (single-module)
 ```
 
-Every Java type targets a configurable Java line (`javaVersion`: `1.8`, `17`, `21` or `25`; see [Java version support](#java-version-support)), and every one except `JavaServiceProject` can be a multi-module Maven reactor (see [JavaMavenProject](#javamavenproject)). Every Java type also generates the code index (`codeindex.yml`).
+Every Java type targets a configurable Java line (`javaVersion`: `17`, `21` or `25`; see [Java version support](#java-version-support)), and every one except `JavaServiceProject` can be a multi-module Maven reactor (see [JavaMavenProject](#javamavenproject)). Every Java type also generates the code index (`codeindex.yml`).
 
 One foundation class is also exported for advanced use: `CdkTypescriptProject` (shared CDK + TypeScript base for the CDK types).
 
@@ -63,7 +63,7 @@ installs dependencies. The type names `projen new` accepts are `cdk_infra`,
 Required options become flags: `--name` for every type, plus
 `--group-id`/`--artifact-id` (Java). Any other plainly-typed option can be
 passed the same way - `--sonar-host-url` (opt-in Sonar, all types),
-`--java-version 1.8`, `--cdk-deploy-target-repo owner/repo`,
+`--java-version 17`, `--cdk-deploy-target-repo owner/repo`,
 `--docker-registry ghcr.io`, `--no-use-flyway`, and so on. Modules can't be
 passed on the command line; add them to `.projenrc.ts` afterwards (see
 [JavaMavenProject](#javamavenproject)).
@@ -268,7 +268,7 @@ A plain Maven build with no framework and no publish target. It's the base of ev
 Scaffold it with the `java_maven` type:
 
 ```bash
-npx projen new --from @xpertss/projen-types java_maven --name legacy-tools --group-id org.xpertss --artifact-id legacy-tools --java-version 1.8
+npx projen new --from @xpertss/projen-types java_maven --name legacy-tools --group-id org.xpertss --artifact-id legacy-tools --java-version 17
 ```
 
 **Single module:**
@@ -281,7 +281,7 @@ const project = new JavaMavenProject({
   name: 'legacy-tools',
   groupId: 'org.xpertss',
   artifactId: 'legacy-tools',
-  javaVersion: '1.8',
+  javaVersion: '17',
 });
 
 project.addDependency('commons-io/commons-io@2.20.0');    // exact version
@@ -560,21 +560,20 @@ Needs no secret for core projen's own automation - the action types emit no depe
 
 ## Java version support
 
-`javaVersion` picks the Java line a Java project targets. It defaults to `21`; the supported lines are `1.8` (alias `8`), `17`, `21` and `25`, and any other value fails the synth with that list. **Nothing in the generated build is hard-coded to one Java line.** Everything that depends on it comes from one table in this package, grouped by line:
+`javaVersion` picks the Java line a Java project targets. It defaults to `21`; the supported lines are `17`, `21` and `25`, and any other value fails the synth with that list. **Nothing in the generated build is hard-coded to one Java line.** Everything that depends on it comes from one table in this package, grouped by line:
 
-| | `1.8` | `17` | `21` | `25` |
-| --- | --- | --- | --- | --- |
-| Compiler level | `maven.compiler.source`/`target` = `1.8` (javac 8 has no `--release`) | `maven.compiler.release` = `17` | `release` = `21` | `release` = `25` |
-| Enforcer `requireJavaVersion` | `[1.8,)` | `[17,)` | `[21,)` | `[25,)` |
-| JUnit (`junit-bom`) | 5.14.4 (JUnit 6 needs Java 17) | 6.1.3 | 6.1.3 | 6.1.3 |
-| Default Spring Boot (`JavaSpringBootProject`) | 2.7.18 (Boot 3+ needs Java 17; a 3.x+ `springBootVersion` fails the synth) | 4.1.1 | 4.1.1 | 4.1.1 |
-| `flyway-maven-plugin` (`JavaServiceProject`) | 9.22.3 | 13.9.0 | 13.9.0 | 13.9.0 |
-| CI JDK (`actions/setup-java` `java-version`) | `8` | `17` | `21` | `25` |
+| | `17` | `21` | `25` |
+| --- | --- | --- | --- |
+| Compiler level | `maven.compiler.release` = `17` | `release` = `21` | `release` = `25` |
+| Enforcer `requireJavaVersion` | `[17,)` | `[21,)` | `[25,)` |
+| JUnit (`junit-bom`) | 6.1.3 | 6.1.3 | 6.1.3 |
+| Default Spring Boot (`JavaSpringBootProject`) | 4.1.1 | 4.1.1 | 4.1.1 |
+| `flyway-maven-plugin` (`JavaServiceProject`) | 13.9.0 | 13.9.0 | 13.9.0 |
+| CI JDK (`actions/setup-java` `java-version`) | `17` | `21` | `25` |
 
-Maven plugins (the same on every line, because all of them run on JDK 8): `maven-compiler-plugin` 3.16.0, `maven-surefire-plugin`/`maven-failsafe-plugin` 3.6.0, `maven-jar-plugin` 3.5.1, `maven-enforcer-plugin` 3.6.3, `maven-source-plugin` 3.4.0 and `maven-javadoc-plugin` 3.12.0 (library only), `versions-maven-plugin` 2.22.0 (the `upgrade` report).
+Maven plugins (the same on every line, because all of them run on every supported JDK): `maven-compiler-plugin` 3.16.0, `maven-surefire-plugin`/`maven-failsafe-plugin` 3.6.0, `maven-jar-plugin` 3.5.1, `maven-enforcer-plugin` 3.6.3, `maven-source-plugin` 3.4.0 and `maven-javadoc-plugin` 3.12.0 (library only), `versions-maven-plugin` 2.22.0 (the `upgrade` report).
 
-**The enforcer.** `maven-enforcer-plugin` fails the build at the start when the JDK or Maven running it is older than the project needs. Without it you get confusing compiler errors later, or a jar built for the wrong runtime. Its Java rule always follows `javaVersion`. The Maven rule defaults to `[3.9,)`; change it with `minMavenVersion`, or drop the plugin entirely with `enforcer: false`. CI installs the matching JDK through `setup-java`, so the rule only fires on a developer machine with the wrong JDK. A Java 1.8 project builds on any newer JDK (the rule is a minimum), but the JDK 8 runtime API is guaranteed only when you build on JDK 8.
-
+**The enforcer.** `maven-enforcer-plugin` fails the build at the start when the JDK or Maven running it is older than the project needs. Without it you get confusing compiler errors later, or a jar built for the wrong runtime. Its Java rule always follows `javaVersion`. The Maven rule defaults to `[3.9,)`; change it with `minMavenVersion`, or drop the plugin entirely with `enforcer: false`. CI installs the matching JDK through `setup-java`, so the rule only fires on a developer machine with the wrong JDK.
 **Overriding a version.** `pluginVersions` replaces any default in the table, keyed by `groupId/artifactId`, with an exact version:
 
 ```typescript
@@ -641,7 +640,7 @@ Java project types (`JavaMavenProjectOptions` and everything built on it - `Java
 | `artifactId` | - (required) | Maven artifact id (of the reactor parent, in a multi-module project) |
 | `version` | `0.1.0` | Maven version; must be exact |
 | `description` / `url` | - | Written to the root pom |
-| `javaVersion` | `21` | Java line: `1.8`, `17`, `21`, `25` - see [Java version support](#java-version-support) |
+| `javaVersion` | `21` | Java line: `17`, `21`, `25` - see [Java version support](#java-version-support) |
 | `javaDistribution` | `temurin` | `actions/setup-java` distribution for CI |
 | `packaging` | `jar` | Root packaging while the project has no modules; a project with modules is always `pom` |
 | `sample` | `false` | Starter `Main` + test under the `groupId` package (single-module only) |

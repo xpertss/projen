@@ -35,13 +35,6 @@ export class JavaSpringBootProject extends JavaMavenProject {
 
     const version = options.springBootVersion ?? this.pinnedVersion(SPRING_BOOT_BOM);
     assertExactVersion(version, 'springBootVersion');
-    const major = Number.parseInt(version.split('.')[0], 10);
-    const maxMajor = this.maxSpringBootMajor();
-    if (maxMajor !== undefined && major > maxMajor) {
-      throw new Error(
-        `Spring Boot ${version} does not run on javaVersion ${this.javaVersion} (the newest Spring Boot line for it is ${maxMajor}.x). Use a ${maxMajor}.x springBootVersion, or a newer javaVersion.`,
-      );
-    }
     this.springBootVersion = version;
 
     // Boot's BOM manages JUnit, so the base type's junit-bom would only

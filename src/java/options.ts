@@ -26,11 +26,10 @@ export interface CommonJavaOptions extends SonarScanOptions, CommonCodeOptions {
   readonly projenCredentials?: github.GithubCredentials;
 
   /**
-   * Java line the build targets: `1.8` (alias `8`), `17`, `21`, or `25`.
+   * Java line the build targets: `17`, `21`, or `25`.
    *
    * Drives every Java-dependent part of the generated build: the compiler
-   * level (`maven.compiler.release`, or `source`/`target` for 1.8, which has
-   * no `--release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
+   * level (`maven.compiler.release`), the enforcer's `requireJavaVersion` rule, the JUnit line,
    * the default Spring Boot line, and the JDK CI installs. Any other value
    * fails at synth and lists the supported lines.
    *
@@ -137,11 +136,8 @@ export interface JavaSpringBootProjectOptions extends CommonJavaOptions {
   /**
    * Spring Boot version: imports `spring-boot-dependencies` as the first
    * BOM, and versions `spring-boot-maven-plugin`. Must be an exact version.
-   * Spring Boot 3 and later need Java 17+, so with `javaVersion: '1.8'` only
-   * a 2.x version is accepted.
    *
-   * @default - the newest release of the line supporting `javaVersion`
-   * (2.7.x for 1.8, otherwise the current major)
+   * @default - the current major
    */
   readonly springBootVersion?: string;
 }
