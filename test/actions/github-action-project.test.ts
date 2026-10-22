@@ -596,3 +596,49 @@ test('.editorconfig is written by default and can be turned off', () => {
     synthSnapshot(new GitHubActionProject({ ...baseOptions(), editorconfig: false }))['.editorconfig'],
   ).toBeUndefined();
 });
+
+const PR_WORKFLOWS: Array<[string, string]> = [
+  ['.github/workflows/build.yml', 'build'],
+  ['.github/workflows/projen-drift-check.yml', 'check'],
+  ['.github/workflows/workflow-change-notice.yml', 'check'],
+  ['.github/workflows/sonar.yml', 'sonar'],
+];
+
+test.each(PR_WORKFLOWS)('%s: the job skips the dogfood scenario PR, but not a fork PR that reuses the branch name', (path, jobId) => {
+  const wf = synthSnapshot(new GitHubActionProject(baseOptions()))[path];
+
+  expect(wf.jobs[jobId].if).toBe(
+    "github.head_ref != 'test/dogfood' || github.event.pull_request.head.repo.full_name != github.repository",
+  );
+});
+
+test('PR workflows: several dogfood branches guard with contains()', () => {
+  const options = baseOptions();
+  (options.dogfood.scenario[0] as any).inputs.branch = 'test/one';
+  (options.dogfood.scenario[1] as any).inputs.branch = 'test/two';
+
+  const wf = synthSnapshot(new GitHubActionProject(options))['.github/workflows/build.yml'];
+  expect(wf.jobs.build.if).toBe(
+    "!contains(fromJSON('[\"test/one\",\"test/two\"]'), github.head_ref) || github.event.pull_request.head.repo.full_name != github.repository",
+  );
+});
+
+test.each(PR_WORKFLOWS.filter(([p]) => !p.includes('sonar')))('%s: no static dogfood branch - no skip condition', (path, jobId) => {
+  const options = {
+    name: 'create-pull-request',
+    dogfood: {
+      scenario: [{ name: 'Run', assertions: ['true'] }],
+      cleanup: ['true'],
+    },
+  };
+  const wf = synthSnapshot(new GitHubActionProject(options))[path];
+  expect(wf.jobs[jobId].if).toBeUndefined();
+});
+
+test('projen-drift-check.yml: checks out the immutable head SHA, not the branch the dogfood cleanup deletes', () => {
+  const wf = synthSnapshot(new GitHubActionProject(baseOptions()))[
+    '.github/workflows/projen-drift-check.yml'
+  ];
+  const checkout = wf.jobs.check.steps.find((s: { name: string }) => s.name === 'Checkout');
+  expect(checkout.with.ref).toBe('${{ github.event.pull_request.head.sha }}');
+});

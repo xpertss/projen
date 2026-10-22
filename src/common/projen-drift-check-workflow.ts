@@ -32,6 +32,13 @@ export interface ProjenDriftCheckWorkflowOptions {
 
   /** @default "projen-drift-check" */
   readonly workflowName?: string;
+
+  /**
+   * Job-level `if` condition. `GitHubActionProject` uses it to skip the
+   * dogfood scenario's own throwaway PR.
+   * @default - the job always runs
+   */
+  readonly condition?: string;
 }
 
 export class ProjenDriftCheckWorkflow extends Component {
@@ -63,6 +70,7 @@ export class ProjenDriftCheckWorkflow extends Component {
     this.workflow.on({ pullRequest: {} });
     this.workflow.addJob('check', {
       name: 'Projen drift check',
+      ...(options.condition ? { if: options.condition } : {}),
       runsOn: ['ubuntu-latest'],
       permissions: {
         contents: github.workflows.JobPermission.READ,
@@ -74,7 +82,10 @@ export class ProjenDriftCheckWorkflow extends Component {
           name: 'Checkout',
           uses: 'actions/checkout@v7',
           with: {
-            ref: '${{ github.event.pull_request.head.ref }}',
+            // The immutable head SHA, not the branch name: the branch can be
+            // deleted or force-pushed while this run is queued, and a
+            // checkout of the vanished ref fails.
+            ref: '${{ github.event.pull_request.head.sha }}',
             repository: '${{ github.event.pull_request.head.repo.full_name }}',
           },
         },

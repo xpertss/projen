@@ -7,6 +7,7 @@ import {
 } from 'projen';
 import { ActionBuildWorkflow } from './action-build-workflow';
 import { ActionDogfoodOptions, ActionDogfoodWorkflow } from './action-dogfood-workflow';
+import { dogfoodBranches, skipDogfoodPrCondition } from '../common/dogfood-pr-guard';
 import { addEditorConfig } from '../common/editorconfig';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { addLicenseFile } from '../common/license-file';
@@ -160,8 +161,15 @@ export class GitHubActionProject extends github.GitHubProject {
       addEditorConfig(this);
     }
 
-    new ProjenDriftCheckWorkflow(this);
-    new WorkflowChangeNoticeWorkflow(this);
+    // The dogfood scenario's own PR is throwaway (opened, force-pushed,
+    // closed and its branch deleted within about a minute), so every
+    // PR-triggered check skips it - see `skipDogfoodPrCondition`.
+    const skipDogfoodPr = skipDogfoodPrCondition(
+      dogfoodBranches(options.dogfood?.scenario),
+    );
+
+    new ProjenDriftCheckWorkflow(this, { condition: skipDogfoodPr });
+    new WorkflowChangeNoticeWorkflow(this, { condition: skipDogfoodPr });
 
     addLicenseFile(this, {
       spdx: options.license ?? 'MIT',
@@ -201,7 +209,9 @@ export class GitHubActionProject extends github.GitHubProject {
       },
     });
 
-    this.buildWorkflow = new ActionBuildWorkflow(this);
+    this.buildWorkflow = new ActionBuildWorkflow(this, {
+      condition: skipDogfoodPr,
+    });
 
     this.dogfoodWorkflow = new ActionDogfoodWorkflow(this, options.dogfood);
 
@@ -215,6 +225,7 @@ export class GitHubActionProject extends github.GitHubProject {
         // YAML / shell are not in Sonar's default-recognized set, so the
         // action's `action.yml` and scripts need explicit inclusions.
         sonarInclusions: '.github/workflows/**,action.yml,**/*.sh',
+        condition: skipDogfoodPr,
       });
     }
 

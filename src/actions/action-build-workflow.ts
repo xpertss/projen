@@ -24,11 +24,20 @@ const ACTIONLINT_SHA256 =
  * `build.yml`. The lint commands exist in exactly one place: the `lint`
  * task.
  */
+export interface ActionBuildWorkflowOptions {
+  /**
+   * Job-level `if` condition. `GitHubActionProject` uses it to skip the
+   * dogfood scenario's own throwaway PR.
+   * @default - the job always runs
+   */
+  readonly condition?: string;
+}
+
 export class ActionBuildWorkflow extends Component {
   public readonly task: Task;
   public readonly workflow: github.TaskWorkflow;
 
-  constructor(scope: github.GitHubProject) {
+  constructor(scope: github.GitHubProject, options: ActionBuildWorkflowOptions = {}) {
     super(scope, 'ActionBuildWorkflow');
 
     const gh = scope.github;
@@ -74,6 +83,7 @@ export class ActionBuildWorkflow extends Component {
       task: this.task,
       triggers: { pullRequest: {} },
       permissions: { contents: github.workflows.JobPermission.READ },
+      condition: options.condition,
       preBuildSteps: [{ name: 'Install dependencies', run: 'npm ci' }],
     });
     noteWorkflowPurpose(

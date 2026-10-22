@@ -9,6 +9,13 @@ const SONAR_SCANNER_SHA256 =
 
 export interface SonarWorkflowOptions {
   /**
+   * Job-level `if` condition. `GitHubActionProject` uses it to skip the
+   * dogfood scenario's own throwaway PR.
+   * @default - the job always runs
+   */
+  readonly condition?: string;
+
+  /**
    * URL of the org's SonarCloud instance (e.g. `https://sonarcloud.io`).
    * Required, no default - a guessed server is worse than a loud failure.
    */
@@ -85,6 +92,7 @@ export class SonarWorkflow extends Component {
       ...(pullRequestGate ? { pullRequest: {} } : {}),
     });
     this.workflow.addJob('sonar', {
+      ...(options.condition ? { if: options.condition } : {}),
       runsOn: ['ubuntu-latest'],
       permissions: { contents: github.workflows.JobPermission.READ },
       env: { SONAR_TOKEN: `\${{ secrets.${sonarTokenSecret} }}` },

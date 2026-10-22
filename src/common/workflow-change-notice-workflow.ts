@@ -29,6 +29,13 @@ export interface WorkflowChangeNoticeWorkflowOptions {
 
   /** @default "workflow-change-notice" */
   readonly workflowName?: string;
+
+  /**
+   * Job-level `if` condition. `GitHubActionProject` uses it to skip the
+   * dogfood scenario's own throwaway PR.
+   * @default - the job always runs
+   */
+  readonly condition?: string;
 }
 
 export class WorkflowChangeNoticeWorkflow extends Component {
@@ -63,6 +70,7 @@ export class WorkflowChangeNoticeWorkflow extends Component {
     this.workflow.on({ pullRequestTarget: {} });
     this.workflow.addJob('check', {
       name: 'Workflow change notice',
+      ...(options.condition ? { if: options.condition } : {}),
       runsOn: ['ubuntu-latest'],
       permissions: { pullRequests: github.workflows.JobPermission.WRITE },
       env: {

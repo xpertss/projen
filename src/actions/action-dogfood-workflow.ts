@@ -1,4 +1,5 @@
 import { Component, github } from 'projen';
+import { dogfoodBranches } from '../common/dogfood-pr-guard';
 import { noteWorkflowPurpose } from '../common/workflow-purpose';
 
 // Nightly environment-regression canary (AD-001/F006): re-runs the same
@@ -257,14 +258,7 @@ export class ActionDogfoodWorkflow extends Component {
     // pull_request events, so the first disjunct keeps dispatch and cron
     // runs (head_ref empty) unaffected. Branch values that are expressions
     // cannot be compared statically, so they are excluded from the guard.
-    const selfTriggerBranches = [
-      ...new Set(
-        (options?.scenario ?? []).flatMap((s) => {
-          const branch = s.inputs?.branch;
-          return branch && !branch.includes('${{') ? [branch] : [];
-        }),
-      ),
-    ];
+    const selfTriggerBranches = dogfoodBranches(options?.scenario);
     const selfTriggerGuard =
       selfTriggerBranches.length === 1
         ? `github.event_name != 'pull_request' || github.head_ref != '${selfTriggerBranches[0]}'`
