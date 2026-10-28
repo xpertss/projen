@@ -28,7 +28,7 @@ export * from './java/components/docker-publish';
 export * from './java/components/github-packages-publish';
 export * from './java/components/flyway-migration';
 export * from './java/components/cdk-deploy-hook';
-export * from './java/components/code-index-workflow';
+export * from './common/code-index-workflow';
 export * from './java/components/maven-upgrade-report';
 
 export * from './actions/github-action-project';

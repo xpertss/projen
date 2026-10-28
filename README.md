@@ -8,8 +8,8 @@ Instead of hand-maintaining `pom.xml`, `cdk.json`, and GitHub workflows, you dec
 
 | Type | What it is | Publishes to | Generated workflows |
 | --- | --- | --- | --- |
-| `CdkInfraProject` | Pure-infrastructure CDK stacks (CloudFront, Route53, SQS, API Gateway, Cognito, ECR/ECS for externally-built images) | - | `build` (PR checks), `deploy` (push to `main`, OIDC into AWS) |
-| `CdkAppProject` | Full TypeScript service behind API Gateway: infra + app source + database | - | `build`, `deploy` (push to `main`), `app-build` (PR checks) |
+| `CdkInfraProject` | Pure-infrastructure CDK stacks (CloudFront, Route53, SQS, API Gateway, Cognito, ECR/ECS for externally-built images) | - | `build` (PR checks), `deploy` (push to `main`, OIDC into AWS), `codeindex` |
+| `CdkAppProject` | Full TypeScript service behind API Gateway: infra + app source + database | - | `build`, `deploy` (push to `main`), `app-build` (PR checks), `codeindex` |
 | `JavaMavenProject` | Plain Maven project, single- or multi-module, no framework | - | `build`, `upgrade` (nightly report), `codeindex` |
 | `JavaLibraryProject` | Reusable Java library | Maven Central | `build`, `upgrade` (nightly report), `codeindex`, `publish-maven-central` |
 | `JavaAppProject` | GUI/TUI/CLI Java application | GitHub Packages | `build`, `upgrade` (nightly report), `codeindex`, `publish-ghpackages` |
@@ -209,6 +209,7 @@ You get:
 - `cdk.json`, `cdk synth` / `cdk diff` / `cdk deploy` tasks, and the standard `AwsCdkTypeScriptApp` layout (CDK 2.273.0 by default).
 - `.github/workflows/build.yml` - PR build that hard-fails on projen drift.
 - `.github/workflows/deploy.yml` - deploys every stack on push to `main` (see [Deploying the CDK app](#deploying-the-cdk-app)).
+- `.github/workflows/codeindex.yml` and a `codeindex` task - on push to `main`, when the push changed `.ts`/`.tsx` files under `src/` but not `.xss/`, regenerates the SCIP code index `.xss/index.scip` (`@sourcegraph/scip-typescript`, pinned as a dev dependency, covering `src/` only - not `.projenrc.ts` or the tests) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows, but the workflow's bot must be allowed to push to `main`. The same index builds locally with `npx projen codeindex` (Node 22.13 or later, dependencies installed). Turn it off with `publishCodeIndex: false`.
 - `LICENSE` (MIT by default), `.editorconfig`, and the projen drift check.
 - `src/constructs/edge-networking.ts` - helper constructs only for the requested `edgeResources` (`cloudfront`, `route53`, `apigateway`, `cognito`, `sqs`).
 - `src/constructs/ecr-ecs.ts` when `ecrEcs.enabled` - ECR repo + Fargate service; `externalImageSource: true` (default) means the service pulls an image built outside this repo.
@@ -342,7 +343,7 @@ You get:
 - one Maven run per build. `npx projen build` synthesizes, then runs `mvn -B verify`: compile, unit tests (surefire), package, and `*IT` integration tests (failsafe). There is no `mvn deploy` and no `dist/`.
 - `.github/workflows/build.yml`: a PR build that installs the pinned Node toolchain (`npm ci`) and the project's JDK (`actions/setup-java`, Maven cache), then runs `npx projen build`. The Maven build itself never runs a Sonar step - SonarCloud scanning is a separate, opt-in `sonar.yml` (set `sonarHostUrl`). See [Adding CI jobs](#adding-ci-jobs-to-a-java-project) and [SonarCloud (opt-in)](#sonarcloud-opt-in).
 - `.github/workflows/upgrade.yml`: a nightly (03:00 UTC) **report** of available dependency and plugin updates in the job summary. It changes nothing, because every version comes from `.projenrc.ts`; apply an update there. Turn it off with `upgradeWorkflow: false`. The same report runs locally with `npx projen upgrade`.
-- `.github/workflows/codeindex.yml`: on push to `main`, regenerates `.xss/index.txt` (a sorted list of every `.java` file, across all modules) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no build, Sonar scan or release, but the workflow's bot must be allowed to push to `main`. A run that loses the push to a newer merge succeeds quietly, because the newer run regenerates the index. The same index builds locally with `npx projen codeindex`. Turn it off with `publishCodeIndex: false`.
+- `.github/workflows/codeindex.yml`: on push to `main`, regenerates `.xss/index.txt` (a sorted list of every `.java` file, across all modules) when the push changed `.java` files but not `.xss/`, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no build, Sonar scan or release, but the workflow's bot must be allowed to push to `main`. A run that loses the push to a newer merge succeeds quietly, because the newer run regenerates the index. The same index builds locally with `npx projen codeindex`. Turn it off with `publishCodeIndex: false`.
 - the projen drift check, `LICENSE` (MIT by default), `.editorconfig`, and a generated `package.json` that pins the projen toolchain exactly.
 - no sample code, unless `sample: true` on a single-module project.
 
@@ -626,6 +627,7 @@ CDK project types (`CdkInfraProjectOptions` / `CdkAppProjectOptions`):
 | `licensed` | `true` | Write a `LICENSE` |
 | `license` | `MIT` | SPDX identifier for the `LICENSE` |
 | `copyrightOwner` / `copyrightPeriod` | `Xpert Software` / current year | Named in the `LICENSE` |
+| `publishCodeIndex` | `true` | Generate the code index (`codeindex` task + `codeindex.yml`, committing `.xss/index.scip` to `main`) and add `@sourcegraph/scip-typescript` as a dev dependency; from `CommonCodeOptions` |
 | `ecrEcs` | - | `EcrEcsOptions` - `enabled`, `externalImageSource` (default `true`) |
 | `edgeResources` | - | Subset of `cloudfront`, `route53`, `apigateway`, `cognito`, `sqs` |
 | `database` | - (app only) | `DatabaseOptions` - `engine` (`postgres`/`mysql`/`dynamodb`, default `postgres`), `migrationTool` |
@@ -812,7 +814,7 @@ The project types are composed from smaller components you can also attach to yo
 | `GitHubPackagesPublish` | `JavaMavenProject` | Manual-dispatch GitHub Packages publish workflow |
 | `FlywayMigration` | `JavaSpringBootProject` | Flyway plugin/dependency + migrations directory |
 | `CdkDeployHook` | `JavaMavenProject` | Manual-dispatch workflow that triggers `deploy.yml` in a companion CDK repo |
-| `CodeIndexWorkflow` | `JavaMavenProject` | Code index generation on push to `main` |
+| `CodeIndexWorkflow` | `GitHubProject` | Code index generation on push to `main`; shared by the Java and CDK types |
 | `ActionBuildWorkflow` | `GitHubProject` | The `lint` task (shellcheck/yamllint/pinned actionlint) + `build.yml` |
 | `ActionDogfoodWorkflow` | `GitHubProject` | `test-dogfood.yml` from an `ActionDogfoodOptions` scenario |
 | `SonarWorkflow` | `GitHubProject` | `sonar.yml` (SonarCloud scan via the Scanner CLI); opt-in, shared by every type via `sonarHostUrl` |

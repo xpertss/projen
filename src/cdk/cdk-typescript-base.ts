@@ -1,6 +1,9 @@
 import { awscdk, github, javascript } from 'projen';
 import { addCdkDeployWorkflow } from './cdk-deploy-workflow';
 import { CommonCdkOptions } from './options';
+import { NPM_CI_STEP, SETUP_NODE_STEP } from '../common/ci-steps';
+import { CodeIndexWorkflow } from '../common/code-index-workflow';
+import { SCIP_TYPESCRIPT_VERSION } from '../common/constants';
 import { addEditorConfig } from '../common/editorconfig';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { addLicenseFile } from '../common/license-file';
@@ -143,5 +146,27 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
       }
     }
     addCdkDeployWorkflow(gh);
+
+    if (options.publishCodeIndex ?? true) {
+      this.addDevDeps(`@sourcegraph/scip-typescript@${SCIP_TYPESCRIPT_VERSION}`);
+      new CodeIndexWorkflow(this, {
+        exec: [
+          // `scip-typescript` does not create the output directory, and the
+          // older list-of-files index is replaced by `.xss/index.scip`. Node,
+          // not `mkdir -p`/`rm`, so the task also runs where there is no POSIX
+          // shell.
+          'node -e "const fs=require(\'fs\');fs.mkdirSync(\'.xss\',{recursive:true});fs.rmSync(\'.xss/index.txt\',{force:true})"',
+          // The generated root `tsconfig.json` includes `src/` only, so the
+          // projen project itself (`.projenrc.ts`, `projenrc/`) and the tests
+          // stay out of the index.
+          'scip-typescript index --output .xss/index.scip',
+          // Drop what differs by machine (the absolute project root, Windows
+          // path separators), so the index is the same wherever it was built.
+          'node node_modules/@xpertss/projen-types/lib/common/scip-index-normalizer.js .xss/index.scip',
+        ],
+        sourcePathspecs: ['src/*.ts', 'src/*.tsx'],
+        setupSteps: [SETUP_NODE_STEP, NPM_CI_STEP],
+      });
+    }
   }
 }

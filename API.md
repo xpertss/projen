@@ -5638,23 +5638,35 @@ public readonly DEFAULT_TS_JEST_TRANFORM_PATTERN: string;
 
 Generates a code index and publishes it to `.xss/` on checkin.
 
+On a push to `main` the workflow lists the files the push changed and stops
+without indexing when no source file changed, or when `.xss/` is among the
+changed files (the index is already part of the push). A push with no usable
+`before` commit (a new branch, a force push, a manual run) always indexes.
+
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.CodeIndexWorkflow.Initializer"></a>
 
 ```typescript
 import { CodeIndexWorkflow } from '@xpertss/projen-types'
 
-new CodeIndexWorkflow(project: JavaMavenProject)
+new CodeIndexWorkflow(project: GitHubProject, options: CodeIndexWorkflowOptions)
 ```
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.CodeIndexWorkflow.Initializer.parameter.project">project</a></code> | <code><a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a></code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CodeIndexWorkflow.Initializer.parameter.project">project</a></code> | <code>projen.github.GitHubProject</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CodeIndexWorkflow.Initializer.parameter.options">options</a></code> | <code><a href="#@xpertss/projen-types.CodeIndexWorkflowOptions">CodeIndexWorkflowOptions</a></code> | *No description.* |
 
 ---
 
 ##### `project`<sup>Required</sup> <a name="project" id="@xpertss/projen-types.CodeIndexWorkflow.Initializer.parameter.project"></a>
 
-- *Type:* <a href="#@xpertss/projen-types.JavaMavenProject">JavaMavenProject</a>
+- *Type:* projen.github.GitHubProject
+
+---
+
+##### `options`<sup>Required</sup> <a name="options" id="@xpertss/projen-types.CodeIndexWorkflow.Initializer.parameter.options"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.CodeIndexWorkflowOptions">CodeIndexWorkflowOptions</a>
 
 ---
 
@@ -15716,6 +15728,7 @@ const cdkAppProjectOptions: CdkAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkAppProjectOptions.property.cdkVersionPinning">cdkVersionPinning</a></code> | <code>boolean</code> | Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`. |
@@ -15794,6 +15807,19 @@ public readonly sonarTokenSecret: string;
 
 - *Type:* string
 - *Default:* "SONAR_TOKEN"
+
+---
+
+##### `publishCodeIndex`<sup>Optional</sup> <a name="publishCodeIndex" id="@xpertss/projen-types.CdkAppProjectOptions.property.publishCodeIndex"></a>
+
+```typescript
+public readonly publishCodeIndex: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -16039,6 +16065,7 @@ const cdkInfraProjectOptions: CdkInfraProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkInfraProjectOptions.property.cdkVersionPinning">cdkVersionPinning</a></code> | <code>boolean</code> | Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`. |
@@ -16115,6 +16142,19 @@ public readonly sonarTokenSecret: string;
 
 - *Type:* string
 - *Default:* "SONAR_TOKEN"
+
+---
+
+##### `publishCodeIndex`<sup>Optional</sup> <a name="publishCodeIndex" id="@xpertss/projen-types.CdkInfraProjectOptions.property.publishCodeIndex"></a>
+
+```typescript
+public readonly publishCodeIndex: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -16308,6 +16348,7 @@ const cdkTypescriptProjectOptions: CdkTypescriptProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CdkTypescriptProjectOptions.property.cdkVersionPinning">cdkVersionPinning</a></code> | <code>boolean</code> | Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`. |
@@ -16382,6 +16423,19 @@ public readonly sonarTokenSecret: string;
 
 - *Type:* string
 - *Default:* "SONAR_TOKEN"
+
+---
+
+##### `publishCodeIndex`<sup>Optional</sup> <a name="publishCodeIndex" id="@xpertss/projen-types.CdkTypescriptProjectOptions.property.publishCodeIndex"></a>
+
+```typescript
+public readonly publishCodeIndex: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -16536,6 +16590,68 @@ How projen-generated workflows authenticate to the GitHub API.
 
 ---
 
+### CodeIndexWorkflowOptions <a name="CodeIndexWorkflowOptions" id="@xpertss/projen-types.CodeIndexWorkflowOptions"></a>
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.CodeIndexWorkflowOptions.Initializer"></a>
+
+```typescript
+import { CodeIndexWorkflowOptions } from '@xpertss/projen-types'
+
+const codeIndexWorkflowOptions: CodeIndexWorkflowOptions = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.CodeIndexWorkflowOptions.property.exec">exec</a></code> | <code>string[]</code> | The commands of the `codeindex` task, run in order. |
+| <code><a href="#@xpertss/projen-types.CodeIndexWorkflowOptions.property.setupSteps">setupSteps</a></code> | <code>projen.github.workflows.JobStep[]</code> | Steps that install what the `codeindex` task needs (runtimes, dependencies). |
+| <code><a href="#@xpertss/projen-types.CodeIndexWorkflowOptions.property.sourcePathspecs">sourcePathspecs</a></code> | <code>string[]</code> | Git pathspecs of the project's source files. |
+
+---
+
+##### `exec`<sup>Required</sup> <a name="exec" id="@xpertss/projen-types.CodeIndexWorkflowOptions.property.exec"></a>
+
+```typescript
+public readonly exec: string[];
+```
+
+- *Type:* string[]
+
+The commands of the `codeindex` task, run in order.
+
+Together they write
+the index under `.xss/`.
+
+---
+
+##### `setupSteps`<sup>Required</sup> <a name="setupSteps" id="@xpertss/projen-types.CodeIndexWorkflowOptions.property.setupSteps"></a>
+
+```typescript
+public readonly setupSteps: JobStep[];
+```
+
+- *Type:* projen.github.workflows.JobStep[]
+
+Steps that install what the `codeindex` task needs (runtimes, dependencies).
+
+---
+
+##### `sourcePathspecs`<sup>Required</sup> <a name="sourcePathspecs" id="@xpertss/projen-types.CodeIndexWorkflowOptions.property.sourcePathspecs"></a>
+
+```typescript
+public readonly sourcePathspecs: string[];
+```
+
+- *Type:* string[]
+
+Git pathspecs of the project's source files.
+
+A push that changes none of
+them does not regenerate the index.
+
+---
+
 ### CommonCdkOptions <a name="CommonCdkOptions" id="@xpertss/projen-types.CommonCdkOptions"></a>
 
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.CommonCdkOptions.Initializer"></a>
@@ -16555,6 +16671,7 @@ const commonCdkOptions: CommonCdkOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.cdkVersion">cdkVersion</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonCdkOptions.property.cdkVersionPinning">cdkVersionPinning</a></code> | <code>boolean</code> | Pin `aws-cdk-lib` to exactly `cdkVersion` instead of `^cdkVersion`. |
@@ -16629,6 +16746,19 @@ public readonly sonarTokenSecret: string;
 
 - *Type:* string
 - *Default:* "SONAR_TOKEN"
+
+---
+
+##### `publishCodeIndex`<sup>Optional</sup> <a name="publishCodeIndex" id="@xpertss/projen-types.CommonCdkOptions.property.publishCodeIndex"></a>
+
+```typescript
+public readonly publishCodeIndex: boolean;
+```
+
+- *Type:* boolean
+- *Default:* true
+
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -16799,7 +16929,7 @@ const commonCodeOptions: CommonCodeOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.CommonCodeOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
+| <code><a href="#@xpertss/projen-types.CommonCodeOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 
 ---
 
@@ -16812,7 +16942,7 @@ public readonly publishCodeIndex: boolean;
 - *Type:* boolean
 - *Default:* true
 
-Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -16835,7 +16965,7 @@ const commonJavaOptions: CommonJavaOptions = { ... }
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
+| <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.CommonJavaOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -16930,7 +17060,7 @@ public readonly publishCodeIndex: boolean;
 - *Type:* boolean
 - *Default:* true
 
-Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -18008,7 +18138,7 @@ const javaAppProjectOptions: JavaAppProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
+| <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaAppProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -18104,7 +18234,7 @@ public readonly publishCodeIndex: boolean;
 - *Type:* boolean
 - *Default:* true
 
-Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -18403,7 +18533,7 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -18499,7 +18629,7 @@ public readonly publishCodeIndex: boolean;
 - *Type:* boolean
 - *Default:* true
 
-Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -18801,7 +18931,7 @@ const javaMavenProjectOptions: JavaMavenProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
+| <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaMavenProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -18896,7 +19026,7 @@ public readonly publishCodeIndex: boolean;
 - *Type:* boolean
 - *Default:* true
 
-Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -19184,7 +19314,7 @@ const javaServiceProjectOptions: JavaServiceProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
+| <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaServiceProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -19285,7 +19415,7 @@ public readonly publishCodeIndex: boolean;
 - *Type:* boolean
 - *Default:* true
 
-Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 
@@ -19654,7 +19784,7 @@ const javaSpringBootProjectOptions: JavaSpringBootProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarProjectKey">sonarProjectKey</a></code> | <code>string</code> | `sonar.projectKey`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarPullRequestGate">sonarPullRequestGate</a></code> | <code>boolean</code> | Whether `sonar.yml` also runs on `pull_request` as a pass/fail gate. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.sonarTokenSecret">sonarTokenSecret</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
+| <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.publishCodeIndex">publishCodeIndex</a></code> | <code>boolean</code> | Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`. |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.artifactId">artifactId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.groupId">groupId</a></code> | <code>string</code> | *No description.* |
 | <code><a href="#@xpertss/projen-types.JavaSpringBootProjectOptions.property.name">name</a></code> | <code>string</code> | *No description.* |
@@ -19750,7 +19880,7 @@ public readonly publishCodeIndex: boolean;
 - *Type:* boolean
 - *Default:* true
 
-Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates `.xss/index.txt` (a sorted list of the repo's source files) and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
+Generate the `codeindex` task and the `codeindex.yml` workflow, which on push to `main` regenerates the code index under `.xss/` when the push changed source files but not the index, and commits it straight to `main` as `chore: update code index`. The commit is pushed with the workflow's `GITHUB_TOKEN`, so it starts no further workflows (no build, Sonar scan or release); the workflow's bot must be allowed to push to `main`.
 
 ---
 

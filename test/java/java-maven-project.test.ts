@@ -442,7 +442,12 @@ describe('workflows', () => {
       expect(codeindex.concurrency).toEqual({ 'group': 'codeindex', 'cancel-in-progress': true });
       expect(codeindex.jobs.codeindex.permissions).toEqual({ contents: 'write' });
 
-      // F009 override: the third-party action is redirected to xpertss/*.
+      // The diff gate only counts .java files; pom.xml does not trigger the index.
+      const gate = codeindex.jobs.codeindex.steps.find((s: { id?: string }) => s.id === 'changes');
+      expect(gate.run).toContain("-- '*.java')");
+      expect(gate.run).not.toContain('pom.xml');
+
+      // The action is written as xpertss/auto-commit directly, not swapped in.
       const commitStep = codeindex.jobs.codeindex.steps.find(
         (s: { name: string }) => s.name === 'Commit code index',
       );

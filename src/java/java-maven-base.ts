@@ -1,6 +1,5 @@
 import { posix } from 'node:path';
 import { JsonFile, SampleDir, Task, github, java } from 'projen';
-import { CodeIndexWorkflow } from './components/code-index-workflow';
 import { MavenUpgradeReport } from './components/maven-upgrade-report';
 import {
   DEFAULT_MIN_MAVEN_VERSION,
@@ -18,6 +17,7 @@ import { MavenModule } from './maven/maven-module';
 import { MavenPom, assertExactVersion } from './maven/maven-pom';
 import { JavaMavenProjectOptions, MavenModuleOptions } from './options';
 import { NPM_CI_STEP, SETUP_NODE_STEP } from '../common/ci-steps';
+import { CodeIndexWorkflow } from '../common/code-index-workflow';
 import { addEditorConfig } from '../common/editorconfig';
 import { applyInternalActionOverrides } from '../common/internal-actions';
 import { addLicenseFile } from '../common/license-file';
@@ -234,7 +234,15 @@ export class JavaMavenProject extends github.GitHubProject {
     }
 
     if (options.publishCodeIndex ?? true) {
-      new CodeIndexWorkflow(this);
+      new CodeIndexWorkflow(this, {
+        // From the repo root, not `src/`: in a multi-module repo the sources
+        // live under each module directory.
+        exec: [
+          "mkdir -p .xss && find . -path ./node_modules -prune -o -name target -prune -o -name '*.java' -print | sort > .xss/index.txt",
+        ],
+        sourcePathspecs: ['*.java'],
+        setupSteps: this.ciSetupSteps,
+      });
     }
   }
 

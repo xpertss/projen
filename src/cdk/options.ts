@@ -1,4 +1,5 @@
 import { github } from 'projen';
+import { CommonCodeOptions } from '../common/code-options';
 import { SonarScanOptions } from '../common/sonar-options';
 
 export type EdgeResource =
@@ -21,7 +22,7 @@ export interface EcrEcsOptions {
   readonly externalImageSource?: boolean;
 }
 
-export interface CommonCdkOptions extends SonarScanOptions {
+export interface CommonCdkOptions extends SonarScanOptions, CommonCodeOptions {
   readonly name: string;
 
   /** @default "2.273.0" */
