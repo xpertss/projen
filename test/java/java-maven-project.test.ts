@@ -431,11 +431,16 @@ describe('workflows', () => {
   test('codeindex.yml indexes from the repo root into .xss/ and commits it straight to main', () => {
     for (const project of [maven(), reactor()]) {
       const snapshot = synthSnapshot(project);
-      expect(snapshot['.projen/tasks.json'].tasks.codeindex.steps).toEqual([
-        {
-          exec: "mkdir -p .xss && find . -path ./node_modules -prune -o -name target -prune -o -name '*.java' -print | sort > .xss/index.txt",
-        },
-      ]);
+      const steps = snapshot['.projen/tasks.json'].tasks.codeindex.steps;
+      expect(steps).toHaveLength(3);
+      // The build runs with -Dscip (tests are compiled, not run), writing target/index.scip;
+      // the task then copies it into .xss/ and normalizes it, last.
+      expect(steps[0].exec).toBe('mvn -B clean verify -DskipTests -Dscip');
+      expect(steps[1].exec).toContain("copyFileSync('target/index.scip','.xss/index.scip')");
+      expect(steps[1].exec).toContain('.xss/index.txt');
+      expect(steps[2].exec).toBe(
+        'node node_modules/@xpertss/projen-types/lib/common/scip-index-normalizer.js .xss/index.scip',
+      );
 
       const codeindex = snapshot['.github/workflows/codeindex.yml'];
       expect(codeindex.on.push).toEqual({ branches: ['main'] });
@@ -461,6 +466,57 @@ describe('workflows', () => {
       });
       expect(commitStep.with.commit_message).toMatch(/^chore:/);
     }
+  });
+
+  test('the scip profile is off unless -Dscip is set, and only active in modules with sources', () => {
+    for (const project of [maven(), reactor()]) {
+      const pom: string = synthSnapshot(project)['pom.xml'];
+      const profile = pom.slice(pom.indexOf('<profile>'), pom.indexOf('</profile>'));
+      expect(pom.match(/<profile>/g)).toHaveLength(1);
+      expect(profile).toContain('<id>scip</id>');
+      // Both conditions must hold: the property, and a module with sources (the
+      // pom-packaging parent of a reactor has none and must not aggregate).
+      expect(profile).toMatch(/<property>\s*<name>scip<\/name>\s*<\/property>/);
+      expect(profile).toContain('<exists>${basedir}/src/main/java</exists>');
+      // Nothing about the index outside the profile: an ordinary build is unchanged.
+      const outside = pom.slice(0, pom.indexOf('<profiles>'));
+      expect(outside).not.toContain('scip');
+      expect(outside).not.toContain('exec-maven-plugin');
+    }
+  });
+
+  test('the scip profile compiles with the javac plugin and merges its output after test-compile', () => {
+    const pom: string = synthSnapshot(maven())['pom.xml'];
+    // scip-javac as one -Xplugin string, forked, with the javac exports JDK 17+ needs
+    expect(pom).toContain('<artifactId>scip-javac</artifactId>');
+    expect(pom).toMatch(/<artifactId>scip-javac<\/artifactId>\s*<version>0\.13\.1<\/version>\s*<scope>provided<\/scope>/);
+    expect(pom).toContain('<fork>true</fork>');
+    expect(pom).toContain(
+      '<arg>-Xplugin:scip -sourceroot:${maven.multiModuleProjectDirectory} -targetroot:${maven.multiModuleProjectDirectory}/target/scip-targetroot</arg>',
+    );
+    for (const pkg of ['model', 'api', 'tree', 'util', 'code']) {
+      expect(pom).toContain(`<arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.${pkg}=ALL-UNNAMED</arg>`);
+    }
+    // aggregate runs after test-compile (so tests are indexed) and writes under target/
+    expect(pom).toContain('<phase>process-test-classes</phase>');
+    expect(pom).toContain('<mainClass>org.scip_code.scip_java.ScipJava</mainClass>');
+    expect(pom).toContain('<argument>${maven.multiModuleProjectDirectory}/target/index.scip</argument>');
+    expect(pom).toContain('<includePluginDependencies>true</includePluginDependencies>');
+    // the Windows shim, pinned, next to scip-java
+    expect(pom).toMatch(/<artifactId>scip-aggregator-shim<\/artifactId>\s*<version>0\.13\.1-1<\/version>/);
+  });
+
+  test('.mvn/ marks the repository root, without taking over a maven.config', () => {
+    const snapshot = synthSnapshot(maven());
+    expect(snapshot['.mvn/README.md']).toBeDefined();
+    expect(snapshot['.mvn/maven.config']).toBeUndefined();
+  });
+
+  test('publishCodeIndex: false leaves no profile and no .mvn/', () => {
+    const snapshot = synthSnapshot(maven({ publishCodeIndex: false }));
+    expect(snapshot['pom.xml']).not.toContain('<profile>');
+    expect(snapshot['pom.xml']).not.toContain('scip');
+    expect(snapshot['.mvn/README.md']).toBeUndefined();
   });
 
   test('every Java type generates the code index; publishCodeIndex: false removes it', () => {

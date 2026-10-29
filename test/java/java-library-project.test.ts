@@ -32,8 +32,12 @@ test('default task re-runs the Node-side .projenrc.ts, not java.JavaProject\'s M
       exec: 'npx -y -p ts-node@10.9.2 -p typescript@6.0.3 ts-node --project tsconfig.projen.json .projenrc.ts',
     },
   ]);
-  expect(snapshot['pom.xml']).not.toContain('exec-maven-plugin');
-  expect(snapshot['pom.xml']).not.toContain('io.github.cdklabs');
+  // The exec plugin runs only the code index, inside the `scip` profile: it never
+  // runs projen from the Maven build.
+  const pom: string = snapshot['pom.xml'];
+  expect(pom.slice(0, pom.indexOf('<profiles>'))).not.toContain('exec-maven-plugin');
+  expect(pom).not.toContain('projen</argument>');
+  expect(pom).not.toContain('io.github.cdklabs');
 });
 
 test('sonar is opt-in via sonarHostUrl: sonar.yml is generated, and the Maven build never runs a sonar step', () => {

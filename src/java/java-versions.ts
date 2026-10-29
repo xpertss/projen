@@ -18,6 +18,13 @@ export const SPRING_BOOT_BOM = 'org.springframework.boot/spring-boot-dependencie
 export const SPRING_BOOT_MAVEN_PLUGIN = 'org.springframework.boot/spring-boot-maven-plugin';
 export const FLYWAY_MAVEN_PLUGIN = 'org.flywaydb/flyway-maven-plugin';
 export const VERSIONS_MAVEN_PLUGIN = 'org.codehaus.mojo/versions-maven-plugin';
+export const EXEC_MAVEN_PLUGIN = 'org.codehaus.mojo/exec-maven-plugin';
+// The SCIP code index (F025): the javac plugin, the CLI that merges its output,
+// and the temporary patch for `ScipWriter` on Windows (F027; drop it, and raise
+// the pins, once a scip-aggregator release contains the fix).
+export const SCIP_JAVAC = 'org.scip-code/scip-javac';
+export const SCIP_JAVA = 'org.scip-code/scip-java';
+export const SCIP_AGGREGATOR_SHIM = 'org.xpertss/scip-aggregator-shim';
 
 /** The Java line used when a project sets no `javaVersion`. */
 export const DEFAULT_JAVA_VERSION = '21';
@@ -36,6 +43,10 @@ const SHARED_PLUGIN_VERSIONS: Record<string, string> = {
   [MAVEN_JAVADOC_PLUGIN]: '3.12.0',
   [MAVEN_SOURCE_PLUGIN]: '3.4.0',
   [VERSIONS_MAVEN_PLUGIN]: '2.22.0',
+  [EXEC_MAVEN_PLUGIN]: '3.5.0',
+  [SCIP_JAVAC]: '0.13.1',
+  [SCIP_JAVA]: '0.13.1',
+  [SCIP_AGGREGATOR_SHIM]: '0.13.1-1',
 };
 
 // Libraries whose current major needs Java 17: JUnit 6, Spring Boot 3+/4,

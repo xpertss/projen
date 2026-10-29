@@ -88,6 +88,28 @@ export interface MavenPomOptions {
   readonly parent?: java.ParentPom;
 }
 
+/**
+ * A `<profile>` of the pom: when it is active, and what it adds.
+ *
+ * @jsii ignore
+ */
+export interface MavenProfileOptions {
+  readonly id: string;
+
+  /** All the conditions given must hold (Maven 3.2.2+). */
+  readonly activation: {
+    /** Active when the property is set (`-Dname`), or has this value. */
+    readonly property?: { readonly name: string; readonly value?: string };
+    /** Active when the file or directory exists. `${basedir}` is the module. */
+    readonly fileExists?: string;
+  };
+
+  /** `groupId/artifactId[@version]`, with an optional scope. */
+  readonly dependencies?: ReadonlyArray<{ readonly spec: string; readonly scope?: string }>;
+
+  readonly plugins?: ReadonlyArray<{ readonly spec: string; readonly options?: java.PluginOptions }>;
+}
+
 interface DependencyEntry {
   readonly coords: MavenCoordinates;
   readonly scope?: string;
@@ -149,6 +171,7 @@ export class MavenPom extends Component {
   private readonly plugins = new Map<string, PluginEntry>();
   private readonly repositories: java.MavenRepository[] = [];
   private readonly pluginRepositories: java.MavenRepository[] = [];
+  private readonly profiles: MavenProfileOptions[] = [];
 
   constructor(project: Project, options: MavenPomOptions) {
     super(project);
@@ -276,6 +299,19 @@ export class MavenPom extends Component {
     this.pluginRepositories.push(repository);
   }
 
+  /**
+   * Adds a `<profile>`. A profile in a reactor parent is evaluated again for
+   * each module that inherits it, with `${basedir}` set to that module.
+   *
+   * @jsii ignore
+   */
+  public addProfile(profile: MavenProfileOptions): void {
+    if (this.profiles.some((p) => p.id === profile.id)) {
+      throw new Error(`Profile "${profile.id}" is already defined in ${this.filePath}.`);
+    }
+    this.profiles.push(profile);
+  }
+
   private mergeDependency(
     target: Map<string, DependencyEntry>,
     entry: DependencyEntry,
@@ -396,9 +432,34 @@ export class MavenPom extends Component {
           ? { dependency: [...this.deps.values()].map(renderDependency) }
           : undefined,
         build: renderBuild(plugins, pluginManagement),
+        profiles: this.profiles.length
+          ? { profile: this.profiles.map(renderProfile) }
+          : undefined,
       },
     }));
   }
+}
+
+function renderProfile(profile: MavenProfileOptions): any {
+  const { property, fileExists } = profile.activation;
+  const plugins = (profile.plugins ?? []).map((p) =>
+    renderPlugin(parseMavenSpec(p.spec), p.options ?? {}),
+  );
+  return {
+    id: profile.id,
+    activation: {
+      property: property ? { name: property.name, value: property.value } : undefined,
+      file: fileExists ? { exists: fileExists } : undefined,
+    },
+    dependencies: profile.dependencies?.length
+      ? {
+        dependency: profile.dependencies.map((d) =>
+          renderDependency({ coords: parseMavenSpec(d.spec), scope: d.scope }),
+        ),
+      }
+      : undefined,
+    build: plugins.length ? { plugins: { plugin: plugins } } : undefined,
+  };
 }
 
 function renderBuild(plugins: any[], pluginManagement: any[]): any {
