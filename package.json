@@ -38,7 +38,7 @@
   "devDependencies": {
     "@stylistic/eslint-plugin": "^2",
     "@types/jest": "^30.0.0",
-    "@types/node": "^26.6.5",
+    "@types/node": "^26.6.6",
     "@typescript-eslint/eslint-plugin": "^8",
     "@typescript-eslint/parser": "^8",
     "commit-and-tag-version": "^13",
@@ -49,11 +49,11 @@
     "jest": "^30.5.2",
     "jest-junit": "^17",
     "jsii": "~6.0.0",
-    "jsii-diff": "^1.141.0",
+    "jsii-diff": "^1.142.0",
     "jsii-docgen": "^10.5.0",
-    "jsii-pacmak": "^1.141.0",
+    "jsii-pacmak": "^1.142.0",
     "jsii-rosetta": "~6.0.0",
-    "projen": "^0.104.8",
+    "projen": "^0.104.19",
     "ts-jest": "^29.4.15",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.3",
@@ -61,7 +61,7 @@
   },
   "peerDependencies": {
     "constructs": "^10.8.1",
-    "projen": "^0.104.8"
+    "projen": "^0.104.19"
   },
   "keywords": [
     "aws",
