@@ -17,6 +17,13 @@ const BASE: JavaMavenProjectOptions = {
   artifactId: 'maven-test',
 };
 
+// What Maven Central requires of a library's pom.
+const LIBRARY = {
+  description: 'A test library',
+  url: 'https://github.com/xpertss/maven-test',
+  developers: [{ name: 'Test Dev' }],
+};
+
 function maven(options: Partial<JavaMavenProjectOptions> = {}): JavaMavenProject {
   return new JavaMavenProject({ ...BASE, ...options });
 }
@@ -328,7 +335,7 @@ describe('exact versions only', () => {
     const types = [
       maven(),
       reactor(),
-      new JavaLibraryProject({ ...BASE }),
+      new JavaLibraryProject({ ...BASE, ...LIBRARY }),
       new JavaAppProject({ ...BASE }),
       new JavaSpringBootProject({ ...BASE }),
       new JavaServiceProject({ ...BASE }),
@@ -522,7 +529,7 @@ describe('workflows', () => {
   test('every Java type generates the code index; publishCodeIndex: false removes it', () => {
     const types = [
       (o: object) => new JavaMavenProject({ ...BASE, ...o }),
-      (o: object) => new JavaLibraryProject({ ...BASE, ...o }),
+      (o: object) => new JavaLibraryProject({ ...BASE, ...LIBRARY, ...o }),
       (o: object) => new JavaAppProject({ ...BASE, ...o }),
       (o: object) => new JavaSpringBootProject({ ...BASE, ...o }),
       (o: object) => new JavaServiceProject({ ...BASE, ...o }),

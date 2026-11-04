@@ -142,9 +142,41 @@ export interface JavaSpringBootProjectOptions extends CommonJavaOptions {
   readonly springBootVersion?: string;
 }
 
+/** A `<developer>` of the pom, which Maven Central requires. */
+export interface JavaDeveloper {
+  readonly name: string;
+
+  /** @default - none */
+  readonly url?: string;
+
+  /** @default - none */
+  readonly organization?: string;
+}
+
 export interface JavaLibraryProjectOptions extends CommonJavaOptions {
-  /** Use Maven Central's OIDC trusted-publishing flow instead of secret-based GPG signing. */
-  readonly mavenCentralOidc?: boolean;
+  /**
+   * The pom's `<developers>`. Required: synthesis fails without at least one
+   * (except while `projen new` scaffolds the project, which cannot pass a
+   * list). Same for `description` and `url`, which are optional on the other
+   * Java types: Maven Central rejects a bundle without them.
+   *
+   * The pom's `<url>` must be the GitHub repository (`https://github.com/<owner>/<repo>`),
+   * from which `<scm>` is derived. The `<license>` is the `license` option.
+   *
+   * @default - none (a synth error)
+   */
+  readonly developers?: JavaDeveloper[];
+
+  /**
+   * The lowest major version a release gets: when the computed release
+   * version's major is below it, the release is `<minMajorVersion>.0.0`. Set
+   * to `1` to leave the `0.x` phase with the next release. Same behavior as
+   * the option of that name on the other project types; see the versioning
+   * guide in the README.
+   *
+   * @default - unset
+   */
+  readonly minMajorVersion?: number;
 }
 
 export interface CdkDeployHookOptions {

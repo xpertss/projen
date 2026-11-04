@@ -21,7 +21,7 @@ The Java types are layered, so pick the lowest layer that does what you need:
 
 ```text
 JavaMavenProject            java_maven         Maven only; single- or multi-module; any supported Java line
-├── JavaLibraryProject      java_library       + Maven Central publish, source/javadoc jars
+├── JavaLibraryProject      java_library       + Maven Central publish (signed, from Actions), release profile
 ├── JavaAppProject          java_app           + GitHub Packages publish
 └── JavaSpringBootProject   java_spring_boot   + Spring Boot BOM and executable-jar repackaging; no Docker/Flyway/CDK
     └── JavaServiceProject  java_service       + Docker publish, Flyway, CDK deploy hook (single-module)
@@ -365,18 +365,28 @@ const project = new JavaLibraryProject({
   name: 'common-utils',
   groupId: 'org.xpertss',
   artifactId: 'common-utils',
-  version: '1.0.0',
+  version: '0.1.0',
+  description: 'Shared utilities',
+  url: 'https://github.com/xpertss/common-utils',   // the GitHub repository: <scm> is derived from it
+  developers: [{ name: 'Chris Floersch', organization: 'Xpert Software' }],
   sonarHostUrl: 'https://sonarcloud.io',   // opt-in: adds sonar.yml (see SonarCloud)
-  mavenCentralOidc: true,
 });
 
 project.synth();
 ```
 
+`description`, `url` and `developers` are required: Maven Central rejects a bundle whose pom lacks them, so synthesis fails without them. (`projen new` cannot pass `developers`, so it scaffolds without them; the first `npx projen` after you add them to `.projenrc.ts` enforces them.) The `<license>` is the `license` option, `MIT` by default.
+
 You get everything from [`JavaMavenProject`](#javamavenproject), so modules work here too, plus:
 
-- `maven-source-plugin` and `maven-javadoc-plugin`, attaching the `-sources`/`-javadoc` jars Maven Central requires. In a multi-module library every module attaches them.
-- `.github/workflows/publish-maven-central.yml` - manual dispatch running `mvn -B deploy -P release`. With `mavenCentralOidc: true` it uses Maven Central's OIDC trusted publishing (no GPG secrets needed); otherwise it expects the secrets `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE`, `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`.
+- **A `release` profile** in the root pom, switched on only by `-P release`: `maven-source-plugin` and `maven-javadoc-plugin` (the `-sources`/`-javadoc` jars Central requires), `maven-gpg-plugin` (signs every artifact; the passphrase comes from `MAVEN_GPG_PASSPHRASE`), `flatten-maven-plugin` (writes the real version into the deployed pom) and `central-publishing-maven-plugin` (uploads to the Central Portal; server id `central`). An ordinary build builds no javadoc, signs nothing and uploads nothing, so a javadoc error shows up in the publish workflow (`dry_run`), not in PR builds. In a multi-module library every module inherits the profile; the publishing plugin is declared once, in the root pom, and uploads the whole reactor as one bundle. The same `mvn deploy -P release` works from a developer machine with the key in the local keyring and the Central token in `~/.m2/settings.xml` under server id `central`.
+- **`<version>${revision}</version>`**, with `<revision>` set to `<version>-SNAPSHOT`. Local and PR builds are `0.1.0-SNAPSHOT`; the release version is computed when you publish and is never committed, so `main` needs no version-bump commit. Read the released version from the `vX.Y.Z` tag or GitHub Release, not from `pom.xml`.
+- **`npx projen release:version`**: prints the next version from the commits since the latest `vX.Y.Z` tag, by the same rules as the other project types: `feat:` and `fix:` release, `!` or a `BREAKING CHANGE:` paragraph on one of them is breaking (major; minor below `1.0.0`), `feat:` is minor (patch below `1.0.0`), `fix:` is patch, the highest commit wins, and `docs:`/`ci:`/`chore:` alone release nothing (the run is a green no-op). With no tag yet it publishes `version` as the first release. `minMajorVersion: 1` makes the next release `1.0.0`. Run it locally to see what a publish would release.
+- **`.github/workflows/publish-maven-central.yml`**: manual dispatch, from `main` only, in the `maven-central` environment (add required reviewers there). It computes the version, signs, uploads, then tags `vX.Y.Z` and creates a GitHub Release, in that order, so a failed upload never leaves a tag. Inputs: `version` (release this version instead of the computed one), `dry_run` (build and sign only: upload, tag and release nothing; the way to prove the secrets work) and `auto_publish` (default `true`; `false` leaves the validated bundle in the Central Portal to publish or drop by hand, and prints the tag command instead of tagging). The first release of a new library should use `auto_publish: false`. The signing key and the Central token are GitHub secrets, set up once.
+
+To check the release build without uploading, run `mvn -B verify -P release` with a **throwaway** GPG key in the local keyring and `MAVEN_GPG_PASSPHRASE` set: it produces the jars and an `.asc` for each. Never run `mvn deploy -P release` unless you mean to upload. On Windows, Git for Windows' bundled `gpg` can fail when Maven hands it a Windows-style home directory; use Gpg4win's `gpg` (`-Dgpg.executable=<path>`) or WSL.
+
+The Central publish needs the four secrets in [Required GitHub secrets](#required-github-secrets). `mavenCentralOidc` is gone: Central's Maven publishing has no OIDC option.
 
 ### JavaSpringBootProject
 
@@ -641,7 +651,9 @@ Java project types (`JavaMavenProjectOptions` and everything built on it - `Java
 | `groupId` | - (required) | Maven group id |
 | `artifactId` | - (required) | Maven artifact id (of the reactor parent, in a multi-module project) |
 | `version` | `0.1.0` | Maven version; must be exact |
-| `description` / `url` | - | Written to the root pom |
+| `description` / `url` | - (required for `JavaLibraryProject`) | Written to the root pom; on a library `url` must be the GitHub repository, from which `<scm>` is derived |
+| `developers` | - (`JavaLibraryProject`, required) | The pom's `<developers>`: `{ name, url?, organization? }` |
+| `minMajorVersion` | - (`JavaLibraryProject` only) | Lowest major a release gets: a computed version below it becomes `<minMajorVersion>.0.0` (set `1` to leave `0.x`) |
 | `javaVersion` | `21` | Java line: `17`, `21`, `25` - see [Java version support](#java-version-support) |
 | `javaDistribution` | `temurin` | `actions/setup-java` distribution for CI |
 | `packaging` | `jar` | Root packaging while the project has no modules; a project with modules is always `pom` |
@@ -764,7 +776,7 @@ Requires the `SONAR_TOKEN` secret (rename it with `sonarTokenSecret`).
 | `PROJEN_APP_ID` / `PROJEN_APP_PRIVATE_KEY` | CDK/Java types (not the action types) | The `builder` GitHub App used by core projen's self-mutation and dependency-upgrade PRs; a short-lived token is minted per run. Override via `projenCredentials` |
 | `SONAR_TOKEN` | any type with `sonarHostUrl` set | SonarCloud scan in `sonar.yml`; override the secret name via `sonarTokenSecret` |
 | `DOCKER_USERNAME` / `DOCKER_PASSWORD` | `JavaServiceProject` | Docker image push |
-| `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE`, `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD` | `JavaLibraryProject` without `mavenCentralOidc` | Not needed with OIDC trusted publishing |
+| `MAVEN_GPG_PRIVATE_KEY`, `MAVEN_GPG_PASSPHRASE`, `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD` | `JavaLibraryProject` | Intended to be **organization** secrets, shared by every library repo; the workflow reads the names and does not care whether they are repo- or org-level. Passed only to the publish step. The key must be the primary signing key, published to a keyserver; the user is the Central user token. |
 
 ## Customizing `.gitignore`
 

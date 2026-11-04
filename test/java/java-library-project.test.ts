@@ -1,9 +1,17 @@
 import { JavaLibraryProject } from '../../src';
 import { synthSnapshot } from '../util';
 
+// What Maven Central requires of a library's pom.
+const LIB = {
+  description: 'A test library',
+  url: 'https://github.com/xpertss/lib-test',
+  developers: [{ name: 'Test Dev' }],
+};
+
 test('synthesizes pom.xml, build workflow, publish workflow, and code index by default', () => {
   const snapshot = synthSnapshot(
     new JavaLibraryProject({
+      ...LIB,
       name: 'lib-test',
       groupId: 'com.example',
       artifactId: 'lib-test',
@@ -21,6 +29,7 @@ test('synthesizes pom.xml, build workflow, publish workflow, and code index by d
 test('default task re-runs the Node-side .projenrc.ts, not java.JavaProject\'s Maven-native projenrc', () => {
   const snapshot = synthSnapshot(
     new JavaLibraryProject({
+      ...LIB,
       name: 'lib-test',
       groupId: 'com.example',
       artifactId: 'lib-test',
@@ -43,6 +52,7 @@ test('default task re-runs the Node-side .projenrc.ts, not java.JavaProject\'s M
 test('sonar is opt-in via sonarHostUrl: sonar.yml is generated, and the Maven build never runs a sonar step', () => {
   const withSonar = synthSnapshot(
     new JavaLibraryProject({
+      ...LIB,
       name: 'lib-test',
       groupId: 'com.example',
       artifactId: 'lib-test',
@@ -51,6 +61,7 @@ test('sonar is opt-in via sonarHostUrl: sonar.yml is generated, and the Maven bu
   );
   const withoutSonar = synthSnapshot(
     new JavaLibraryProject({
+      ...LIB,
       name: 'lib-test',
       groupId: 'com.example',
       artifactId: 'lib-test',
@@ -78,6 +89,7 @@ test('sonar is opt-in via sonarHostUrl: sonar.yml is generated, and the Maven bu
 test('upgrade workflow is report-only', () => {
   const snapshot = synthSnapshot(
     new JavaLibraryProject({
+      ...LIB,
       name: 'lib-test',
       groupId: 'com.example',
       artifactId: 'lib-test',
@@ -91,29 +103,13 @@ test('upgrade workflow is report-only', () => {
   expect(JSON.stringify(upgrade)).not.toContain('create-pull-request');
 });
 
-test('attaches source and javadoc jars, single- and multi-module', () => {
-  const single = new JavaLibraryProject({
-    name: 'lib-test',
-    groupId: 'com.example',
-    artifactId: 'lib-test',
-  });
-  const multi = new JavaLibraryProject({
-    name: 'lib-test',
-    groupId: 'com.example',
-    artifactId: 'lib-parent',
-  });
-  multi.addModule({ dir: 'core', artifactId: 'lib-core' });
-
-  for (const project of [single, multi]) {
-    const pom: string = synthSnapshot(project)['pom.xml'];
-    expect(pom).toMatch(/<id>attach-sources<\/id>\s*<goals>\s*<goal>jar-no-fork<\/goal>/);
-    expect(pom).toMatch(/<id>attach-javadocs<\/id>\s*<goals>\s*<goal>jar<\/goal>/);
-  }
-});
+// Source and javadoc jars, signing and publishing (the `release` profile),
+// and the publish workflow: see java-library-central.test.ts.
 
 test('gitignore excludes JetBrains IDE state and /spec/', () => {
   const snapshot = synthSnapshot(
     new JavaLibraryProject({
+      ...LIB,
       name: 'lib-test',
       groupId: 'com.example',
       artifactId: 'lib-test',
