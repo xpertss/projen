@@ -161,4 +161,4 @@ jobs:
           NPM_REGISTRY: registry.npmjs.org
           NPM_TRUSTED_PUBLISHER: "true"
           PUBLIB_DRYRUN: ${{ inputs.dry_run }}
-        run: npx '-p' 'publib@latest' 'publib-npm'
+        run: npx '-p' 'publib@0.3.12' 'publib-npm'

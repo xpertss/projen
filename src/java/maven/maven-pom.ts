@@ -11,7 +11,7 @@ const POM_XML_ATTRS = {
 // Characters that make a version a range or a semver expression rather than
 // one exact version. Maven ranges make builds non-reproducible, so a spec
 // carrying one is rejected outright instead of being converted.
-const NON_EXACT_VERSION = /[\^~*\[\](),<>\s]|^x$|\.x(\.|$)/i;
+const NON_EXACT_VERSION = /[\^~*[\](),<>\s]|^x$|\.x(\.|$)/i;
 
 /** Parsed `groupId/artifactId[@version]` spec. */
 export interface MavenCoordinates {

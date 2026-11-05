@@ -10,6 +10,10 @@ const project = new cdk.JsiiProject({
   authorOrganization: false,
   description: 'Projen project types for CDK/TypeScript and Java/Maven projects',
   jsiiVersion: '~6.0.0',
+  // Pin the publib release tool (release.yml's `npx -p publib@... publib-npm`)
+  // to an exact version; projen's default is the floating `latest` tag, so
+  // every release would otherwise run whatever publib published last.
+  jsiiReleaseVersion: '0.3.12',
   keywords: ['projen', 'cdk', 'java', 'aws', 'maven'],
   license: 'Apache-2.0',
   name: 'projen-types',
