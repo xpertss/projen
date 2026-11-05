@@ -86,9 +86,14 @@ function highestLevel(commits: CommitMessage[]): Level | undefined {
     if (!m || RELEASE_COMMIT.test(c.subject)) {
       continue;
     }
-    const level: Level = m[3] || BREAKING_BODY.test(c.body)
-      ? 'major'
-      : m[1] === 'feat' ? 'minor' : 'patch';
+    let level: Level;
+    if (m[3] || BREAKING_BODY.test(c.body)) {
+      level = 'major';
+    } else if (m[1] === 'feat') {
+      level = 'minor';
+    } else {
+      level = 'patch';
+    }
     highest = Math.max(highest, rank.indexOf(level));
   }
   return highest === -1 ? undefined : rank[highest];
@@ -96,9 +101,10 @@ function highestLevel(commits: CommitMessage[]): Level | undefined {
 
 function bump([major, minor, patch]: number[], level: Level): number[] {
   // Pre-major: every level moves down one, and a patch stays a patch.
-  const effective: Level = major < 1
-    ? (level === 'major' ? 'minor' : 'patch')
-    : level;
+  let effective: Level = level;
+  if (major < 1) {
+    effective = level === 'major' ? 'minor' : 'patch';
+  }
   if (effective === 'major') {
     return [major + 1, 0, 0];
   }
