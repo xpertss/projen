@@ -21,7 +21,7 @@ const TYPES: Record<string, () => any> = {
   JavaServiceProject: () => new JavaServiceProject(JAVA_BASE),
   JavaAppProject: () => new JavaAppProject(JAVA_BASE),
   JavaSpringBootProject: () => new JavaSpringBootProject(JAVA_BASE),
-  JavaLibraryProject: () => new JavaLibraryProject(JAVA_BASE),
+  JavaLibraryProject: () => new JavaLibraryProject({ ...JAVA_BASE, description: 'A test library', url: 'https://github.com/xpertss/maven-test', developers: [{ name: 'Test Dev' }] }),
   GitHubActionProject: () => new GitHubActionProject({ name: 'action-test' }),
 };
 

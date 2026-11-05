@@ -9125,11 +9125,15 @@ this task should synthesize the project files.
 
 ### JavaLibraryProject <a name="JavaLibraryProject" id="@xpertss/projen-types.JavaLibraryProject"></a>
 
-Reusable Java library, published to Maven Central.
+Reusable Java library, published to Maven Central from GitHub Actions.
 
-Single- or
-multi-module; attaches the source and javadoc jars Central requires (in a
-reactor, every module inherits them).
+The pom's version is `${revision}`, set to `<version>-SNAPSHOT`: the release
+version is computed from the commits when the publish workflow runs and is
+never committed. The sources jar, javadoc jar, GPG signatures and the
+Central upload belong to a `release` profile that only `-P release` turns
+on, so an ordinary build neither builds javadoc nor signs nor uploads. In a
+reactor every module inherits the profile and the publishing plugin, which
+is declared once in the root pom and uploads the whole reactor as one bundle.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.JavaLibraryProject.Initializer"></a>
 
@@ -13305,7 +13309,13 @@ this task should synthesize the project files.
 
 ### MavenCentralPublish <a name="MavenCentralPublish" id="@xpertss/projen-types.MavenCentralPublish"></a>
 
-On-demand publish workflow to Maven Central, with GPG signing (secrets) or OIDC trusted publishing.
+On-demand publish workflow to Maven Central (F028).
+
+The version is computed
+from the commits since the last `vX.Y.Z` tag and never committed; the run
+signs with the GPG key and uploads with the Central token, both read from
+GitHub secrets; after a successful upload it tags the commit and creates a
+GitHub Release. Needs the pom's `release` profile (see `JavaLibraryProject`).
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.MavenCentralPublish.Initializer"></a>
 
@@ -13954,6 +13964,8 @@ new MavenPom(project: Project, options: MavenPomOptions)
 | <code><a href="#@xpertss/projen-types.MavenPom.synthesize">synthesize</a></code> | Synthesizes files to the project output directory. |
 | <code><a href="#@xpertss/projen-types.MavenPom.addBom">addBom</a></code> | Imports a BOM into `<dependencyManagement>` (`type=pom`, `scope=import`). |
 | <code><a href="#@xpertss/projen-types.MavenPom.addDependency">addDependency</a></code> | Adds a dependency (compile scope unless `scope` is given). |
+| <code><a href="#@xpertss/projen-types.MavenPom.addDeveloper">addDeveloper</a></code> | Adds a `<developer>`. |
+| <code><a href="#@xpertss/projen-types.MavenPom.addLicense">addLicense</a></code> | Adds a `<license>`. |
 | <code><a href="#@xpertss/projen-types.MavenPom.addManagedDependency">addManagedDependency</a></code> | Pins a version in `<dependencyManagement>` without adding the dependency itself. |
 | <code><a href="#@xpertss/projen-types.MavenPom.addManagedPlugin">addManagedPlugin</a></code> | Adds a plugin to `<build><pluginManagement>` only: it pins the version (and optional default configuration) for this pom and its modules without running the plugin here. |
 | <code><a href="#@xpertss/projen-types.MavenPom.addModule">addModule</a></code> | Adds a `<module>` (a path relative to this pom's directory). |
@@ -13964,6 +13976,7 @@ new MavenPom(project: Project, options: MavenPomOptions)
 | <code><a href="#@xpertss/projen-types.MavenPom.addTestDependency">addTestDependency</a></code> | Adds a `test`-scoped dependency. |
 | <code><a href="#@xpertss/projen-types.MavenPom.hasPlugin">hasPlugin</a></code> | True if a plugin with these `groupId/artifactId` coordinates is in `<plugins>`. |
 | <code><a href="#@xpertss/projen-types.MavenPom.removeBom">removeBom</a></code> | Removes a BOM import added by `addBom`, if present. |
+| <code><a href="#@xpertss/projen-types.MavenPom.setScm">setScm</a></code> | Sets the `<scm>` block. |
 
 ---
 
@@ -14102,6 +14115,40 @@ Adds a dependency (compile scope unless `scope` is given).
 - *Type:* string
 
 Maven scope (`test`, `provided`, `runtime`, ...).
+
+---
+
+##### `addDeveloper` <a name="addDeveloper" id="@xpertss/projen-types.MavenPom.addDeveloper"></a>
+
+```typescript
+public addDeveloper(developer: JavaDeveloper): void
+```
+
+Adds a `<developer>`.
+
+###### `developer`<sup>Required</sup> <a name="developer" id="@xpertss/projen-types.MavenPom.addDeveloper.parameter.developer"></a>
+
+- *Type:* <a href="#@xpertss/projen-types.JavaDeveloper">JavaDeveloper</a>
+
+---
+
+##### `addLicense` <a name="addLicense" id="@xpertss/projen-types.MavenPom.addLicense"></a>
+
+```typescript
+public addLicense(name: string, url: string): void
+```
+
+Adds a `<license>`.
+
+###### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.MavenPom.addLicense.parameter.name"></a>
+
+- *Type:* string
+
+---
+
+###### `url`<sup>Required</sup> <a name="url" id="@xpertss/projen-types.MavenPom.addLicense.parameter.url"></a>
+
+- *Type:* string
 
 ---
 
@@ -14262,6 +14309,32 @@ public removeBom(coordinates: string): void
 Removes a BOM import added by `addBom`, if present.
 
 ###### `coordinates`<sup>Required</sup> <a name="coordinates" id="@xpertss/projen-types.MavenPom.removeBom.parameter.coordinates"></a>
+
+- *Type:* string
+
+---
+
+##### `setScm` <a name="setScm" id="@xpertss/projen-types.MavenPom.setScm"></a>
+
+```typescript
+public setScm(url: string, connection: string, developerConnection: string): void
+```
+
+Sets the `<scm>` block.
+
+###### `url`<sup>Required</sup> <a name="url" id="@xpertss/projen-types.MavenPom.setScm.parameter.url"></a>
+
+- *Type:* string
+
+---
+
+###### `connection`<sup>Required</sup> <a name="connection" id="@xpertss/projen-types.MavenPom.setScm.parameter.connection"></a>
+
+- *Type:* string
+
+---
+
+###### `developerConnection`<sup>Required</sup> <a name="developerConnection" id="@xpertss/projen-types.MavenPom.setScm.parameter.developerConnection"></a>
 
 - *Type:* string
 
@@ -18514,6 +18587,60 @@ public readonly ghPackagesRegistry: string;
 
 ---
 
+### JavaDeveloper <a name="JavaDeveloper" id="@xpertss/projen-types.JavaDeveloper"></a>
+
+A `<developer>` of the pom, which Maven Central requires.
+
+#### Initializer <a name="Initializer" id="@xpertss/projen-types.JavaDeveloper.Initializer"></a>
+
+```typescript
+import { JavaDeveloper } from '@xpertss/projen-types'
+
+const javaDeveloper: JavaDeveloper = { ... }
+```
+
+#### Properties <a name="Properties" id="Properties"></a>
+
+| **Name** | **Type** | **Description** |
+| --- | --- | --- |
+| <code><a href="#@xpertss/projen-types.JavaDeveloper.property.name">name</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaDeveloper.property.organization">organization</a></code> | <code>string</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.JavaDeveloper.property.url">url</a></code> | <code>string</code> | *No description.* |
+
+---
+
+##### `name`<sup>Required</sup> <a name="name" id="@xpertss/projen-types.JavaDeveloper.property.name"></a>
+
+```typescript
+public readonly name: string;
+```
+
+- *Type:* string
+
+---
+
+##### `organization`<sup>Optional</sup> <a name="organization" id="@xpertss/projen-types.JavaDeveloper.property.organization"></a>
+
+```typescript
+public readonly organization: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+---
+
+##### `url`<sup>Optional</sup> <a name="url" id="@xpertss/projen-types.JavaDeveloper.property.url"></a>
+
+```typescript
+public readonly url: string;
+```
+
+- *Type:* string
+- *Default:* none
+
+---
+
 ### JavaLibraryProjectOptions <a name="JavaLibraryProjectOptions" id="@xpertss/projen-types.JavaLibraryProjectOptions"></a>
 
 #### Initializer <a name="Initializer" id="@xpertss/projen-types.JavaLibraryProjectOptions.Initializer"></a>
@@ -18554,7 +18681,8 @@ const javaLibraryProjectOptions: JavaLibraryProjectOptions = { ... }
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.upgradeWorkflow">upgradeWorkflow</a></code> | <code>boolean</code> | Generate the nightly `upgrade.yml` workflow, which reports available dependency and plugin updates in the job summary (it never edits files - versions are changed in `.projenrc.ts`). |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.url">url</a></code> | <code>string</code> | Project URL, written to the root pom. |
 | <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.version">version</a></code> | <code>string</code> | *No description.* |
-| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.mavenCentralOidc">mavenCentralOidc</a></code> | <code>boolean</code> | Use Maven Central's OIDC trusted-publishing flow instead of secret-based GPG signing. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.developers">developers</a></code> | <code><a href="#@xpertss/projen-types.JavaDeveloper">JavaDeveloper</a>[]</code> | The pom's `<developers>`. |
+| <code><a href="#@xpertss/projen-types.JavaLibraryProjectOptions.property.minMajorVersion">minMajorVersion</a></code> | <code>number</code> | The lowest major version a release gets: when the computed release version's major is below it, the release is `<minMajorVersion>.0.0`. Set to `1` to leave the `0.x` phase with the next release. Same behavior as the option of that name on the other project types; see the versioning guide in the README. |
 
 ---
 
@@ -18898,15 +19026,37 @@ public readonly version: string;
 
 ---
 
-##### `mavenCentralOidc`<sup>Optional</sup> <a name="mavenCentralOidc" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.mavenCentralOidc"></a>
+##### `developers`<sup>Optional</sup> <a name="developers" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.developers"></a>
 
 ```typescript
-public readonly mavenCentralOidc: boolean;
+public readonly developers: JavaDeveloper[];
 ```
 
-- *Type:* boolean
+- *Type:* <a href="#@xpertss/projen-types.JavaDeveloper">JavaDeveloper</a>[]
+- *Default:* none (a synth error)
 
-Use Maven Central's OIDC trusted-publishing flow instead of secret-based GPG signing.
+The pom's `<developers>`.
+
+Required: synthesis fails without at least one
+(except while `projen new` scaffolds the project, which cannot pass a
+list). Same for `description` and `url`, which are optional on the other
+Java types: Maven Central rejects a bundle without them.
+
+The pom's `<url>` must be the GitHub repository (`https://github.com/<owner>/<repo>`),
+from which `<scm>` is derived. The `<license>` is the `license` option.
+
+---
+
+##### `minMajorVersion`<sup>Optional</sup> <a name="minMajorVersion" id="@xpertss/projen-types.JavaLibraryProjectOptions.property.minMajorVersion"></a>
+
+```typescript
+public readonly minMajorVersion: number;
+```
+
+- *Type:* number
+- *Default:* unset
+
+The lowest major version a release gets: when the computed release version's major is below it, the release is `<minMajorVersion>.0.0`. Set to `1` to leave the `0.x` phase with the next release. Same behavior as the option of that name on the other project types; see the versioning guide in the README.
 
 ---
 
@@ -20178,18 +20328,34 @@ const mavenCentralPublishOptions: MavenCentralPublishOptions = { ... }
 
 | **Name** | **Type** | **Description** |
 | --- | --- | --- |
-| <code><a href="#@xpertss/projen-types.MavenCentralPublishOptions.property.mavenCentralOidc">mavenCentralOidc</a></code> | <code>boolean</code> | *No description.* |
+| <code><a href="#@xpertss/projen-types.MavenCentralPublishOptions.property.minMajorVersion">minMajorVersion</a></code> | <code>number</code> | When the computed release version's major is below this, the release is `<minMajorVersion>.0.0`. |
+| <code><a href="#@xpertss/projen-types.MavenCentralPublishOptions.property.version">version</a></code> | <code>string</code> | The version published first, when the repository has no `vX.Y.Z` tag yet. |
 
 ---
 
-##### `mavenCentralOidc`<sup>Optional</sup> <a name="mavenCentralOidc" id="@xpertss/projen-types.MavenCentralPublishOptions.property.mavenCentralOidc"></a>
+##### `minMajorVersion`<sup>Optional</sup> <a name="minMajorVersion" id="@xpertss/projen-types.MavenCentralPublishOptions.property.minMajorVersion"></a>
 
 ```typescript
-public readonly mavenCentralOidc: boolean;
+public readonly minMajorVersion: number;
 ```
 
-- *Type:* boolean
-- *Default:* false
+- *Type:* number
+- *Default:* unset
+
+When the computed release version's major is below this, the release is `<minMajorVersion>.0.0`.
+
+---
+
+##### `version`<sup>Optional</sup> <a name="version" id="@xpertss/projen-types.MavenCentralPublishOptions.property.version"></a>
+
+```typescript
+public readonly version: string;
+```
+
+- *Type:* string
+- *Default:* "0.1.0"
+
+The version published first, when the repository has no `vX.Y.Z` tag yet.
 
 ---
 

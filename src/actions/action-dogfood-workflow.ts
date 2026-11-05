@@ -133,6 +133,37 @@ const UNCONFIGURED_STEPS: string[] = [
   'exit 1',
 ];
 
+function assertScenarioConfigured(options: ActionDogfoodOptions): void {
+  if (!options.scenario || options.scenario.length === 0) {
+    throw new Error(
+      'ActionDogfoodWorkflow requires at least one dogfood.scenario step',
+    );
+  }
+  if (!options.cleanup || options.cleanup.length === 0) {
+    throw new Error('ActionDogfoodWorkflow requires dogfood.cleanup');
+  }
+}
+
+/**
+ * Self-trigger guard: a scenario whose action pushes a dedicated test branch
+ * and opens a PR against `main` would otherwise re-trigger this workflow on
+ * its own PR (`opened`, then `synchronize` on every re-push) - and since
+ * every run pushes a fresh fixture commit, the chain never terminates.
+ * `github.head_ref` is only populated on pull_request events, so the first
+ * disjunct keeps dispatch and cron runs (head_ref empty) unaffected. Branch
+ * values that are expressions cannot be compared statically, so they are
+ * excluded from the guard.
+ */
+function selfTriggerGuardFor(branches: string[]): string | undefined {
+  if (branches.length === 1) {
+    return `github.event_name != 'pull_request' || github.head_ref != '${branches[0]}'`;
+  }
+  if (branches.length > 1) {
+    return `github.event_name != 'pull_request' || !contains(fromJSON('${JSON.stringify(branches)}'), github.head_ref)`;
+  }
+  return undefined;
+}
+
 /**
  * Per AD-001's dogfood test: the composite action is run **against this
  * repo**, end-to-end, via a local `uses: ./` reference - no external harness.
@@ -155,14 +186,7 @@ export class ActionDogfoodWorkflow extends Component {
     super(scope, 'ActionDogfoodWorkflow');
 
     if (options) {
-      if (!options.scenario || options.scenario.length === 0) {
-        throw new Error(
-          'ActionDogfoodWorkflow requires at least one dogfood.scenario step',
-        );
-      }
-      if (!options.cleanup || options.cleanup.length === 0) {
-        throw new Error('ActionDogfoodWorkflow requires dogfood.cleanup');
-      }
+      assertScenarioConfigured(options);
     }
 
     const gh = scope.github;
@@ -250,21 +274,7 @@ export class ActionDogfoodWorkflow extends Component {
       ...(options ? { schedule: [{ cron: NIGHTLY_DOGFOOD_SCHEDULE }] } : {}),
     });
 
-    // Self-trigger guard: a scenario whose action pushes a dedicated test
-    // branch and opens a PR against `main` would otherwise re-trigger this
-    // workflow on its own PR (`opened`, then `synchronize` on every
-    // re-push) - and since every run pushes a fresh fixture commit, the
-    // chain never terminates. `github.head_ref` is only populated on
-    // pull_request events, so the first disjunct keeps dispatch and cron
-    // runs (head_ref empty) unaffected. Branch values that are expressions
-    // cannot be compared statically, so they are excluded from the guard.
-    const selfTriggerBranches = dogfoodBranches(options?.scenario);
-    const selfTriggerGuard =
-      selfTriggerBranches.length === 1
-        ? `github.event_name != 'pull_request' || github.head_ref != '${selfTriggerBranches[0]}'`
-        : selfTriggerBranches.length > 1
-          ? `github.event_name != 'pull_request' || !contains(fromJSON('${JSON.stringify(selfTriggerBranches)}'), github.head_ref)`
-          : undefined;
+    const selfTriggerGuard = selfTriggerGuardFor(dogfoodBranches(options?.scenario));
 
     this.workflow.addJob('dogfood', {
       runsOn: ['ubuntu-latest'],

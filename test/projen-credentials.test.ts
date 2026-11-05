@@ -36,6 +36,12 @@ const JAVA_BASE = {
   artifactId: 'java-creds',
 };
 
+const LIBRARY = {
+  description: 'A test library',
+  url: 'https://github.com/xpertss/java-creds',
+  developers: [{ name: 'Test Dev' }],
+};
+
 /** [label, make] */
 const TYPES: Array<[string, () => any]> = [
   ['CdkInfraProject', () => new CdkInfraProject({ name: 'cdk-creds' })],
@@ -43,7 +49,7 @@ const TYPES: Array<[string, () => any]> = [
   ['JavaMavenProject', () => new JavaMavenProject(JAVA_BASE)],
   ['JavaSpringBootProject', () => new JavaSpringBootProject(JAVA_BASE)],
   ['JavaServiceProject', () => new JavaServiceProject(JAVA_BASE)],
-  ['JavaLibraryProject', () => new JavaLibraryProject(JAVA_BASE)],
+  ['JavaLibraryProject', () => new JavaLibraryProject({ ...JAVA_BASE, ...LIBRARY })],
   ['JavaAppProject', () => new JavaAppProject(JAVA_BASE)],
   ['GitHubActionProject', () => new GitHubActionProject({ name: 'action-creds', description: 'test' })],
 ];

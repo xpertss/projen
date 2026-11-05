@@ -1,4 +1,5 @@
 import { Component, Project, XmlFile, java } from 'projen';
+import { JavaDeveloper } from '../options';
 
 const POM_XML_ATTRS = {
   '@xsi:schemaLocation':
@@ -10,7 +11,7 @@ const POM_XML_ATTRS = {
 // Characters that make a version a range or a semver expression rather than
 // one exact version. Maven ranges make builds non-reproducible, so a spec
 // carrying one is rejected outright instead of being converted.
-const NON_EXACT_VERSION = /[\^~*\[\](),<>\s]|^x$|\.x(\.|$)/i;
+const NON_EXACT_VERSION = /[\^~*[\](),<>\s]|^x$|\.x(\.|$)/i;
 
 /** Parsed `groupId/artifactId[@version]` spec. */
 export interface MavenCoordinates {
@@ -88,6 +89,40 @@ export interface MavenPomOptions {
   readonly parent?: java.ParentPom;
 }
 
+/**
+ * A `<profile>` of the pom: when it is active, and what it adds.
+ *
+ * @jsii ignore
+ */
+export interface MavenProfileOptions {
+  readonly id: string;
+
+  /**
+   * All the conditions given must hold (Maven 3.2.2+).
+   *
+   * @default - never active by itself: only `-P <id>` switches it on
+   */
+  readonly activation?: {
+    /** Active when the property is set (`-Dname`), or has this value. */
+    readonly property?: { readonly name: string; readonly value?: string };
+    /** Active when the file or directory exists. `${basedir}` is the module. */
+    readonly fileExists?: string;
+  };
+
+  /** `groupId/artifactId[@version]`, with an optional scope. */
+  readonly dependencies?: ReadonlyArray<{ readonly spec: string; readonly scope?: string }>;
+
+  /** `<properties>` set while the profile is active; `-D` on the command line still wins. */
+  readonly properties?: Readonly<Record<string, string>>;
+
+  /** `extensions` makes the plugin a build extension, which it must be to change the lifecycle. */
+  readonly plugins?: ReadonlyArray<{
+    readonly spec: string;
+    readonly options?: java.PluginOptions;
+    readonly extensions?: boolean;
+  }>;
+}
+
 interface DependencyEntry {
   readonly coords: MavenCoordinates;
   readonly scope?: string;
@@ -149,6 +184,10 @@ export class MavenPom extends Component {
   private readonly plugins = new Map<string, PluginEntry>();
   private readonly repositories: java.MavenRepository[] = [];
   private readonly pluginRepositories: java.MavenRepository[] = [];
+  private readonly profiles: MavenProfileOptions[] = [];
+  private readonly licenses: { name: string; url: string }[] = [];
+  private readonly developers: JavaDeveloper[] = [];
+  private scm?: { url: string; connection: string; developerConnection: string };
 
   constructor(project: Project, options: MavenPomOptions) {
     super(project);
@@ -266,6 +305,21 @@ export class MavenPom extends Component {
     return this.plugins.has(coordinates);
   }
 
+  /** Adds a `<license>`. */
+  public addLicense(name: string, url: string): void {
+    this.licenses.push({ name, url });
+  }
+
+  /** Adds a `<developer>`. */
+  public addDeveloper(developer: JavaDeveloper): void {
+    this.developers.push(developer);
+  }
+
+  /** Sets the `<scm>` block. */
+  public setScm(url: string, connection: string, developerConnection: string): void {
+    this.scm = { url, connection, developerConnection };
+  }
+
   /** Adds a `<repository>`. */
   public addRepository(repository: java.MavenRepository): void {
     this.repositories.push(repository);
@@ -274,6 +328,19 @@ export class MavenPom extends Component {
   /** Adds a `<pluginRepository>`. */
   public addPluginRepository(repository: java.MavenRepository): void {
     this.pluginRepositories.push(repository);
+  }
+
+  /**
+   * Adds a `<profile>`. A profile in a reactor parent is evaluated again for
+   * each module that inherits it, with `${basedir}` set to that module.
+   *
+   * @jsii ignore
+   */
+  public addProfile(profile: MavenProfileOptions): void {
+    if (this.profiles.some((p) => p.id === profile.id)) {
+      throw new Error(`Profile "${profile.id}" is already defined in ${this.filePath}.`);
+    }
+    this.profiles.push(profile);
   }
 
   private mergeDependency(
@@ -383,6 +450,9 @@ export class MavenPom extends Component {
         name: this.name,
         description: this.description,
         url: this.url,
+        licenses: this.licenses.length ? { license: this.licenses } : undefined,
+        developers: this.developers.length ? { developer: this.developers } : undefined,
+        scm: this.scm,
         modules: this.modules.length ? { module: this.modules } : undefined,
         properties: Object.keys(this.properties).length ? this.properties : undefined,
         repositories: this.repositories.length
@@ -396,9 +466,37 @@ export class MavenPom extends Component {
           ? { dependency: [...this.deps.values()].map(renderDependency) }
           : undefined,
         build: renderBuild(plugins, pluginManagement),
+        profiles: this.profiles.length
+          ? { profile: this.profiles.map(renderProfile) }
+          : undefined,
       },
     }));
   }
+}
+
+function renderProfile(profile: MavenProfileOptions): any {
+  const { property, fileExists } = profile.activation ?? {};
+  const plugins = (profile.plugins ?? []).map((p) =>
+    renderPlugin(parseMavenSpec(p.spec), p.options ?? {}, p.extensions),
+  );
+  return {
+    id: profile.id,
+    activation: profile.activation
+      ? {
+        property: property ? { name: property.name, value: property.value } : undefined,
+        file: fileExists ? { exists: fileExists } : undefined,
+      }
+      : undefined,
+    properties: profile.properties,
+    dependencies: profile.dependencies?.length
+      ? {
+        dependency: profile.dependencies.map((d) =>
+          renderDependency({ coords: parseMavenSpec(d.spec), scope: d.scope }),
+        ),
+      }
+      : undefined,
+    build: plugins.length ? { plugins: { plugin: plugins } } : undefined,
+  };
 }
 
 function renderBuild(plugins: any[], pluginManagement: any[]): any {
@@ -434,10 +532,11 @@ function renderDependency(d: DependencyEntry): any {
   return { ...renderCoords(d.coords), type: d.type, scope: d.scope };
 }
 
-function renderPlugin(c: MavenCoordinates, options: java.PluginOptions): any {
+function renderPlugin(c: MavenCoordinates, options: java.PluginOptions, extensions?: boolean): any {
   const deps = (options.dependencies ?? []).map((d) => renderCoords(parseMavenSpec(d)));
   return {
     ...renderCoords(c),
+    extensions,
     configuration: options.configuration,
     dependencies: deps.length ? { dependency: deps } : undefined,
     executions: options.executions?.length

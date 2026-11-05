@@ -13,11 +13,21 @@ export const MAVEN_JAR_PLUGIN = 'org.apache.maven.plugins/maven-jar-plugin';
 export const MAVEN_ENFORCER_PLUGIN = 'org.apache.maven.plugins/maven-enforcer-plugin';
 export const MAVEN_JAVADOC_PLUGIN = 'org.apache.maven.plugins/maven-javadoc-plugin';
 export const MAVEN_SOURCE_PLUGIN = 'org.apache.maven.plugins/maven-source-plugin';
-export const JUNIT_BOM = 'org.junit/junit-bom';
+export const MAVEN_GPG_PLUGIN = 'org.apache.maven.plugins/maven-gpg-plugin';
+export const CENTRAL_PUBLISHING_PLUGIN = 'org.sonatype.central/central-publishing-maven-plugin';
+export const FLATTEN_MAVEN_PLUGIN = 'org.codehaus.mojo/flatten-maven-plugin';
+export const JUNIT_BOM ='org.junit/junit-bom';
 export const SPRING_BOOT_BOM = 'org.springframework.boot/spring-boot-dependencies';
 export const SPRING_BOOT_MAVEN_PLUGIN = 'org.springframework.boot/spring-boot-maven-plugin';
 export const FLYWAY_MAVEN_PLUGIN = 'org.flywaydb/flyway-maven-plugin';
 export const VERSIONS_MAVEN_PLUGIN = 'org.codehaus.mojo/versions-maven-plugin';
+export const EXEC_MAVEN_PLUGIN = 'org.codehaus.mojo/exec-maven-plugin';
+// The SCIP code index (F025): the javac plugin, the CLI that merges its output,
+// and the temporary patch for `ScipWriter` on Windows (F027; drop it, and raise
+// the pins, once a scip-aggregator release contains the fix).
+export const SCIP_JAVAC = 'org.scip-code/scip-javac';
+export const SCIP_JAVA = 'org.scip-code/scip-java';
+export const SCIP_AGGREGATOR_SHIM = 'org.xpertss/scip-aggregator-shim';
 
 /** The Java line used when a project sets no `javaVersion`. */
 export const DEFAULT_JAVA_VERSION = '21';
@@ -35,7 +45,14 @@ const SHARED_PLUGIN_VERSIONS: Record<string, string> = {
   [MAVEN_ENFORCER_PLUGIN]: '3.6.3',
   [MAVEN_JAVADOC_PLUGIN]: '3.12.0',
   [MAVEN_SOURCE_PLUGIN]: '3.4.0',
+  [MAVEN_GPG_PLUGIN]: '3.2.8',
+  [CENTRAL_PUBLISHING_PLUGIN]: '0.12.0',
+  [FLATTEN_MAVEN_PLUGIN]: '1.8.0',
   [VERSIONS_MAVEN_PLUGIN]: '2.22.0',
+  [EXEC_MAVEN_PLUGIN]: '3.5.0',
+  [SCIP_JAVAC]: '0.13.1',
+  [SCIP_JAVA]: '0.13.1',
+  [SCIP_AGGREGATOR_SHIM]: '0.13.1-1',
 };
 
 // Libraries whose current major needs Java 17: JUnit 6, Spring Boot 3+/4,

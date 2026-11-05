@@ -1,4 +1,5 @@
 import { readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { isAbsolute, relative, resolve, sep } from 'node:path';
 
 /**
  * Makes a generated SCIP index independent of the machine that generated it,
@@ -178,15 +179,22 @@ export function normalizeScipIndexFile(path: string, options: NormalizeOptions =
 }
 
 if (require.main === module) {
-  const path = process.argv[2];
-  if (!path) {
+  const arg = process.argv[2];
+  if (!arg) {
     console.error('usage: node scip-index-normalizer.js <index.scip>');
     process.exit(2);
   }
+  // The path comes from the command line (in CI, from an agent), so confine it
+  // to the working directory instead of accepting any absolute path.
+  const rel = relative(process.cwd(), resolve(arg));
+  if (isAbsolute(rel) || rel.split(sep).includes('..')) {
+    console.error(`${arg}: must be a path inside the current working directory`);
+    process.exit(2);
+  }
   try {
-    normalizeScipIndexFile(path, { windowsPaths: process.platform === 'win32' });
+    normalizeScipIndexFile(arg, { windowsPaths: process.platform === 'win32' });
   } catch (error) {
-    console.error(`${path}: ${(error as Error).message}`);
+    console.error(`${arg}: ${(error as Error).message}`);
     process.exit(1);
   }
 }

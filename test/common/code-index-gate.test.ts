@@ -20,7 +20,9 @@ function bashWorks(): boolean {
   }
 }
 
-const gateTest = bashWorks() ? test : test.skip;
+// Skips the whole suite rather than each test: Sonar's S2187 only recognizes
+// literal `test(...)` calls, so the skip must not wrap them.
+const gate = bashWorks() ? describe : describe.skip;
 
 function gateScript(): string {
   const snapshot = synthSnapshot(new CdkInfraProject({ name: 'infra-test' }));
@@ -85,35 +87,35 @@ function runGate(
 
 const BASE = { 'src/main.ts': 'a', 'README.md': 'a', '.xss/index.scip': 'a' };
 
-describe('code index diff gate', () => {
-  gateTest('a source-only push runs the indexer', () => {
+gate('code index diff gate', () => {
+  test('a source-only push runs the indexer', () => {
     expect(runGate(BASE, { 'src/main.ts': 'b' })).toBe('run=true');
   });
 
-  gateTest('a source-plus-index push does not', () => {
+  test('a source-plus-index push does not', () => {
     expect(runGate(BASE, { 'src/main.ts': 'b', '.xss/index.scip': 'b' })).toBe('run=false');
   });
 
-  gateTest('an index-only push does not', () => {
+  test('an index-only push does not', () => {
     expect(runGate(BASE, { '.xss/index.scip': 'b' })).toBe('run=false');
   });
 
-  gateTest('a push with no source file does not', () => {
+  test('a push with no source file does not', () => {
     expect(runGate(BASE, { 'README.md': 'b', 'package.json': '{}' })).toBe('run=false');
   });
 
-  gateTest('nested .ts and .tsx files under src/ count as source', () => {
+  test('nested .ts and .tsx files under src/ count as source', () => {
     expect(runGate(BASE, { 'src/a/b/c.ts': 'x' })).toBe('run=true');
     expect(runGate(BASE, { 'src/ui/app.tsx': 'x' })).toBe('run=true');
   });
 
-  gateTest('the projen project and the tests are not source', () => {
+  test('the projen project and the tests are not source', () => {
     expect(runGate(BASE, { '.projenrc.ts': 'x' })).toBe('run=false');
     expect(runGate(BASE, { 'projenrc/helper.ts': 'x' })).toBe('run=false');
     expect(runGate(BASE, { 'test/main.test.ts': 'x' })).toBe('run=false');
   });
 
-  gateTest('a push with no usable before commit runs the indexer', () => {
+  test('a push with no usable before commit runs the indexer', () => {
     const only = { 'README.md': 'b' };
     expect(runGate(BASE, only, () => '0'.repeat(40))).toBe('run=true');
     expect(runGate(BASE, only, () => '')).toBe('run=true');
