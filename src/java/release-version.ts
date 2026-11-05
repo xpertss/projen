@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
-import { appendFileSync } from 'node:fs';
+import { appendFileSync, existsSync } from 'node:fs';
+import { delimiter, join, resolve } from 'node:path';
 
 /**
  * Computes the next release version of a Maven library from its commits, so
@@ -40,7 +41,8 @@ const VERSION = /^(\d+)\.(\d+)\.(\d+)$/;
 const OVERRIDE = /^\d+\.\d+\.\d+(-[0-9A-Za-z.-]+)?$/;
 const RELEASABLE = /^(feat|fix)(\([^)]*\))?(!)?:/;
 const BREAKING_BODY = /^BREAKING[ -]CHANGE:/m;
-const RELEASE_COMMIT = /^chore\(release\)/;
+/** Subjects of the release bookkeeping commits, which carry no content. */
+const RELEASE_COMMIT_PREFIX = 'chore(release)';
 
 type Level = 'major' | 'minor' | 'patch';
 
@@ -83,7 +85,7 @@ function highestLevel(commits: CommitMessage[]): Level | undefined {
   let highest = -1;
   for (const c of commits) {
     const m = RELEASABLE.exec(c.subject);
-    if (!m || RELEASE_COMMIT.test(c.subject)) {
+    if (!m || c.subject.startsWith(RELEASE_COMMIT_PREFIX)) {
       continue;
     }
     let level: Level;
@@ -111,8 +113,42 @@ function bump([major, minor, patch]: number[], level: Level): number[] {
   return effective === 'minor' ? [major, minor + 1, 0] : [major, minor, patch + 1];
 }
 
+let gitExe: string | undefined;
+
+function findGit(): string {
+  const names = process.platform === 'win32' ? ['git.exe', 'git.cmd'] : ['git'];
+  for (const dir of (process.env.PATH ?? '').split(delimiter)) {
+    if (!dir) {
+      continue;
+    }
+    for (const name of names) {
+      const candidate = resolve(join(dir, name));
+      if (existsSync(candidate)) {
+        return candidate;
+      }
+    }
+  }
+  throw new Error('No git executable found in PATH');
+}
+
+/**
+ * Absolute path of the `git` executable, resolved once (at first use) against
+ * the PATH as it is at startup. Every invocation then uses that absolute path,
+ * so a later change of PATH (or of a directory on it) cannot redirect `git`
+ * calls to a different executable.
+ */
+function gitExecutable(): string {
+  gitExe ??= findGit();
+  return gitExe;
+}
+
 function git(args: string[]): string {
-  return execFileSync('git', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
+  const exe = gitExecutable();
+  // A Windows .cmd shim cannot be spawned without a shell, so go through cmd.
+  const command = exe.endsWith('.cmd')
+    ? [process.env.ComSpec ?? 'cmd.exe', '/c', exe, ...args]
+    : [exe, ...args];
+  return execFileSync(command[0], command.slice(1), { encoding: 'utf8', stdio: ['ignore', 'pipe', 'inherit'] });
 }
 
 /** The highest `vX.Y.Z` tag reachable from HEAD, as `X.Y.Z`. */
