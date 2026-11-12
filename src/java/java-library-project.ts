@@ -18,9 +18,13 @@ const DEFAULT_VERSION = '0.1.0';
  * version is computed from the commits when the publish workflow runs and is
  * never committed. The sources jar, javadoc jar, GPG signatures and the
  * Central upload belong to a `release` profile that only `-P release` turns
- * on, so an ordinary build neither builds javadoc nor signs nor uploads. In a
- * reactor every module inherits the profile and the publishing plugin, which
- * is declared once in the root pom and uploads the whole reactor as one bundle.
+ * on, so an ordinary build neither attaches a javadoc jar nor signs nor
+ * uploads. The ordinary build does run the Javadoc tool (report only, at
+ * `process-classes`), so a Javadoc error fails `mvn test` locally and in CI
+ * rather than at release time; `-Dmaven.javadoc.skip=true` turns that off.
+ * In a reactor every module inherits the profile and the publishing plugin,
+ * which is declared once in the root pom and uploads the whole reactor as one
+ * bundle.
  */
 export class JavaLibraryProject extends JavaMavenProject {
   constructor(options: JavaLibraryProjectOptions) {
@@ -45,6 +49,13 @@ export class JavaLibraryProject extends JavaMavenProject {
     }
 
     const pin = (coordinates: string) => `${coordinates}@${this.pinnedVersion(coordinates)}`;
+
+    // Javadoc errors must show up while editing, not when releasing: run the
+    // tool (no jar) in the ordinary build, early enough that `mvn test` and
+    // `mvn verify` both hit it. The release profile below keeps the `jar` goal.
+    this.pom.addPlugin(pin(MAVEN_JAVADOC_PLUGIN), {
+      executions: [{ id: 'check-javadoc', phase: 'process-classes', goals: ['javadoc'] }],
+    });
     this.pom.addProfile({
       id: 'release',
       // Defaults for `mvn deploy -P release`; the publish workflow overrides

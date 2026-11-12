@@ -9131,9 +9131,13 @@ The pom's version is `${revision}`, set to `<version>-SNAPSHOT`: the release
 version is computed from the commits when the publish workflow runs and is
 never committed. The sources jar, javadoc jar, GPG signatures and the
 Central upload belong to a `release` profile that only `-P release` turns
-on, so an ordinary build neither builds javadoc nor signs nor uploads. In a
-reactor every module inherits the profile and the publishing plugin, which
-is declared once in the root pom and uploads the whole reactor as one bundle.
+on, so an ordinary build neither attaches a javadoc jar nor signs nor
+uploads. The ordinary build does run the Javadoc tool (report only, at
+`process-classes`), so a Javadoc error fails `mvn test` locally and in CI
+rather than at release time; `-Dmaven.javadoc.skip=true` turns that off.
+In a reactor every module inherits the profile and the publishing plugin,
+which is declared once in the root pom and uploads the whole reactor as one
+bundle.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.JavaLibraryProject.Initializer"></a>
 

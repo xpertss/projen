@@ -44,12 +44,32 @@ describe('release profile', () => {
     expect(release).toContain('<waitUntil>validated</waitUntil>');
   });
 
-  test('the default build has no sources, javadoc, flatten, gpg or publishing plugin', () => {
+  test('the default build has no sources, flatten, gpg or publishing plugin', () => {
     const { rest } = splitRelease(synthSnapshot(lib())['pom.xml']);
-    for (const plugin of ['maven-source-plugin', 'maven-javadoc-plugin', 'flatten-maven-plugin', 'maven-gpg-plugin', 'central-publishing']) {
+    for (const plugin of ['maven-source-plugin', 'flatten-maven-plugin', 'maven-gpg-plugin', 'central-publishing']) {
       expect(rest).not.toContain(plugin);
     }
     expect(rest).not.toContain('distributionManagement');
+  });
+
+  test('the default build runs the javadoc tool (report only, early) so errors fail mvn test, not the release', () => {
+    const { rest, release } = splitRelease(synthSnapshot(lib())['pom.xml']);
+    expect(rest).toMatch(/<artifactId>maven-javadoc-plugin<\/artifactId>\s*<version>3\.12\.0<\/version>/);
+    expect(rest).toMatch(
+      /<id>check-javadoc<\/id>\s*<phase>process-classes<\/phase>\s*<goals>\s*<goal>javadoc<\/goal>/,
+    );
+    // The default build never builds the javadoc jar or sources jar; only the release profile does.
+    expect(rest).not.toMatch(/<goal>jar<\/goal>/);
+    expect(rest).not.toContain('attach-javadocs');
+    expect(release).toContain('attach-javadocs');
+  });
+
+  test('multi-module: every module inherits the javadoc check from the root pom', () => {
+    const snapshot = synthSnapshot(multiModule());
+    expect(snapshot['pom.xml']).toContain('check-javadoc');
+    for (const module of ['core', 'extra']) {
+      expect(snapshot[`${module}/pom.xml`]).not.toContain('maven-javadoc-plugin');
+    }
   });
 
   test('multi-module: the publishing plugin is declared in the root pom only; modules inherit the profile', () => {
