@@ -88,6 +88,7 @@ if [ -z "$changed" ]; then exit 0; fi
 matches=""
 while IFS= read -r path; do
   for p in $WATCH_PATHS; do
+    # shellcheck disable=SC2053  # the unquoted pattern is the point: it is a glob
     if [[ "$path" == $p ]]; then
       matches="$matches$path
 "

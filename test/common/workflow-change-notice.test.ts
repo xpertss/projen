@@ -36,6 +36,18 @@ describe('WorkflowChangeNoticeWorkflow', () => {
     expect(step.run).toContain('gh pr comment');
   });
 
+  test('the glob match is deliberate and says so to shellcheck (SC2053)', () => {
+    const project = new typescript.TypeScriptProject({ name: 'notice-test' });
+    new WorkflowChangeNoticeWorkflow(project);
+    const job = synthSnapshot(project)['.github/workflows/workflow-change-notice.yml'].jobs.check;
+    const run: string = job.steps.find((s: { name: string }) => s.name === 'Check for workflow/action changes').run;
+    const lines = run.split('\n');
+    const match = lines.findIndex((l) => l.includes('[[ "$path" == $p ]]'));
+    expect(match).toBeGreaterThan(0);
+    // The directive must be on the line directly above the unquoted comparison.
+    expect(lines[match - 1]).toContain('shellcheck disable=SC2053');
+  });
+
   test('honors custom watchPaths and workflowName', () => {
     const project = new typescript.TypeScriptProject({ name: 'notice-test' });
     new WorkflowChangeNoticeWorkflow(project, {
