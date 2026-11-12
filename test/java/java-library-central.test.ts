@@ -177,8 +177,10 @@ describe('publish workflow', () => {
       'server-username': 'MAVEN_CENTRAL_USERNAME',
       'server-password': 'MAVEN_CENTRAL_PASSWORD',
       'gpg-private-key': '${{ secrets.MAVEN_GPG_PRIVATE_KEY }}',
-      'gpg-passphrase': 'MAVEN_GPG_PASSPHRASE',
+      'gpg-passphrase-env-var': 'MAVEN_GPG_PASSPHRASE',
     });
+    // The deprecated alias must not come back (setup-java warns about it and may remove it).
+    expect(java.with['gpg-passphrase']).toBeUndefined();
     // The build workflow's JDK step is untouched.
     const build = synthSnapshot(lib())['.github/workflows/build.yml'].jobs.build.steps;
     expect(build.find((s: any) => s.uses?.startsWith('actions/setup-java')).with['server-id']).toBeUndefined();

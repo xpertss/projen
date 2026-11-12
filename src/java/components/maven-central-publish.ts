@@ -65,7 +65,8 @@ export class MavenCentralPublish extends Component {
         'server-username': 'MAVEN_CENTRAL_USERNAME',
         'server-password': 'MAVEN_CENTRAL_PASSWORD',
         'gpg-private-key': '${{ secrets.MAVEN_GPG_PRIVATE_KEY }}',
-        'gpg-passphrase': 'MAVEN_GPG_PASSPHRASE',
+        // The NAME of the env var that holds the passphrase (setup-java v6 deprecated `gpg-passphrase`).
+        'gpg-passphrase-env-var': 'MAVEN_GPG_PASSPHRASE',
       },
     };
 
