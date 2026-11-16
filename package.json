@@ -85,6 +85,28 @@
   "version": "0.0.0",
   "jest": {
     "coverageProvider": "v8",
+    "transformIgnorePatterns": [
+      "^(?!.*/node_modules/projen/node_modules/).*/node_modules/"
+    ],
+    "transform": {
+      "^.+\\.[t]sx?$": [
+        "ts-jest",
+        {
+          "tsconfig": "test/tsconfig.json"
+        }
+      ],
+      "/projen/node_modules/.+\\.js$": [
+        "ts-jest",
+        {
+          "tsconfig": {
+            "allowJs": true,
+            "module": "commonjs",
+            "esModuleInterop": true
+          },
+          "isolatedModules": true
+        }
+      ]
+    },
     "testMatch": [
       "<rootDir>/@(src|test)/**/*(*.)@(spec|test).ts?(x)",
       "<rootDir>/@(src|test)/**/__tests__/**/*.ts?(x)",
@@ -118,15 +140,7 @@
           "outputDirectory": "test-reports"
         }
       ]
-    ],
-    "transform": {
-      "^.+\\.[t]sx?$": [
-        "ts-jest",
-        {
-          "tsconfig": "test/tsconfig.json"
-        }
-      ]
-    }
+    ]
   },
   "types": "lib/index.d.ts",
   "jsii": {

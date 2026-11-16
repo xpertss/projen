@@ -10,6 +10,25 @@ const project = new cdk.JsiiProject({
   authorOrganization: false,
   description: 'Projen project types for CDK/TypeScript and Java/Maven projects',
   jsiiVersion: '~6.0.0',
+  // projen >= 0.105 imports `dax` (and its deps `@dsherret/shell`,
+  // `console-static-text`), which ship ESM only. Jest's CommonJS module
+  // system cannot `require()` them, so every suite that imports `projen`
+  // failed to load. Compile projen's own nested node_modules to CommonJS with
+  // ts-jest; everything else under node_modules stays untransformed. Matches
+  // the npm layout where those deps are nested under `projen/node_modules/`.
+  jestOptions: {
+    jestConfig: {
+      transformIgnorePatterns: [
+        '^(?!.*/node_modules/projen/node_modules/).*/node_modules/',
+      ],
+      transform: {
+        '/projen/node_modules/.+\\.js$': new javascript.Transform('ts-jest', {
+          tsconfig: { allowJs: true, module: 'commonjs', esModuleInterop: true },
+          isolatedModules: true,
+        }),
+      },
+    },
+  },
   // Pin the publib release tool (release.yml's `npx -p publib@... publib-npm`)
   // to an exact version; projen's default is the floating `latest` tag, so
   // every release would otherwise run whatever publib published last.
