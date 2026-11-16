@@ -226,3 +226,46 @@ test('projen new --from renders devDeps; the exact @xpertss/projen-types pin sti
   )['package.json'];
   expect(pkg.devDependencies['@xpertss/projen-types']).toMatch(/^\d+\.\d+\.\d+$/);
 });
+
+describe('nightly dependency upgrade', () => {
+  const snapshot = synthSnapshot(new CdkInfraProject({ name: 'infra-test' }));
+  const upgrade = snapshot['.projen/tasks.json'].tasks.upgrade;
+  const commands: string[] = upgrade.steps.map((step: any) =>
+    step.execArgs ? step.execArgs.join(' ') : step.exec,
+  );
+
+  test('never bumps projen on its own - it moves only with @xpertss/projen-types', () => {
+    // A 0.x minor bump of projen falls outside the `^0.<minor>.x` peer range
+    // of the exact-pinned @xpertss/projen-types and fails `npm update` with
+    // ERESOLVE.
+    const ncu = commands.find((c) => c.includes('npm-check-updates'));
+    const npmUpdate = commands.find((c) => c.startsWith('npm update'));
+    expect(ncu).toBeDefined();
+    expect(npmUpdate).toBeDefined();
+    expect(ncu!.split(/[\s,=]+/)).not.toContain('projen');
+    expect(npmUpdate!.split(/\s+/)).not.toContain('projen');
+  });
+
+  test('still upgrades the other dependencies', () => {
+    const npmUpdate = commands.find((c) => c.startsWith('npm update'))!;
+    expect(npmUpdate.split(/\s+/)).toContain('aws-cdk-lib');
+  });
+});
+
+describe('Node version', () => {
+  const snapshot = synthSnapshot(new CdkInfraProject({ name: 'infra-test' }));
+
+  test("engines floor matches projen's own (>= 22.13.0)", () => {
+    expect(snapshot['package.json'].engines.node).toBe('>= 22.13.0');
+  });
+
+  test.each(['build.yml', 'upgrade.yml'])('%s runs Node 24 like the other generated workflows', (file) => {
+    const workflow = snapshot[`.github/workflows/${file}`];
+    const versions = Object.values<any>(workflow.jobs)
+      .flatMap((job) => job.steps ?? [])
+      .filter((step: any) => step.uses?.startsWith('actions/setup-node'))
+      .map((step: any) => String(step.with['node-version']));
+    expect(versions.length).toBeGreaterThan(0);
+    expect(new Set(versions)).toEqual(new Set(['24']));
+  });
+});

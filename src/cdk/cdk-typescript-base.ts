@@ -65,7 +65,20 @@ export class CdkTypescriptProject extends awscdk.AwsCdkTypeScriptApp {
       // above: with no `minNodeVersion`, projen derives `@types/node` from
       // the TypeScript version instead, and the `@types/node@ts6.0`
       // dist-tag it asks for does not exist - `npm install` fails outright.
-      minNodeVersion: '22.0.0',
+      // 22.13.0 is projen's own engine floor (`projen@0.105` declares
+      // `node >= 22.13.0`); anything lower installs with EBADENGINE warnings.
+      minNodeVersion: '22.13.0',
+      // projen otherwise runs `build.yml` / `upgrade.yml` on `minNodeVersion`
+      // (the floor), while every workflow this package adds runs Node 24
+      // (`SETUP_NODE_STEP`). Keep all generated workflows on one runtime.
+      workflowNodeVersion: '24',
+      // `projen` moves only with a deliberate `@xpertss/projen-types` bump,
+      // never on its own in the nightly upgrade: this package declares
+      // `projen@^0.<minor>.x` as a peer, and on 0.x a caret admits patches
+      // only, so `npm-check-updates --target=minor` bumping `projen` past it
+      // makes the upgrade's `npm update` fail with ERESOLVE (the exact-pinned
+      // `@xpertss/projen-types` never moves to follow it).
+      depsUpgradeOptions: { exclude: ['projen'] },
       // Without this projen defaults to yarn classic and the generated repo's
       // own install step runs `yarn install --check-files`, while every
       // workflow this package generates - and the README - use npm.
