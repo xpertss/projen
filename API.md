@@ -4,6 +4,8 @@
 
 ### ActionBuildWorkflow <a name="ActionBuildWorkflow" id="@xpertss/projen-types.ActionBuildWorkflow"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionBuildWorkflow.Initializer"></a>
 
 ```typescript
@@ -253,6 +255,8 @@ public readonly workflow: TaskWorkflow;
 
 ### ActionDogfoodWorkflow <a name="ActionDogfoodWorkflow" id="@xpertss/projen-types.ActionDogfoodWorkflow"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Per AD-001's dogfood test: the composite action is run **against this repo**, end-to-end, via a local `uses: ./` reference - no external harness. Builds `test-dogfood.yml` from an ordered `scenario` of invocation steps (see `ActionDogfoodStep`) followed by a shared cleanup step.
 
 Omitting `options` generates the workflow with a single failing step (see
@@ -501,6 +505,8 @@ public readonly workflow: GithubWorkflow;
 
 
 ### ActionSonarWorkflow <a name="ActionSonarWorkflow" id="@xpertss/projen-types.ActionSonarWorkflow"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.ActionSonarWorkflow.Initializer"></a>
 
@@ -755,6 +761,8 @@ public readonly workflow: GithubWorkflow;
 
 ### AppRuntimeScaffold <a name="AppRuntimeScaffold" id="@xpertss/projen-types.AppRuntimeScaffold"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Full TypeScript application source structure (handlers/business logic), layered on top of `CdkTypescriptProject`'s pure-infra scaffold.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.AppRuntimeScaffold.Initializer"></a>
@@ -983,6 +991,8 @@ public readonly project: Project;
 
 
 ### CdkAppProject <a name="CdkAppProject" id="@xpertss/projen-types.CdkAppProject"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 Full TypeScript service application running behind API Gateway (or similar), with the infra to support it - `CdkInfraProject` plus application source, a database, and an app-level build/test workflow.
 
@@ -2453,6 +2463,8 @@ public readonly DEFAULT_TS_JEST_TRANFORM_PATTERN: string;
 
 ### CdkDeployHook <a name="CdkDeployHook" id="@xpertss/projen-types.CdkDeployHook"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Manual-dispatch workflow that invokes a downstream CDK deploy in a companion `CdkInfraProject`/`CdkAppProject` repo by dispatching its `deploy.yml` on `main`. That workflow takes no inputs (it deploys every stack of the app), so none are sent - GitHub rejects a dispatch carrying inputs the target workflow doesn't declare.
 
 With no `targetRepo` the workflow is still generated, but every job's
@@ -2695,6 +2707,8 @@ public readonly project: Project;
 
 
 ### CdkInfraProject <a name="CdkInfraProject" id="@xpertss/projen-types.CdkInfraProject"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 Pure infrastructure CDK stacks - little or no application code (CloudFront, Route53, SQS, API Gateway, Cognito, ECR/ECS standing up externally-built images).
 
@@ -4167,6 +4181,8 @@ public readonly DEFAULT_TS_JEST_TRANFORM_PATTERN: string;
 
 ### CdkTypescriptProject <a name="CdkTypescriptProject" id="@xpertss/projen-types.CdkTypescriptProject"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Shared CDK + TypeScript foundation for `CdkInfraProject` and `CdkAppProject`: standard app structure (via `AwsCdkTypeScriptApp`, `cdk.json`, `cdk synth`/`cdk diff` tasks), a PR-check build that hard-fails on projen drift (rather than self-mutating), and the push-to-`main` `deploy` workflow (OIDC into the org-wide `gha-cdk-deploy` role).
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.CdkTypescriptProject.Initializer"></a>
@@ -5636,6 +5652,8 @@ public readonly DEFAULT_TS_JEST_TRANFORM_PATTERN: string;
 
 ### CodeIndexWorkflow <a name="CodeIndexWorkflow" id="@xpertss/projen-types.CodeIndexWorkflow"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Generates a code index and publishes it to `.xss/` on checkin.
 
 On a push to `main` the workflow lists the files the push changed and stops
@@ -5869,6 +5887,8 @@ public readonly project: Project;
 
 
 ### DatabaseComponent <a name="DatabaseComponent" id="@xpertss/projen-types.DatabaseComponent"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 DB provisioning construct + migration tooling wiring.
 
@@ -6104,6 +6124,8 @@ public readonly project: Project;
 
 ### DockerPublish <a name="DockerPublish" id="@xpertss/projen-types.DockerPublish"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 On-demand build+push of a Docker image, defaulting to Docker Hub.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.DockerPublish.Initializer"></a>
@@ -6332,6 +6354,8 @@ public readonly project: Project;
 
 
 ### EcrEcsConstructs <a name="EcrEcsConstructs" id="@xpertss/projen-types.EcrEcsConstructs"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 Reusable construct helper for an ECR repo + Fargate ECS cluster/service standing up a container image.
 
@@ -6566,6 +6590,8 @@ public readonly project: Project;
 
 ### EdgeNetworkingConstructs <a name="EdgeNetworkingConstructs" id="@xpertss/projen-types.EdgeNetworkingConstructs"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Construct helpers for CloudFront/Route53/API Gateway/Cognito/SQS, scoped to whichever `edgeResources` the consuming project type opts into.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.EdgeNetworkingConstructs.Initializer"></a>
@@ -6795,6 +6821,8 @@ public readonly project: Project;
 
 ### FlywayMigration <a name="FlywayMigration" id="@xpertss/projen-types.FlywayMigration"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Adds Flyway config/dependencies + a migrations directory for DB migrations.
 
 `flyway-core` is versionless - Spring Boot's BOM manages it, so
@@ -7020,6 +7048,8 @@ public readonly project: Project;
 
 
 ### GitHubActionProject <a name="GitHubActionProject" id="@xpertss/projen-types.GitHubActionProject"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 Scaffolds the repo lifecycle (AD-001) around a hand-committed, composite (shell) GitHub Action: the `build`/`test-dogfood`/`sonar`/`release`  workflows, versioning and release discipline, the F003 verify components,  and repo boilerplate (a private version-source `package.json`, `.yamllint`,  `LICENSE`, and a `README.md` template). The action's own content (`action.yml`, its shell scripts, `test/` fixtures) is authored by hand per the action's own F### spec - this type only lints it.
 
@@ -7871,6 +7901,8 @@ this task should synthesize the project files.
 
 ### GitHubPackagesPublish <a name="GitHubPackagesPublish" id="@xpertss/projen-types.GitHubPackagesPublish"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 On-demand publish to GitHub Packages.
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.GitHubPackagesPublish.Initializer"></a>
@@ -8099,6 +8131,8 @@ public readonly project: Project;
 
 
 ### JavaAppProject <a name="JavaAppProject" id="@xpertss/projen-types.JavaAppProject"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 GUI/TUI/CLI Java application.
 
@@ -9124,6 +9158,8 @@ this task should synthesize the project files.
 ---
 
 ### JavaLibraryProject <a name="JavaLibraryProject" id="@xpertss/projen-types.JavaLibraryProject"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 Reusable Java library, published to Maven Central from GitHub Actions.
 
@@ -10158,6 +10194,8 @@ this task should synthesize the project files.
 ---
 
 ### JavaMavenProject <a name="JavaMavenProject" id="@xpertss/projen-types.JavaMavenProject"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 Baseline Maven project, single- or multi-module, with no framework assumptions.
 
@@ -11197,6 +11235,8 @@ this task should synthesize the project files.
 ---
 
 ### JavaServiceProject <a name="JavaServiceProject" id="@xpertss/projen-types.JavaServiceProject"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 Spring Boot service application deployed as a container: `JavaSpringBootProject` plus Docker publishing (Docker Hub by default - never Maven Central), Flyway, and a CDK deploy hook.
 
@@ -12251,6 +12291,8 @@ this task should synthesize the project files.
 ---
 
 ### JavaSpringBootProject <a name="JavaSpringBootProject" id="@xpertss/projen-types.JavaSpringBootProject"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 Spring Boot on Maven, single- or multi-module, with no Docker, Flyway or CDK - `JavaMavenProject` plus Spring Boot dependency management.
 
@@ -13313,6 +13355,8 @@ this task should synthesize the project files.
 
 ### MavenCentralPublish <a name="MavenCentralPublish" id="@xpertss/projen-types.MavenCentralPublish"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 On-demand publish workflow to Maven Central (F028).
 
 The version is computed
@@ -13547,6 +13591,8 @@ public readonly project: Project;
 
 
 ### MavenModule <a name="MavenModule" id="@xpertss/projen-types.MavenModule"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 One module of a Maven reactor: a `<dir>/pom.xml` owned by the root project (not a projen subproject - there is still one `.projen/`, one `.gitignore` and one `tasks.json`). Created by `JavaMavenProject.addModule()`.
 
@@ -13913,6 +13959,8 @@ The module's own `pom.xml`.
 
 
 ### MavenPom <a name="MavenPom" id="@xpertss/projen-types.MavenPom"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 A `pom.xml` written by this package (rather than projen's `java.Pom`).
 
@@ -14551,6 +14599,8 @@ Maven packaging (`jar`, `pom`, ...).
 
 ### MavenUpgradeReport <a name="MavenUpgradeReport" id="@xpertss/projen-types.MavenUpgradeReport"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 Nightly, report-only dependency check for the Maven types: runs the `upgrade` task (`versions:display-dependency-updates` and `display-plugin-updates`) and writes the available updates into the job summary.
 
 It deliberately changes nothing. Every version in a generated pom comes
@@ -14796,6 +14846,8 @@ public readonly workflow: GithubWorkflow;
 
 ### ProjenDriftCheckWorkflow <a name="ProjenDriftCheckWorkflow" id="@xpertss/projen-types.ProjenDriftCheckWorkflow"></a>
 
+- *Implements:* constructs.IConstruct, constructs.IDependable
+
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.ProjenDriftCheckWorkflow.Initializer"></a>
 
 ```typescript
@@ -15033,6 +15085,8 @@ public readonly workflow: GithubWorkflow;
 
 
 ### SonarWorkflow <a name="SonarWorkflow" id="@xpertss/projen-types.SonarWorkflow"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 AD-001 Layer 2: SonarCloud via the Scanner CLI only (never `SonarSource/sonarqube-scan-action` - third-party, and it carried a security advisory).
 
@@ -15278,6 +15332,8 @@ public readonly workflow: GithubWorkflow;
 
 
 ### WorkflowChangeNoticeWorkflow <a name="WorkflowChangeNoticeWorkflow" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow"></a>
+
+- *Implements:* constructs.IConstruct, constructs.IDependable
 
 #### Initializers <a name="Initializers" id="@xpertss/projen-types.WorkflowChangeNoticeWorkflow.Initializer"></a>
 
